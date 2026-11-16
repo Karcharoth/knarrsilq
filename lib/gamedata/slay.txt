@@ -20,6 +20,16 @@
 #     for the same slay
 # dice: number of bonus dice given by the slay
 
+code:MAN_1
+name:men
+race-flag:MAN
+dice:1
+
+code:ELF_1
+name:elves
+race-flag:ELF
+dice:1
+
 code:ORC_1
 name:orcs
 race-flag:ORC

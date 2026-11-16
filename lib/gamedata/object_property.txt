@@ -483,6 +483,66 @@ subtype:throw
 id-type:on wield
 code:THROWING
 
+name:protection from bleeding
+type:flag
+code:PROT_BLEED
+subtype:protection
+id-type:on effect
+desc:bleeding
+
+name:traitor
+type:flag
+subtype:bad
+id-type:on effect
+code:TRAITOR
+desc:May betray you when you need it most
+
+name:damaged
+type:flag
+code:DAMAGED
+
+name:cheat death
+type:flag
+subtype:misc ability
+id-type:on effect
+code:CHEAT_DEATH
+desc:Preserves you from death once
+
+name:stand fast
+type:flag
+subtype:misc ability
+id-type:on effect
+code:STAND_FAST
+desc:Lets you stand fast against your foes
+
+name:accurate
+type:flag
+subtype:melee
+id-type:on wield
+code:ACCURATE
+desc:Is unusually well balanced (misses are rerolled)
+
+name:cumbersome
+type:flag
+subtype:bad
+id-type:on wield
+code:CUMBERSOME
+desc:Is cumbersome (it does not score critical hits)
+
+name:avoid traps
+type:flag
+subtype:misc ability
+id-type:on effect
+code:AVOID_TRAPS
+desc:Lets you step on traps without triggering them
+
+name:medicine bonus
+type:flag
+subtype:misc ability
+id-type:on wield
+code:MEDIC
+desc:Increases the health you get from healing items
+
 name:ignore acid
 type:ignore
 code:ACID
@@ -585,6 +645,14 @@ type:slay
 code:DRAGON_1
 smith-cat:slay
 smith-difficulty:7
+
+name:slay man
+type:slay
+code:MAN_1
+
+name:slay elf
+type:slay
+code:ELF_1
 
 name:elec brand
 type:brand
