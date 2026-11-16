@@ -16,6 +16,7 @@
  *
  *   # routine <name> <args...>
  *   # iterations <n>
+ *   # seed <seed>
  *   <value> <count>
  *
  * To add a routine, write a function returning one integer outcome per call
@@ -152,6 +153,7 @@ static bool run_tally(const char *spec)
 	for (i = 0; i < r->nargs; i++)
 		printf(" %d", args[i]);
 	printf("\n# iterations %ld\n", iters);
+	printf("# seed %lu\n", (unsigned long) seed);
 	for (i = 0; i <= TALLY_MAX - TALLY_MIN; i++)
 		if (counts[i])
 			printf("%d %ld\n", i + TALLY_MIN, counts[i]);
