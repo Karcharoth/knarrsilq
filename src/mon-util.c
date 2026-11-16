@@ -1062,6 +1062,8 @@ bool similar_monsters(struct monster *mon1, struct monster *mon2)
 	
 	/* Monsters have the same race flag */
 	create_mon_flag_mask(mask, RFT_RACE_N, RFT_MAX);
+	rf_off(mask, RF_MAN);
+	rf_off(mask, RF_ELF);
 	rf_inter(mask, mon1->race->flags);
 	if (rf_is_inter(mask, mon2->race->flags)) return true;
 	
