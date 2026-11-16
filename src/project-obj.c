@@ -275,6 +275,10 @@ static void project_object_handler_KILL_TRAP(project_object_handler_context_t *c
 	}
 }
 
+static void project_object_handler_WEB(project_object_handler_context_t *context)
+{
+}
+
 static void project_object_handler_DISP_ALL(project_object_handler_context_t *context)
 {
 }

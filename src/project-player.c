@@ -197,6 +197,10 @@ static void project_player_handler_KILL_TRAP(project_player_handler_context_t *c
 {
 }
 
+static void project_player_handler_WEB(project_player_handler_context_t *context)
+{
+}
+
 static void project_player_handler_DISP_ALL(project_player_handler_context_t *context)
 {
 }

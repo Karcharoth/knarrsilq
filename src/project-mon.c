@@ -387,6 +387,12 @@ static void project_monster_handler_KILL_TRAP(project_monster_handler_context_t 
 	context->dam = 0;
 }
 
+static void project_monster_handler_WEB(project_monster_handler_context_t *context)
+{
+	context->skipped = true;
+	context->dam = 0;
+}
+
 /* Dispel monster */
 static void project_monster_handler_DISP_ALL(project_monster_handler_context_t *context)
 {

@@ -86,6 +86,13 @@ static const char *element_names[] = {
 	NULL
 };
 
+static const char *projection_names[] = {
+	#define PROJ(a) #a,
+	#include "list-projections.h"
+	#undef PROJ
+	NULL
+};
+
 static bool grab_element_flag(struct element_info *info, const char *flag_name)
 {
 	char *under = strchr(flag_name, '_');
@@ -186,6 +193,14 @@ static enum parser_error parse_projection_code(struct parser *p) {
 	projection->index = index;
 	if ((index < ELEM_MAX) && !streq(code, element_names[index])) {
 		return PARSE_ERROR_ELEMENT_NAME_MISMATCH;
+	}
+	if (index >= ELEM_MAX) {
+		if (index >= PROJ_MAX) {
+			return PARSE_ERROR_TOO_MANY_ENTRIES;
+		}
+		if (!streq(code, projection_names[index - ELEM_MAX])) {
+			return PARSE_ERROR_PROJECTION_NAME_MISMATCH;
+		}
 	}
 	return PARSE_ERROR_NONE;
 }
