@@ -523,3 +523,28 @@ uint32_t Rand_simple(uint32_t m)
 #endif
 	return (seed % m);
 }
+
+/**
+ * Divide n by d, rounding halves away from zero; division by zero gives n.
+ *
+ * The rounding test compares against d rather than its magnitude, so for
+ * negative d the result is always moved one further from zero, even when the
+ * division is exact.
+ */
+int32_t div_round(int32_t n, int32_t d)
+{
+	int32_t tmp;
+
+	if (!d) return n;
+
+	tmp = n / d;
+	if ((ABS(n) % ABS(d)) * 2 >= d) {
+		if (n * d > 0) {
+			tmp += 1;
+		} else {
+			tmp -= 1;
+		}
+	}
+
+	return tmp;
+}

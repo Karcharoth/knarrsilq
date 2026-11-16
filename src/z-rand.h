@@ -207,4 +207,6 @@ int random_chance_scaled(random_chance c, int scale);
 
 extern void rand_fix(uint32_t val);
 
+int32_t div_round(int32_t n, int32_t d);
+
 #endif /* INCLUDED_Z_RAND_H */
