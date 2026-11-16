@@ -267,3 +267,6 @@ on-increase:You feel more resistant to poison!
 msgt:RES_POIS
 resist:POIS
 
+name:PER
+grade:o:10000:PER:You feel your perceptions sharpen.
+on-end:Your perception returns to normal.

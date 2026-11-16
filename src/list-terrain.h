@@ -30,3 +30,7 @@ FEAT(FORGE_GOOD)
 FEAT(FORGE_UNIQUE)
 FEAT(PIT)
 FEAT(SPIKED_PIT)
+FEAT(WARDED) /* warded door (power 1) */
+FEAT(WARDED2) /* warded door (power 2) */
+FEAT(WARDED3) /* warded door (power 3) */
+FEAT(SUNLIGHT) /* patch of sunlight */

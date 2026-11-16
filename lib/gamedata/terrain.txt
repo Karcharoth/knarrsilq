@@ -340,3 +340,38 @@ info:0:0:15
 walk-msg:Are you sure you want to step in the spiked pit? 
 run-msg:A spiked pit blocks your path.  Step into it? 
 
+
+# warded door (power 1)
+
+code:WARDED
+name:warded door
+graphics:+:G
+priority:17
+flags:DOOR_ANY | DOOR_CLOSED | INTERESTING
+confused-msg:bangs into a door
+
+# warded door (power 2)
+
+code:WARDED2
+name:warded door
+graphics:+:B
+priority:17
+flags:DOOR_ANY | DOOR_CLOSED | INTERESTING
+confused-msg:bangs into a door
+
+# warded door (power 3)
+
+code:WARDED3
+name:warded door
+graphics:+:v
+priority:17
+flags:DOOR_ANY | DOOR_CLOSED | INTERESTING
+confused-msg:bangs into a door
+
+# sunlight
+
+code:SUNLIGHT
+name:patch of sunlight
+graphics:.:y
+priority:5
+flags:LOS | PROJECT | PASSABLE | OBJECT | EASY | TORCH
