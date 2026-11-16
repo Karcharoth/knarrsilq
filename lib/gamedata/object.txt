@@ -1007,7 +1007,7 @@ desc: It will shine forever.
 name:& Feanorian Lamp~
 graphics:~:B
 type:light
-pval:3
+pval:4
 depth:12
 weight:10
 cost:1000
@@ -1017,7 +1017,7 @@ alloc:12:10
 alloc:18:5
 flags:MITHRIL | NO_FUEL
 desc:An enchanted lamp, shining with the light of lesser jewels.
-desc: You can equip it as a light source with a radius of 3 squares.
+desc: You can equip it as a light source with a radius of 4 squares.
 desc: It will shine forever.
 
 
