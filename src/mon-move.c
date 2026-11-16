@@ -400,8 +400,8 @@ static int distance_squared(struct loc grid1, struct loc grid2)
  */
 static void monster_find_range(struct monster *mon)
 {
-	/* Monsters will run up to z_info->flee_range grids out of sight */
-	int flee_range = MIN(z_info->max_sight + z_info->flee_range, 255);
+	/* Monsters will run up to z_info->flee_range grids away */
+	int flee_range = z_info->flee_range;
 
 	/* All "afraid" monsters will run away */
 	if (mon->stance == STANCE_FLEEING) {

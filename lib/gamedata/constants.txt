@@ -39,12 +39,12 @@ mon-play:mana-cost:10
 # Maximum amount of mana a monster can have at once
 mon-play:mana-max:15
 
-# Monsters will run up to this many grids out of sight
-mon-play:flee-range:5
+# Monsters will run up to this many grids away
+mon-play:flee-range:40
 
 # Terrified monsters will turn to fight if they are slower than the character,
 # and closer than this distance.
-mon-play:turn-range:5
+mon-play:turn-range:3
 
 # Monsters will search up to this many grids for a hiding spot when fleeing
 mon-play:hide-range:15
@@ -132,6 +132,9 @@ obj-make:default-lamp:3000
 # Maximum amount of fuel in a lantern
 obj-make:fuel-lamp:7000
 
+# Maximum amount of fuel in a mallorn torch
+obj-make:fuel-mallorn:100
+
 # Maximum number of self-made artefacts
 obj-make:self-arts:50
 
@@ -148,6 +151,9 @@ player:max-range:20
 # Amount of experience the player starts with
 player:start-exp:5000
 
+# Amount of experience the player starts with when starting experience is fixed
+player:fixed-exp:50000
+
 # Base experience cost per ability
 player:ability-cost:500
 
@@ -156,3 +162,6 @@ player:stealth-bonus:5
 
 # Number of player turns for complete health or voice regeneration
 player:regen-period:150
+
+# Extra charges multiplier for Channeling
+player:channeling-charge-mult:2

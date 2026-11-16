@@ -100,15 +100,18 @@ struct angband_constants
 	uint16_t fuel_torch;	/* Maximum amount of fuel in a torch */
 	uint16_t default_lamp;	/* Default amount of fuel in a lantern  */
 	uint16_t fuel_lamp;		/* Maximum amount of fuel in a lantern */
+	uint16_t fuel_mallorn;	/* Maximum amount of fuel in a mallorn torch */
 	uint16_t self_arts_max;	/* Maximum number of self-made artefacts */
 
 	/* Player constants, read from constants.txt */
 	uint16_t max_sight;	/* Maximum visual range */
 	uint16_t max_range;	/* Maximum missile and spell range */
 	uint16_t start_exp;	/* Amount of experience the player starts with */
+	uint32_t fixed_exp;	/* Experience the player starts with when it is fixed */
 	uint16_t ability_cost;	/* Base experience cost of an ability */
 	uint16_t stealth_bonus;	/* Bonus to stealth in stealth mode */
 	uint16_t player_regen_period;	/* Player turns for complete regeneration */
+	uint16_t channeling_mult;	/* Charge multiplier for Channeling */
 };
 
 struct init_module {

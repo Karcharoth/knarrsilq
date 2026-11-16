@@ -523,6 +523,8 @@ static enum parser_error parse_constants_obj_make(struct parser *p) {
 		z->default_lamp = value;
 	else if (streq(label, "fuel-lamp"))
 		z->fuel_lamp = value;
+	else if (streq(label, "fuel-mallorn"))
+		z->fuel_mallorn = value;
 	else if (streq(label, "self-arts"))
 		z->self_arts_max = value;
 	else
@@ -549,12 +551,16 @@ static enum parser_error parse_constants_player(struct parser *p) {
 		z->max_range = value;
 	else if (streq(label, "start-exp"))
 		z->start_exp = value;
+	else if (streq(label, "fixed-exp"))
+		z->fixed_exp = value;
 	else if (streq(label, "ability-cost"))
 		z->ability_cost = value;
 	else if (streq(label, "stealth-bonus"))
 		z->stealth_bonus = value;
 	else if (streq(label, "regen-period"))
 		z->player_regen_period = value;
+	else if (streq(label, "channeling-charge-mult"))
+		z->channeling_mult = value;
 	else
 		return PARSE_ERROR_UNDEFINED_DIRECTIVE;
 

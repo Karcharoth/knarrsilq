@@ -147,7 +147,7 @@ name:ARROW1
 mana:0
 best-range:4
 max-range:10
-desire:2
+desire:100
 disturb:1
 use-past-range:100
 effect:BOLT:ARROW
@@ -161,7 +161,7 @@ name:ARROW2
 mana:0
 best-range:4
 max-range:16
-desire:2
+desire:100
 disturb:1
 use-past-range:100
 effect:BOLT:ARROW
@@ -175,7 +175,7 @@ name:BOULDER
 mana:0
 best-range:4
 max-range:5
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:BOLT:BOULDER
@@ -193,7 +193,7 @@ name:BR_FIRE
 msgt:BR_FIRE
 mana:10
 best-range:2
-desire:2
+desire:100
 disturb:1
 use-past-range:50
 effect:BREATH:FIRE:0:60
@@ -210,7 +210,7 @@ name:BR_COLD
 msgt:BR_FROST
 mana:10
 best-range:2
-desire:2
+desire:100
 disturb:1
 use-past-range:50
 effect:BREATH:COLD:0:60
@@ -227,7 +227,7 @@ name:BR_POIS
 msgt:BR_GAS
 mana:10
 best-range:2
-desire:2
+desire:100
 disturb:1
 use-past-range:50
 effect:BREATH:POIS:0:90
@@ -244,7 +244,7 @@ name:BR_DARK
 msgt:BR_DARK
 mana:10
 best-range:2
-desire:2
+desire:100
 disturb:1
 use-past-range:50
 effect:BREATH:DARK:0:60
@@ -261,7 +261,7 @@ name:EARTHQUAKE
 mana:10
 best-range:2
 max-range:3
-desire:1
+desire:50
 disturb:1
 use-past-range:0
 effect:EARTHQUAKE
@@ -274,7 +274,7 @@ name:SHRIEK
 msgt:SHRIEK
 mana:10
 best-range:0
-desire:1
+desire:50
 use-past-range:100
 effect:NOISE:MONSTER:10
 dice:-10
@@ -290,10 +290,10 @@ message-silence-smart-invis:You hear a muffled shout for help.
 
 name:SCREECH
 msgt:SHRIEK
-mana:10
+mana:0
 best-range:2
 max-range:2
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:TIMED_INC:STUN
@@ -313,7 +313,7 @@ message-silence-invis:The air is filled with a muffled screeching.
 name:DARKNESS
 mana:10
 best-range:0
-desire:1
+desire:50
 use-past-range:100
 effect:DARKEN_AREA
 effect:SPHERE:DARK_WEAK:3
@@ -325,7 +325,7 @@ message-invis:{name} mutters.
 name:FORGET
 mana:10
 best-range:0
-desire:1
+desire:50
 use-past-range:100
 effect:DARKEN_LEVEL
 dice:3
@@ -339,7 +339,7 @@ name:SCARE
 msgt:CAST_FEAR
 mana:10
 best-range:0
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:TIMED_INC_NO_RES:AFRAID
@@ -354,7 +354,7 @@ message-save:You are unafraid.
 name:CONF
 mana:10
 best-range:0
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:TIMED_INC_NO_RES:CONFUSED
@@ -367,7 +367,7 @@ message-save:You retain your presence of mind.
 name:HOLD
 mana:10
 best-range:0
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:TIMED_SET:ENTRANCED
@@ -380,7 +380,7 @@ message-save:You stare back unafraid!
 name:SLOW
 mana:10
 best-range:0
-desire:1
+desire:50
 disturb:1
 use-past-range:100
 effect:TIMED_INC_NO_RES:SLOW
@@ -396,7 +396,7 @@ message-save:You resist.
 name:SNG_BIND
 mana:10
 best-range:0
-desire:1
+desire:50
 use-past-range:100
 effect:SONG_OF_BINDING
 message-vis:
@@ -416,9 +416,37 @@ lore:piercing
 name:SNG_OATHS
 mana:10
 best-range:0
-desire:1
+desire:50
 use-past-range:100
 effect:SONG_OF_OATHS
 message-vis:
 message-invis:
 lore:oaths
+
+name:HATCH_SPIDER
+mana:10
+best-range:0
+desire:50
+use-past-range:100
+lore:hatch spider
+
+name:DIM
+mana:10
+best-range:0
+desire:50
+use-past-range:100
+lore:dim torches and lanterns
+
+name:THROW_WEB
+mana:10
+best-range:0
+desire:50
+use-past-range:100
+lore:throw web
+
+name:RALLY
+mana:10
+best-range:0
+desire:50
+use-past-range:100
+lore:rally foes
