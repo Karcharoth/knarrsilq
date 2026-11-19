@@ -98,6 +98,18 @@ static const char *skill_names[] = {
 	""
 };
 
+/**
+ * Print a race or house trait such as "song affinity", in lower case.
+ */
+static void birth_label(uint8_t attr, const char *name, const char *suffix)
+{
+	char buf[40];
+
+	strnfmt(buf, sizeof(buf), "%s%s\n", name, suffix);
+	buf[0] = tolower((unsigned char)buf[0]);
+	text_out_c(attr, "%s", buf);
+}
+
 static bool quickstart_allowed = false;
 bool arg_force_name;
 
@@ -273,14 +285,14 @@ static void race_help(int i, void *db, const region *l)
 	for (j = 0; j < SKILL_MAX; j++) {  
 		int adj = r->skill_adj[j];
 		if (adj > 0) {
-			text_out_c(COLOUR_GREEN, "%s affinity\n", skill_names[j]);
+			birth_label(COLOUR_GREEN, skill_names[j], " affinity");
 		} else if (adj < 0) {
-			text_out_c(COLOUR_RED, "%s penalty\n", skill_names[j]);
+			birth_label(COLOUR_RED, skill_names[j], " penalty");
 		}
 	}
 	for (j = 0; j < PF_MAX; j++) {
 		if (pf_has(r->pflags, j)) {
-			text_out_c(COLOUR_GREEN, "%s\n", list_player_flag_names[j]);
+			birth_label(COLOUR_GREEN, list_player_flag_names[j], "");
 		}
 	}
 
@@ -321,16 +333,16 @@ static void house_help(int i, void *db, const region *l)
 	for (j = 0; j < SKILL_MAX; j++) {  
 		int adj = r->skill_adj[j] + h->skill_adj[j];
 		if (adj > 1) {
-			text_out_c(COLOUR_L_GREEN, "%s mastery\n", skill_names[j]);
+			birth_label(COLOUR_L_GREEN, skill_names[j], " mastery");
 		} else if (adj > 0) {
-			text_out_c(COLOUR_GREEN, "%s affinity\n", skill_names[j]);
+			birth_label(COLOUR_GREEN, skill_names[j], " affinity");
 		} else if (adj < 0) {
-			text_out_c(COLOUR_RED, "%s penalty\n", skill_names[j]);
+			birth_label(COLOUR_RED, skill_names[j], " penalty");
 		}
 	}
 	for (j = 0; j < PF_MAX; j++) {
 		if (pf_has(r->pflags, j)) {
-			text_out_c(COLOUR_GREEN, "%s\n", list_player_flag_names[j]);
+			birth_label(COLOUR_GREEN, list_player_flag_names[j], "");
 		}
 	}
 
