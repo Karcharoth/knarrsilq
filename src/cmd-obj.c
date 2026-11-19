@@ -527,7 +527,7 @@ static void use_aux(struct command *cmd, struct object *obj, enum use use,
 		}
 
 		/* Confusion wrecks aim */
-		player_confuse_dir(player, &dir, false);
+		player_confuse_aim(player, &dir);
 	}
 
 	/* Track the object used */
@@ -789,12 +789,6 @@ void do_cmd_eat_food(struct command *cmd)
 			tval_is_edible,
 			USE_INVEN | USE_FLOOR) != CMD_OK) return;
 
-	/* If gorged, you cannot eat food */
-	if ((player->timed[TMD_FOOD] >= PY_FOOD_MAX) && obj_nourishes(obj)) {
-		msg("You are too full to eat it.");
-		return;
-	}
-
 	use_aux(cmd, obj, USE_SINGLE, MSG_EAT, false);
 }
 
@@ -811,12 +805,6 @@ void do_cmd_quaff_potion(struct command *cmd)
 			"You have no potions from which to quaff.",
 			tval_is_potion,
 			USE_INVEN | USE_FLOOR) != CMD_OK) return;
-
-	/* If gorged, you cannot quaff nourishing potions */
-	if ((player->timed[TMD_FOOD] >= PY_FOOD_MAX) && obj_nourishes(obj)) {
-		msg("You are too full to drink it.");
-		return;
-	}
 
 	use_aux(cmd, obj, USE_SINGLE, MSG_QUAFF, false);
 }

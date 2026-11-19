@@ -110,12 +110,12 @@
 
 name:FOOD
 desc:nourishment
-grade:R:1:Starving: :You are beginning to starve!
-grade:o:1000:Weak:You are still weak.:You are getting weak from hunger!
-grade:y:2000:Hungry:You are still hungry.:You are getting hungry.
-grade:u:5000:Fed:You are no longer hungry.:You are no longer full.
-grade:G:8000:Full:You are full!:You are no longer gorged.
-grade:g:20000:Gorged:You have gorged yourself!  You can't eat or drink any more until you recover.
+grade:R:0:Starving: :You are beginning to starve!
+grade:o:999:Weak:You are still weak.:You are getting weak from hunger!
+grade:y:1999:Hungry:You are still hungry.:You are getting hungry.
+grade:u:4999:Fed:You are no longer hungry.:You are no longer full.
+grade:G:7999:Full:You are full!:You feel comfortably full.
+grade:G:20000:Full:You are as full as you can be.
 msgt:HUNGRY
 
 name:FAST
@@ -135,7 +135,7 @@ fail:FREE_ACT
 name:BLIND
 desc:blindness
 este:1
-grade:o:10000:Blind:You are blind.
+grade:o:10000:Blind:You are blind!
 on-end:You can see again.
 msgt:BLIND
 save:1

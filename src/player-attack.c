@@ -320,7 +320,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 	/* Handle player fear (only for invisible monsters) */
 	if (p->timed[TMD_AFRAID]) {
 		msgt(MSG_AFRAID, "You are too afraid to attack %s!", m_name);
-		return;
+		abort_attack = true;
 	}
 
     /* Inscribing an object with "!a" produces prompts to confirm that you wish
@@ -1520,13 +1520,15 @@ void do_cmd_fire(struct command *cmd) {
 		return;
 	}
 
+	/* Handle player fear */
+	if (player->timed[TMD_AFRAID]) {
+		msgt(MSG_AFRAID, "You are too afraid to aim properly!");
+		return;
+	}
+
 	range = archery_range(bow);
 	if (cmd_get_target(cmd, "target", &dir, range, false) == CMD_OK) {
-		player_confuse_dir(player, &dir, false);
-		if (player->timed[TMD_AFRAID]) {
-			msgt(MSG_AFRAID, "You are too afraid to aim properly!");
-			return;
-		}
+		player_confuse_aim(player, &dir);
 	} else {
 		return;
 	}
@@ -1566,7 +1568,7 @@ void do_cmd_throw(struct command *cmd) {
 	range = throwing_range(obj);
 
 	if (cmd_get_target(cmd, "target", &dir, range, false) == CMD_OK) {
-		player_confuse_dir(player, &dir, false);
+		player_confuse_aim(player, &dir);
 		if (player->timed[TMD_AFRAID]) {
 			msgt(MSG_AFRAID, "You are too afraid to aim properly!");
 			return;

@@ -897,16 +897,16 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	}
 
 	/* Timed effects */
-	if (player_timed_grade_eq(p, TMD_STUN, "Heavy Stun")) {
+	if (p->timed[TMD_STUN] >= 50) {
 		for (i = 0; i < SKILL_MAX; i++) {
 			state->skill_misc_mod[i] -= 4;
 		}
-	} else if (player_timed_grade_eq(p, TMD_STUN, "Stun")) {
+	} else if (p->timed[TMD_STUN]) {
 		for (i = 0; i < SKILL_MAX; i++) {
 			state->skill_misc_mod[i] -= 2;
 		}
 	}
-	if (player_timed_grade_eq(p, TMD_FOOD, "Weak")) {
+	if (p->timed[TMD_FOOD] < PY_FOOD_WEAK) {
 		state->stat_misc_mod[STAT_STR] -= 1;
 	}
 	if (p->timed[TMD_RAGE]) {
@@ -991,8 +991,13 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	/* Speed must lie between 1 and 3 */
 	state->speed = MIN(3, MAX(1, state->speed));
 
-	/* Increase food consumption if regenerating */
-	if (state->flags[OF_REGEN]) state->flags[OF_HUNGER] += 1;
+	/* Increase food consumption if actively regenerating */
+	if (state->flags[OF_REGEN] && ((p->chp < p->mhp) || (p->csp < p->msp))) {
+		state->flags[OF_HUNGER] += 1;
+	}
+
+	/* Decrease food consumption for each item of sustenance */
+	state->flags[OF_HUNGER] -= state->flags[OF_SLOW_DIGEST];
 
 	/* Armour weight (not inventory weight) reduces stealth
 	 * by 1 point per 10 pounds (rounding down) */
@@ -1037,6 +1042,9 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	song = lookup_song("Freedom");
 	if (player_is_singing(p, song)) {
 		state->flags[OF_FREE_ACT] += 1;
+	}
+	if (p->timed[TMD_PER]) {
+		state->skill_misc_mod[SKILL_PERCEPTION] += 10;
 	}
 
 	/* Analyze launcher */
@@ -1190,6 +1198,18 @@ static void update_bonuses(struct player *p)
 
 	memcpy(&p->state, &state, sizeof(state));
 	memcpy(&p->known_state, &known_state, sizeof(known_state));
+
+	/* Equipment that grants see invisible cures blindness */
+	if (p->timed[TMD_BLIND]) {
+		for (i = 0; i < p->body.count; i++) {
+			struct object *obj = slot_object(p, i);
+
+			if (obj && of_has(obj->flags, OF_SEE_INVIS)) {
+				(void)player_clear_timed(p, TMD_BLIND, true, true);
+				break;
+			}
+		}
+	}
 
 	/* Propagate knowledge */
 	update_player_object_knowledge(p);

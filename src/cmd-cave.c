@@ -1979,6 +1979,12 @@ void do_cmd_walk(struct command *cmd)
         return;
     }
 
+	/* Verify the intended square, unless the player may be escaping */
+	grid = loc_sum(player->grid, ddgrid[dir]);
+	if (square_in_bounds_fully(cave, grid) && !do_cmd_walk_test(grid)) {
+		return;
+	}
+
 	/* Apply confusion if necessary */
 	if (player_confuse_dir(player, &dir, false))
 		/* Confused movements use energy no matter what */

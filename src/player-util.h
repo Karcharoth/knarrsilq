@@ -116,6 +116,7 @@ bool player_can_refuel_prereq(void);
 bool player_can_debug_prereq(void);
 bool player_can_save_prereq(void);
 bool player_confuse_dir(struct player *p, int *dir, bool too);
+bool player_confuse_aim(struct player *p, int *dir);
 bool player_resting_is_special(int16_t count);
 bool player_is_resting(const struct player *p);
 int16_t player_resting_count(const struct player *p);

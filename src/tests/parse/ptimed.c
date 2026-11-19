@@ -349,7 +349,7 @@ static int test_grade0(void *state) {
 			NULL,
 			"You are beginning to starve!",
 			&PY_FOOD_STARVE,
-			1,
+			0,
 			COLOUR_L_RED
 		},
 		{
@@ -357,7 +357,7 @@ static int test_grade0(void *state) {
 			"You are still weak.",
 			"You are getting weak from hunger!",
 			&PY_FOOD_WEAK,
-			1000,
+			999,
 			COLOUR_ORANGE
 		},
 		{
@@ -365,7 +365,7 @@ static int test_grade0(void *state) {
 			"You are still hungry.",
 			"You are getting hungry.",
 			&PY_FOOD_ALERT,
-			2000,
+			1999,
 			COLOUR_YELLOW
 		},
 		{
@@ -373,20 +373,20 @@ static int test_grade0(void *state) {
 			"You are no longer hungry.",
 			"You are no longer full.",
 			&PY_FOOD_FULL,
-			5000,
+			4999,
 			COLOUR_UMBER
 		},
 		{
 			"Full",
 			"You are full!",
-			"You are no longer gorged.",
+			"You feel comfortably full.",
 			&PY_FOOD_MAX,
-			8000,
+			7999,
 			COLOUR_L_GREEN
 		},
 		{
-			"Gorged",
-			"You have gorged yourself!  You can't eat or drink any more until you recover.",
+			"Full",
+			"You are as full as you can be.",
 			NULL,
 			NULL,
 			20000,
@@ -479,11 +479,10 @@ static int test_grade0(void *state) {
 	notnull(t);
 	last_grade = t->grade;
 	notnull(last_grade);
-	/* Skip the zero grade at the start. */
-	last_grade = last_grade->next;
+	/* The first grade, with a maximum of zero, is the zero grade. */
 	for (i = 0; i < (int) N_ELEMENTS(test_grades); ++i) {
 		notnull(last_grade);
-		eq(i + 1, last_grade->grade);
+		eq(i, last_grade->grade);
 		eq(test_grades[i].color, last_grade->color);
 		eq(test_grades[i].max, last_grade->max);
 		if (test_grades[i].name) {
@@ -505,7 +504,7 @@ static int test_grade0(void *state) {
 		}
 		last_grade = last_grade->next;
 		if (test_grades[i].p_py_food) {
-			eq(*test_grades[i].p_py_food, test_grades[i].max);
+			eq(*test_grades[i].p_py_food, test_grades[i].max + 1);
 		}
 	}
 

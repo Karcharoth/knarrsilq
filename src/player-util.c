@@ -223,7 +223,7 @@ void take_hit(struct player *p, int dam, const char *kb_str)
 	}
 
 	/* Cancel entrancement */
-	player_set_timed(p, TMD_ENTRANCED, 0, false, true);
+	player_set_timed(p, TMD_ENTRANCED, 0, true, true);
 }
 
 /**
@@ -338,8 +338,8 @@ void player_digest(struct player *p)
 		i *= int_exp(3, p->state.flags[OF_HUNGER]);
 	}
 
-	/* Digest quickly when gorged */
-	if (p->timed[TMD_FOOD] >= PY_FOOD_MAX) i *= 9;
+	/* Digest quickly when replete */
+	if (p->timed[TMD_FOOD] >= PY_FOOD_MAX) i *= 50;
 
 	/* Digest some food */
 	(void)player_dec_timed(p, TMD_FOOD, i, false, true);
@@ -1209,6 +1209,10 @@ bool player_can_save_prereq(void)
 /**
  * Apply confusion, if needed, to a direction
  *
+ * A confused player with no direction moves at random; otherwise three
+ * chances to turn left and three to turn right give a binomial deviation
+ * from the intended direction.
+ *
  * Display a message and return true if direction changes.
  */
 bool player_confuse_dir(struct player *p, int *dp, bool too)
@@ -1216,16 +1220,44 @@ bool player_confuse_dir(struct player *p, int *dp, bool too)
 	int dir = *dp;
 
 	if (p->timed[TMD_CONFUSED]) {
-		if ((dir == 5) || (randint0(100) < 75)) {
-			/* Random direction */
-			dir = ddd[randint0(8)];
-		}
-
 		/* Running attempts always fail */
 		if (too) {
-			msg("You are too confused.");
+			msg("You are too confused!");
 			return true;
 		}
+
+		if (dir == 5) {
+			/* Random direction */
+			dir = ddd[randint0(8)];
+		} else {
+			/* Deviate around the intended direction */
+			dir = cycle[chome[dir] + damroll(3, 2) - damroll(3, 2)];
+		}
+
+		if (*dp != dir) {
+			msg("You are confused.");
+			*dp = dir;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Apply confusion, if needed, to an aiming direction
+ *
+ * Any aim other than up or down becomes a random direction.
+ *
+ * Display a message and return true if direction changes.
+ */
+bool player_confuse_aim(struct player *p, int *dp)
+{
+	int dir = *dp;
+
+	if (p->timed[TMD_CONFUSED] && (dir != DIR_UP) && (dir != DIR_DOWN)) {
+		/* Random direction */
+		dir = ddd[randint0(8)];
 
 		if (*dp != dir) {
 			msg("You are confused.");
@@ -1378,7 +1410,7 @@ void player_resting_complete_special(struct player *p)
 			!p->timed[TMD_POISONED] && !p->timed[TMD_AFRAID] &&
 			!p->timed[TMD_STUN] &&
 			!p->timed[TMD_CUT] && !p->timed[TMD_SLOW] &&
-			!p->timed[TMD_ENTRANCED] && !p->timed[TMD_IMAGE])
+			!p->timed[TMD_ENTRANCED])
 			/* Stop resting */
 			disturb(p, false);
 	} else if (p->upkeep->resting == REST_SOME_POINTS) {

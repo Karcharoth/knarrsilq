@@ -245,10 +245,16 @@ static enum parser_error parse_player_timed_grade(struct parser *p)
 		current = current->next;
 	}
 
-	/* Add the new one */
-	l = mem_zalloc(sizeof(*l));
-	current->next = l;
-	l->grade = current->grade + 1;
+	/* A first grade with a maximum of zero describes the zero grade */
+	if (current == t->grade && !current->name
+			&& parser_getint(p, "max") == 0) {
+		l = current;
+	} else {
+		/* Add the new one */
+		l = mem_zalloc(sizeof(*l));
+		current->next = l;
+		l->grade = current->grade + 1;
+	}
 
 	if (strlen(color) > 1) {
 		attr = color_text_to_attr(color);
@@ -280,20 +286,21 @@ static enum parser_error parse_player_timed_grade(struct parser *p)
 		l->down_msg = string_make(parser_getsym(p, "down_msg"));
 	}
 
-	/* Set food constants and deal with percentages */
+	/*
+	 * Set food constants; each is the lowest food value above the grade,
+	 * taken from the grades in order since the top two share a name
+	 */
 	if (streq(t->name, "FOOD")) {
-		if (l->name) {
-			if (streq(l->name, "Starving")) {
-				PY_FOOD_STARVE = l->max;
-			} else if (streq(l->name, "Weak")) {
-				PY_FOOD_WEAK = l->max;
-			} else if (streq(l->name, "Hungry")) {
-				PY_FOOD_ALERT = l->max;
-			} else if (streq(l->name, "Fed")) {
-				PY_FOOD_FULL = l->max;
-			} else if (streq(l->name, "Full")) {
-				PY_FOOD_MAX = l->max;
-			}
+		if (l->grade == 0) {
+			PY_FOOD_STARVE = l->max + 1;
+		} else if (l->grade == 1) {
+			PY_FOOD_WEAK = l->max + 1;
+		} else if (l->grade == 2) {
+			PY_FOOD_ALERT = l->max + 1;
+		} else if (l->grade == 3) {
+			PY_FOOD_FULL = l->max + 1;
+		} else if (l->grade == 4) {
+			PY_FOOD_MAX = l->max + 1;
 		}
 	}
 
@@ -531,6 +538,8 @@ int player_timed_decrement_amount(struct player *p, int idx)
  */
 static void player_timed_end_effect(int idx)
 {
+	int stat = -1;
+
 	switch (idx) {
 		case TMD_ENTRANCED: {
 			player->upkeep->was_entranced = true;
@@ -540,7 +549,19 @@ static void player_timed_end_effect(int idx)
 			player->upkeep->redraw |= PR_MAP;
 			break;
 		}
+		case TMD_STR: stat = STAT_STR; break;
+		case TMD_DEX: stat = STAT_DEX; break;
+		case TMD_CON: stat = STAT_CON; break;
+		case TMD_GRA: stat = STAT_GRA; break;
 		default: break;
+	}
+
+	/* The end of a temporary stat boost restores some drained points */
+	if (stat >= 0 && player_stat_res(player, stat, 3)) {
+		struct obj_property *prop =
+			lookup_obj_property(OBJ_PROPERTY_STAT, stat);
+
+		msg("You feel less %s.", prop->neg_adj);
 	}
 }
 
@@ -557,10 +578,10 @@ const char *player_get_timed_grade(const struct player *p, int idx)
 {
 	const struct timed_grade *grade;
 
-	if (!p->timed[idx]) {
+	grade = timed_effects[idx].grade;
+	if (!grade) {
 		return NULL;
 	}
-	grade = timed_effects[idx].grade;
 	while (p->timed[idx] > grade->max) {
 		grade = grade->next;
 	}
@@ -572,8 +593,9 @@ const char *player_get_timed_grade(const struct player *p, int idx)
  */
 bool player_timed_grade_eq(const struct player *p, int idx, const char *match)
 {
-	if (p->timed[idx]) {
-		const struct timed_grade *grade = timed_effects[idx].grade;
+	const struct timed_grade *grade = timed_effects[idx].grade;
+
+	if (grade) {
 		while (p->timed[idx] > grade->max) {
 			grade = grade->next;
 		}
@@ -664,7 +686,7 @@ bool player_set_timed(struct player *p, int idx, int v, bool notify,
 		timed_effects[TMD_STUN].grade : NULL;
 
 	/* Lower bound */
-	v = MAX(v, (idx == TMD_FOOD) ? 1 : 0);
+	v = MAX(v, 0);
 
 	/* No change */
 	if (p->timed[idx] == v) {

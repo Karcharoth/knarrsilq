@@ -93,11 +93,6 @@ void lore_description(textblock *tb, const struct monster_race *race,
 
 	assert(tb && race && original_lore);
 
-	if (player->timed[TMD_IMAGE] > 0) {
-		textblock_append(tb, "Your hallucinations are too wild to see things clearly.\n");
-		return;
-	}
-
 	/* Create a copy of the monster-memory that we can modify */
 	memcpy(lore, original_lore, sizeof(struct monster_lore));
 

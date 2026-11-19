@@ -440,7 +440,7 @@ static bool aux_reinit(struct chunk *c, struct player *p,
 static bool aux_hallucinate(struct chunk *c, struct player *p,
 		struct target_aux_state *auxst)
 {
-	const char *name_strange = "something strange";
+	const char *name_strange = "What you see is not to be believed.";
 	char out_val[TARGET_OUT_VAL_SIZE];
 
 	if (!p->timed[TMD_IMAGE]) return false;
@@ -449,9 +449,7 @@ static bool aux_hallucinate(struct chunk *c, struct player *p,
 	/* Display a message */
 	if (p->wizard) {
 		strnfmt(out_val, sizeof(out_val),
-			"%s%s%s, %s (%d:%d, noise=%d, scent=%d).",
-			auxst->phrase1,
-			auxst->phrase2,
+			"%s  [%s] (%d:%d, noise=%d, scent=%d)",
 			name_strange,
 			auxst->coord_desc,
 			auxst->grid.y,
@@ -459,9 +457,7 @@ static bool aux_hallucinate(struct chunk *c, struct player *p,
 			(int)c->player_noise.grids[auxst->grid.y][auxst->grid.x],
 			(int)c->scent.grids[auxst->grid.y][auxst->grid.x]);
 	} else {
-		strnfmt(out_val, sizeof(out_val), "%s%s%s, %s.",
-			auxst->phrase1,
-			auxst->phrase2,
+		strnfmt(out_val, sizeof(out_val), "%s  [%s]",
 			name_strange,
 			auxst->coord_desc);
 	}

@@ -210,7 +210,7 @@ static bool monster_list_format_special(const monster_list_t *list, textblock *t
 {
 	if (player->timed[TMD_IMAGE] > 0) {
 		/* Hack - message needs newline to calculate width properly. */
-		const char *message = "Your hallucinations are too wild to see things clearly.\n";
+		const char *message = "What you see is not to be believed.\n";
 
 		if (max_height_result != NULL)
 			*max_height_result = 1;
