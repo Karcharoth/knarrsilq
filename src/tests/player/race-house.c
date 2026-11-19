@@ -214,7 +214,6 @@ static int test_random_name(void *state) {
 	ok;
 }
 
-const char *suite_name = "player/race-house";
 static int test_fixed_exp(void *state) {
 	/* Sil-Q birth.c:59-69, 76 get_start_xp; defines.h:382-383 */
 	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
@@ -273,6 +272,7 @@ static int test_fixed_exp_reset(void *state) {
 	ok;
 }
 
+const char *suite_name = "player/race-house";
 struct test tests[] = {
 	{ "race-data", test_race_data },
 	{ "outfit", test_outfit },
