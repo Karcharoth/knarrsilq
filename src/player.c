@@ -298,7 +298,7 @@ bool player_restore_mana(struct player *p, int amt) {
  */
 size_t player_random_name(char *buf, size_t buflen)
 {
-	size_t result = randname_make(RANDNAME_TOLKIEN, 4, 8, buf, buflen,
+	size_t result = randname_make(RANDNAME_TOLKIEN, 5, 9, buf, buflen,
 		name_sections);
 
 	my_strcap(buf);
