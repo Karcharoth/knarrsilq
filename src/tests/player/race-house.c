@@ -13,6 +13,7 @@
 #include "obj-util.h"
 #include "object.h"
 #include "player.h"
+#include "player-abilities.h"
 #include "player-birth.h"
 #include "z-rand.h"
 
@@ -214,11 +215,71 @@ static int test_random_name(void *state) {
 }
 
 const char *suite_name = "player/race-house";
+static int test_fixed_exp(void *state) {
+	/* Sil-Q birth.c:59-69, 76 get_start_xp; defines.h:382-383 */
+	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
+	player->opts.opt[OPT_birth_fixed_exp] = false;
+	player_generate(player, NULL, NULL, NULL, true);
+	eq(player->exp, 5000);
+	eq(player->new_exp, 5000);
+	player->opts.opt[OPT_birth_fixed_exp] = true;
+	player_generate(player, NULL, NULL, NULL, true);
+	eq(player->exp, 50000);
+	eq(player->new_exp, 50000);
+	player->opts.opt[OPT_birth_fixed_exp] = false;
+	ok;
+}
+
+static int test_fixed_exp_reset(void *state) {
+	struct ability *power = lookup_ability(SKILL_MELEE, "Power");
+	int i;
+
+	/* Sil-Q cmd4.c:7082-7098, 6849-6872; all eight skills (D-1) */
+	require(power);
+	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
+	player->opts.opt[OPT_birth_fixed_exp] = false;
+	player_generate(player, NULL, NULL, NULL, true);
+	for (i = 0; i < SKILL_MAX; i++) {
+		player->skill_base[i] = 2;
+	}
+	add_ability(&player->abilities, power);
+	player->new_exp = 1000;
+
+	/* Option unchanged: nothing refunded */
+	player_fixed_exp_reset(player);
+	eq(player->exp, 5000);
+	eq(player->new_exp, 1000);
+	eq(player->skill_base[SKILL_WILL], 2);
+	require(player->abilities);
+
+	/* Turned on: 50000 to spend, skills and abilities cleared */
+	player->opts.opt[OPT_birth_fixed_exp] = true;
+	player_fixed_exp_reset(player);
+	eq(player->exp, 50000);
+	eq(player->new_exp, 50000);
+	for (i = 0; i < SKILL_MAX; i++) {
+		eq(player->skill_base[i], 0);
+	}
+	null(player->abilities);
+
+	/* Turned off again: back to 5000 */
+	player->skill_base[SKILL_SONG] = 3;
+	player->new_exp = 40000;
+	player->opts.opt[OPT_birth_fixed_exp] = false;
+	player_fixed_exp_reset(player);
+	eq(player->exp, 5000);
+	eq(player->new_exp, 5000);
+	eq(player->skill_base[SKILL_SONG], 0);
+	ok;
+}
+
 struct test tests[] = {
 	{ "race-data", test_race_data },
 	{ "outfit", test_outfit },
 	{ "ahw", test_ahw },
 	{ "history-house", test_history_house },
 	{ "random-name", test_random_name },
+	{ "fixed-exp", test_fixed_exp },
+	{ "fixed-exp-reset", test_fixed_exp_reset },
 	{ NULL, NULL }
 };

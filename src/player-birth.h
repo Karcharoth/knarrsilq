@@ -25,6 +25,7 @@ extern void player_init(struct player *p);
 extern void player_generate(struct player *p, const struct player_race *r,
                             const struct player_house *h,
 							const struct player_sex *s, bool old_history);
+extern void player_fixed_exp_reset(struct player *p);
 extern void get_ahw(struct player *p);
 extern char *get_history(struct history_chart *h, struct player *p);
 extern void wield_all(struct player *p);

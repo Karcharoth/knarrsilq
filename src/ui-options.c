@@ -26,6 +26,7 @@
 #include "obj-tval.h"
 #include "obj-util.h"
 #include "object.h"
+#include "player-birth.h"
 #include "player-calcs.h"
 #include "ui-birth.h"
 #include "ui-display.h"
@@ -334,8 +335,9 @@ static void option_toggle_menu(const char *name, int page)
 	m->selections = selections;
 	m->flags = MN_DBL_TAP;
 
-	/* We add 10 onto the page amount to indicate we're at birth */
-	if (page == OPT_PAGE_BIRTH) {
+	/* We add 10 onto the page amount to indicate we're at birth;
+	 * birth options may also be changed on the first turn */
+	if (page == OPT_PAGE_BIRTH && player->turn) {
 		m->prompt = "You can only modify these options at character birth.";
 		m->cmd_keys = "";
 		m->flags = MN_NO_TAGS;
@@ -367,6 +369,11 @@ static void option_toggle_menu(const char *name, int page)
 	menu_select(m, 0, false);
 
 	screen_load();
+
+	/* Apply a change to fixed experience */
+	if (page == OPT_PAGE_BIRTH && m->flags != MN_NO_TAGS) {
+		player_fixed_exp_reset(player);
+	}
 
 	mem_free(m);
 }

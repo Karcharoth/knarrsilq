@@ -34,6 +34,7 @@
 #include "obj-tval.h"
 #include "obj-util.h"
 #include "object.h"
+#include "player-abilities.h"
 #include "player-birth.h"
 #include "player-calcs.h"
 #include "player-history.h"
@@ -706,7 +707,8 @@ void player_generate(struct player *p, const struct player_race *r,
 	}
 
 	/* Initial experience */
-	p->exp = p->new_exp = z_info->start_exp;
+	p->exp = p->new_exp = OPT(p, birth_fixed_exp) ? z_info->fixed_exp :
+		z_info->start_exp;
 
 	/* Initial hitpoints etc */
 	get_bonuses(p);
@@ -725,6 +727,37 @@ void player_generate(struct player *p, const struct player_race *r,
 	}
 }
 
+
+/**
+ * Apply a change of the fixed experience birth option, made at birth or on
+ * the first turn: give the experience the option starts with, and clear
+ * the skills and abilities bought with the old amount.
+ */
+void player_fixed_exp_reset(struct player *p)
+{
+	int32_t exp;
+
+	if (OPT(p, birth_fixed_exp) && (p->exp != (int32_t) z_info->fixed_exp)) {
+		exp = z_info->fixed_exp;
+	} else if (!OPT(p, birth_fixed_exp) &&
+			(p->exp >= (int32_t) z_info->fixed_exp)) {
+		exp = z_info->start_exp;
+	} else {
+		return;
+	}
+
+	p->exp = p->new_exp = exp;
+
+	/* Clear the abilities */
+	release_ability_list(p->abilities);
+	p->abilities = NULL;
+
+	/* Clear the base values of all the skills */
+	init_skills(true, true);
+
+	p->upkeep->update |= (PU_BONUS);
+	p->upkeep->redraw |= (PR_EXP | PR_BASIC);
+}
 
 /**
  * Reset everything back to how it would be on loading the game.
