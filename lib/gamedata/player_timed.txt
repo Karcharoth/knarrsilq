@@ -204,7 +204,7 @@ name:STUN
 desc:stunning
 este:1
 grade:o:50:Stun:You have been stunned.
-grade:o:100:Heavy Stun:You have been heavily stunned.:You wake up.
+grade:o:100:Heavy Stun:You have been heavily stunned.
 grade:r:105:Knocked Out:You have been knocked out.
 on-end:You are no longer stunned.
 msgt:STUN

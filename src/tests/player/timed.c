@@ -818,9 +818,12 @@ static int test_set_timed2(void *state) {
 				for (i = 0; i < 4; ++i) {
 					bool notify = i < 2;
 					bool disturb = !(i % 2);
+					/* Waking from a knock out always notifies */
+					bool waking = !s->next
+						&& (e->grade < s->grade);
 					bool notified = (e->grade > s->grade) ?
 						true :
-						notify || e->down_msg;
+						notify || e->down_msg || waking;
 					bool result;
 
 					reset_event_counters(st,
@@ -859,9 +862,8 @@ static int test_set_timed2(void *state) {
 					 * Handle special case of end of
 					 * blackout message.
 					 */
-					if (!s->next && e->next) {
-						require(st->n_untracked == 0
-							|| st->n_untracked == 1);
+					if (waking) {
+						eq(st->n_untracked, 1);
 					} else {
 						eq(st->n_untracked, 0);
 					}
@@ -908,14 +910,15 @@ static int test_set_timed2(void *state) {
 						reset_event_counters(st,
 							timed_effects[TMD_STUN].msgt);
 						player->timed[TMD_STUN] = oldv;
+						bool waking = !s->next;
 						result = player_set_timed(
 							player, TMD_STUN,
 							newv, notify,
 							disturb);
-						eq(result, notify);
+						eq(result, notify || waking);
 						eq(player->timed[TMD_STUN], e_l);
 						eq(st->n_tracked, 0);
-						if (notify) {
+						if (notify || waking) {
 							eq(st->n_recover, 1);
 							require(streq(
 								st->last_recover_msg,
@@ -923,9 +926,9 @@ static int test_set_timed2(void *state) {
 						} else {
 							eq(st->n_recover, 0);
 						}
-						eq(st->n_untracked, 0);
+						eq(st->n_untracked, waking ? 1 : 0);
 						eq(st->input_flushed,
-							(notify && disturb));
+							((notify || waking) && disturb));
 					}
 				}
 			}

@@ -736,6 +736,18 @@ bool player_set_timed(struct player *p, int idx, int v, bool notify,
 			p->timed[TMD_BLIND] = MAX(p->timed[TMD_BLIND], 2);
 		}
 
+		/* Waking up from being knocked out undoes the temporary blinding */
+		if (blackout_grade && p->timed[idx] > blackout_grade->max
+				&& v <= blackout_grade->max) {
+			msg("You wake up.");
+			if (p->timed[TMD_BLIND]) {
+				p->timed[TMD_BLIND]--;
+				p->upkeep->update |= timed_effects[TMD_BLIND].flag_update;
+				p->upkeep->redraw |= timed_effects[TMD_BLIND].flag_redraw;
+			}
+			notify = true;
+		}
+
 		/* Always mention going up a grade, otherwise on request */
 		if (new_grade->grade > current_grade->grade) {
 			if ((timed_effects[idx].temp_resist != -1) &&
@@ -754,10 +766,6 @@ bool player_set_timed(struct player *p, int idx, int v, bool notify,
 
 			/* Special cases */
 			if (idx == TMD_FOOD) ident_hunger(p);
-			if (blackout_grade && v < blackout_grade->max) {
-				msg("You wake up.");
-				p->timed[TMD_BLIND] = MAX(p->timed[TMD_BLIND] - 1, 0);
-			}
 
 			notify = true;
 		} else if (notify) {
