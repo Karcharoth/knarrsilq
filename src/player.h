@@ -239,7 +239,7 @@ struct player_race {
 	unsigned int ridx;
 
 	int b_age;		/**< Base age */
-	int m_age;		/**< Mod age */
+	int m_age;		/**< Maximum age */
 	int base_hgt;	/**< Base height */
 	int mod_hgt;	/**< Mod height */
 	int base_wgt;	/**< Base weight */

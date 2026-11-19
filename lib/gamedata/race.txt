@@ -13,7 +13,7 @@
 # stats:str:dex:con:gra
 # skills:melee:archery:evasion:stealth:perception:will:smithing:song
 # history:history
-# age:agebase:agemod
+# age:agebase:agemax
 # height:hgt:modhgt
 # weight:wgt:modwgt
 # player-flags:player flags
@@ -29,7 +29,7 @@
 
 # 'history' is for starting point of the player history (see history.txt).
 
-# 'age' is age info - base age, random age modifier.
+# 'age' is age info - minimum age, maximum age.
 
 # 'height' is height info - base height, random height modifier.
 

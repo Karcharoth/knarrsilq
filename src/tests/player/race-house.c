@@ -55,6 +55,8 @@ static struct player_house *find_house(const char *name)
 static int test_race_data(void *state) {
 	struct player_race *r = find_race("Noldor");
 
+	/* Sil-Q lib/edit/race.txt:53-56 (Noldor), 76-79 (Sindar),
+	 * 98-101 (Naugrim), 119-121 (Edain); SNG_AFFINITY is song +1 */
 	require(r);
 	eq(r->base_hgt, 78);
 	eq(r->mod_hgt, 3);
@@ -96,6 +98,7 @@ static int test_outfit(void *state) {
 	struct object *weapon, *light, *obj;
 	int torches = 0;
 
+	/* Sil-Q race.txt:122-124 (E: lines), birth.c:576-650 player_outfit */
 	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
 	weapon = equipped_item_by_slot_name(player, "weapon");
 	require(weapon);
@@ -128,10 +131,11 @@ static int test_ahw(void *state) {
 		eq(player->wt, player->wt_birth);
 		wt_sum += player->wt;
 	}
+	/* Sil-Q birth.c:248 rand_range(b_age, m_age); race.txt:118 I:21:15:45 */
 	eq(min_age, 15);
 	eq(max_age, 45);
 
-	/* Mean weight is 150 + 70 / 5 = 164; standard error is about 0.3 */
+	/* Sil-Q birth.c:252-255; mean weight is 150 + 70 / 5 = 164; standard error is about 0.3 */
 	require(wt_sum >= 2000 * 163 && wt_sum <= 2000 * 165);
 	ok;
 }
@@ -170,6 +174,7 @@ static int test_history_house(void *state) {
 
 	Rand_state_init(1);
 
+	/* Sil-Q birth.c:96-127 get_history_aux; history.txt:60-70, 215-226 */
 	/* Chart 3 is reached on a roll of 1-95 in chart 1 */
 	golden = count_golden("House of Finarfin", &named, &other);
 	require(named >= 1850 && named <= 1950);
@@ -202,6 +207,7 @@ static int test_random_name(void *state) {
 		if (len < min_len) min_len = len;
 		if (len > max_len) max_len = len;
 	}
+	/* Sil-Q randart.c:18-19 MIN_NAME_LEN 5, MAX_NAME_LEN 9 */
 	eq(min_len, 5);
 	eq(max_len, 9);
 	ok;
