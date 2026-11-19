@@ -324,6 +324,7 @@ struct history_entry {
 	struct history_chart *succ;
 	int isucc;
 	int roll;
+	char *house;	/**< Short name of the only house that can have this */
 	char *text;
 };
 

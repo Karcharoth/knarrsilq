@@ -1195,6 +1195,8 @@ static enum parser_error parse_history_chart(struct parser *p) {
 
 	e->isucc = parser_getint(p, "next");
 	e->roll = parser_getint(p, "roll");
+	if (parser_hasval(p, "house"))
+		e->house = string_make(parser_getsym(p, "house"));
 
 	e->next = c->entries;
 	c->entries = e;
@@ -1214,7 +1216,7 @@ static enum parser_error parse_history_phrase(struct parser *p) {
 static struct parser *init_parse_history(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
-	parser_reg(p, "chart uint chart int next int roll", parse_history_chart);
+	parser_reg(p, "chart uint chart int next int roll ?sym house", parse_history_chart);
 	parser_reg(p, "phrase str text", parse_history_phrase);
 	return p;
 }
@@ -1269,6 +1271,7 @@ static void cleanup_history(void)
 		while (e) {
 			next_e = e->next;
 			mem_free(e->text);
+			string_free(e->house);
 			mem_free(e);
 			e = next_e;
 		}

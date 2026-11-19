@@ -350,7 +350,7 @@ static struct player_race TEST_DATA test_race = {
 	},
 
 	.b_age = 14,
-	.m_age = 6,
+	.m_age = 20,
 
 	.base_hgt = 72,
 	.mod_hgt = 6,

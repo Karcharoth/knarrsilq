@@ -12,7 +12,8 @@
 
 # 'chart' lines give the number of the current chart, the number of the chart
 # that will be used next (or 0 if the last chart), a cutoff for choosing
-# the current line, and a 'house' field (only used for the Noldor).  If the
+# the current line, and an optional 'house' field (the short name of the only
+# house that can have that line; only used for the Noldor).  If the
 # first field in two chart lines is the same, the second usually should be as
 # well, to maintain consistent choices and end up with something readable.
 
@@ -55,8 +56,12 @@ phrase: of a bard
 chart:2:3:100
 phrase: of a prince
 
-chart:3:50:100:1
-phrase: from the house of
+chart:3:50:100:Feanor
+phrase: from the house of Feanor.
+chart:3:50:100:Fingolfin
+phrase: from the house of Fingolfin.
+chart:3:50:100:Finarfin
+phrase: from the house of Finarfin.
 
 
 # Sindar history
@@ -201,7 +206,7 @@ phrase: straight
 chart:51:52:100
 phrase: wavy
 
-chart:52:0:90:3
+chart:52:0:90:Finarfin
 phrase: golden hair, and a fair complexion.
 chart:52:0:70
 phrase: black hair, and a fair complexion.

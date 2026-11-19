@@ -237,18 +237,26 @@ char *get_history(struct history_chart *chart, struct player *p)
 
 	while (chart) {
 		int roll = randint1(100);
-		for (entry = chart->entries; entry; entry = entry->next)
-			if (roll <= entry->roll)
-				break;
+
+		/* Skip leading entries that belong to other houses */
+		entry = chart->entries;
+		while (entry && entry->house
+			   && !streq(entry->house, p->house->short_name)) {
+			entry = entry->next;
+		}
+
+		/* A house of another race (only while choosing) takes the first */
+		if (!entry) {
+			entry = chart->entries;
+		}
+
+		/* Find the entry for the roll */
+		while (entry && roll > entry->roll) {
+			entry = entry->next;
+		}
 		assert(entry);
 
 		res = string_append(res, entry->text);
-		/* Hack for Noldor houses */
-		if (strstr(entry->text, "house of") && streq(p->race->name, "Noldor")) {
-			res = string_append(res, " ");
-			res = string_append(res, p->house->short_name);
-			res = string_append(res, ".");
-		}
 		chart = entry->succ;
 	}
 
@@ -262,11 +270,15 @@ char *get_history(struct history_chart *chart, struct player *p)
 void get_ahw(struct player *p)
 {
 	/* Calculate the age */
-	p->age = p->race->b_age + randint1(p->race->m_age);
+	p->age = rand_range(p->race->b_age, p->race->m_age);
 
 	/* Calculate the height/weight */
 	p->ht = p->ht_birth = Rand_normal(p->race->base_hgt, p->race->mod_hgt);
-	p->wt = p->wt_birth = Rand_normal(p->race->base_wgt, p->race->mod_wgt);
+	p->wt = Rand_normal(p->race->base_wgt, p->race->mod_wgt);
+
+	/* Make weight a bit proportional to height */
+	p->wt += p->ht / 5;
+	p->wt_birth = p->wt;
 }
 
 
@@ -492,6 +504,8 @@ static void player_outfit(struct player *p)
 {
 	const struct start_item *si;
 	struct object *obj;
+	time_t present_time;
+	struct tm *date;
 
 	/* Currently carrying nothing */
 	p->upkeep->total_weight = 0;
@@ -508,6 +522,7 @@ static void player_outfit(struct player *p)
 		obj->number = num;
 		obj->origin = ORIGIN_BIRTH;
 		object_flavor_aware(p, obj);
+		object_know(obj);
 
 		/* Carry the item */
 		inven_carry(p, obj, true, false);
@@ -516,6 +531,22 @@ static void player_outfit(struct player *p)
 
 	/* Now try wielding everything */
 	wield_all(p);
+
+	/* Give a present to those who start between Christmas and New Year */
+	present_time = time(NULL);
+	date = localtime(&present_time);
+	if ((date->tm_mon == 11) && (date->tm_mday >= 25)) {
+		struct object_kind *kind = lookup_kind(TV_CHEST,
+			lookup_sval(TV_CHEST, "Finely wrapped present"));
+		assert(kind);
+
+		obj = object_new();
+		object_prep(obj, kind, 0, MINIMISE);
+		obj->number = 1;
+		obj->pval = -20;
+		obj->origin = ORIGIN_BIRTH;
+		inven_carry(p, obj, true, false);
+	}
 }
 
 
