@@ -398,7 +398,7 @@ static int distance_squared(struct loc grid1, struct loc grid2)
  * overhead it could be calculated only when something has changed (monster HP,
  * chance of escaping, etc)
  */
-static void monster_find_range(struct monster *mon)
+void monster_find_range(struct monster *mon)
 {
 	/* Monsters will run up to z_info->flee_range grids away */
 	int flee_range = z_info->flee_range;

@@ -272,7 +272,7 @@ type:environs
 desc:locks doors
 blind-desc:something
 obvious:0
-color:White
+color:Light Slate
 
 code:KILL_TRAP
 type:environs

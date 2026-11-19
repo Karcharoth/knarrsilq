@@ -1017,6 +1017,19 @@ static void place_monster_unique_friend(struct chunk *c, struct loc grid,
 }
 
 /**
+ * True if the square is a patch of sunlight that would otherwise count as
+ * empty.  Group members and escorts may be placed there, leaders may not.
+ */
+static bool square_isemptysunlight(struct chunk *c, struct loc grid)
+{
+	if (!square_in_bounds(c, grid)) return false;
+	if (square(c, grid)->feat != FEAT_SUNLIGHT) return false;
+	if (square(c, grid)->mon) return false;
+	if (square_isplayertrap(c, grid) || square_iswebbed(c, grid)) return false;
+	return !square_object(c, grid);
+}
+
+/**
  * Attempts to place a group of monsters of race `r_idx` around
  * the given location. The number of monsters to place is `total`.
  *
@@ -1056,7 +1069,8 @@ static bool place_new_monster_group(struct chunk *c, struct loc grid,
 			struct loc try = loc_sum(loc_list[n], ddgrid_ddd[i % 8]);
 
 			/* Walls and Monsters block flow */
-			if (!square_isempty(c, try)) continue;
+			if (!square_isempty(c, try) && !square_isemptysunlight(c, try))
+				continue;
 
 			/* Attempt to place another monster */
 			if (place_new_monster_one(c, try, race, sleep, false, group_info,
@@ -1148,7 +1162,8 @@ static void place_monster_escort(struct chunk *c, struct loc grid,
 			struct loc try = loc_sum(loc_list[n], ddgrid_ddd[i % 8]);
 
 			/* Walls and Monsters block flow */
-			if (!square_isempty(c, try)) continue;
+			if (!square_isempty(c, try) && !square_isemptysunlight(c, try))
+				continue;
 
 			/* Attempt to place another monster */
 			if (place_new_monster_one(c, try, escort_race, sleep, false, group_info,

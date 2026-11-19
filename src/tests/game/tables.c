@@ -9,6 +9,7 @@
 #include "generate.h"
 #include "init.h"
 #include "mon-init.h"
+#include "mon-move.h"
 #include "mon-spell.h"
 #include "mon-util.h"
 #include "monster.h"
@@ -39,6 +40,25 @@ static int test_constants(void *state) {
 	eq(z_info->fuel_mallorn, 100);
 	eq(z_info->fixed_exp, 50000);
 	eq(z_info->channeling_mult, 2);
+	ok;
+}
+
+static int test_flee_range(void *state) {
+	struct monster_race race = { 0 };
+	struct monster mon = { 0 };
+	struct player *saved = player;
+	struct player p = { 0 };
+
+	player = &p;
+	p.state.speed = 2;
+	mon.race = &race;
+	mon.mspeed = 2;
+	mon.cdis = 10;
+	mon.stance = STANCE_FLEEING;
+	monster_find_range(&mon);
+	player = saved;
+	eq(mon.min_range, 40);
+	eq(mon.best_range, 40);
 	ok;
 }
 
@@ -238,7 +258,7 @@ static int test_projections(void *state) {
 	null(projections[PROJ_NOTHING].desc);
 	require(streq(lock->type, "environs"));
 	require(streq(lock->desc, "locks doors"));
-	eq(lock->color, COLOUR_WHITE);
+	eq(lock->color, COLOUR_L_WHITE);
 	require(streq(web->type, "environs"));
 	eq(web->color, COLOUR_L_UMBER);
 
@@ -307,6 +327,7 @@ static int test_div_round(void *state) {
 const char *suite_name = "game/tables";
 struct test tests[] = {
 	{ "constants", test_constants },
+	{ "flee_range", test_flee_range },
 	{ "monster_spells", test_monster_spells },
 	{ "feanorian_lamp", test_feanorian_lamp },
 	{ "object_flags", test_object_flags },

@@ -48,6 +48,7 @@ enum monster_stance {
 
 int monster_entry_chance(struct chunk *c, struct monster *mon, struct loc grid,
 						 bool *bash);
+void monster_find_range(struct monster *mon);
 int adj_mon_count(struct loc grid);
 void tell_allies(struct monster *mon, int flag);
 bool multiply_monster(const struct monster *mon);
