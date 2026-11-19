@@ -743,6 +743,13 @@ static int mon_create_drop(struct chunk *c, struct monster *mon,
 				struct object_kind *kind;
 				assert(drop->art);
 				art = drop->art;
+
+				/* No fixed artefact drops in no-artefact games, except
+				 * the Iron Crown */
+				if (OPT(player, birth_no_artifacts) &&
+						(art != lookup_artifact_name("of Morgoth"))) {
+					continue;
+				}
 				kind = lookup_kind(art->tval, art->sval);
 				obj = mem_zalloc(sizeof(*obj));
 				object_prep(obj, kind, 100, RANDOMISE);
