@@ -44,7 +44,7 @@ INTERFACE, false)
 OP(auto_more,             "Automatically clear '-more-' prompts",
 INTERFACE, false)
 OP(mouse_movement,        "Allow mouse clicks to move the player",
-INTERFACE, true)
+INTERFACE, false)
 OP(display_hits,          "Display a mark when something gets hit",
 INTERFACE, true)
 OP(pickup_always,         "Always pickup items",
@@ -52,6 +52,8 @@ INTERFACE, false)
 OP(pickup_inven,          "Always pickup items matching inventory",
 INTERFACE, false)
 OP(show_flavors,          "Show flavors in object descriptions",
+INTERFACE, true)
+OP(know_monster_info,     "Know all monster info",
 INTERFACE, false)
 OP(cheat_peek,            "Debug: Peek into object creation",
 CHEAT, false)
@@ -103,8 +105,10 @@ OP(score_timestop,        "Score: Don't allow monsters to move",
 SCORE, false)
 OP(birth_discon_stairs,   "Disconnected stairs",
 BIRTH, false)
-OP(birth_force_descend,   "Force player descent (never make up stairs)",
+OP(birth_force_descend,   "Straight down (no up stairs until endgame)",
 BIRTH, false)
-OP(birth_no_artifacts,    "Restrict creation of artifacts",
+OP(birth_no_artifacts,    "No artefacts",
+BIRTH, false)
+OP(birth_fixed_exp,       "Fixed XP - gain 50K at start and nothing after",
 BIRTH, false)
 
