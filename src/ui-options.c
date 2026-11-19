@@ -205,6 +205,11 @@ static bool option_toggle_handle(struct menu *m, const ui_event *event,
 		return false;
 	}
 
+	/* Apply a change to fixed experience after each key */
+	if ((page == OP_BIRTH) && (m->flags != MN_NO_TAGS)) {
+		player_fixed_exp_reset(player);
+	}
+
 	if (next) {
 		m->cursor++;
 		m->cursor = (m->cursor + m->filter_count) % m->filter_count;
@@ -369,11 +374,6 @@ static void option_toggle_menu(const char *name, int page)
 	menu_select(m, 0, false);
 
 	screen_load();
-
-	/* Apply a change to fixed experience */
-	if (page == OPT_PAGE_BIRTH && m->flags != MN_NO_TAGS) {
-		player_fixed_exp_reset(player);
-	}
 
 	mem_free(m);
 }
