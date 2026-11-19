@@ -748,6 +748,11 @@ bool player_set_timed(struct player *p, int idx, int v, bool notify,
 			notify = true;
 		}
 
+		/* Falling to a lower active grade is always noticed */
+		if (new_grade->grade < current_grade->grade && v > 0) {
+			notify = true;
+		}
+
 		/* Always mention going up a grade, otherwise on request */
 		if (new_grade->grade > current_grade->grade) {
 			if ((timed_effects[idx].temp_resist != -1) &&

@@ -823,7 +823,9 @@ static int test_set_timed2(void *state) {
 						&& (e->grade < s->grade);
 					bool notified = (e->grade > s->grade) ?
 						true :
-						notify || e->down_msg || waking;
+						notify || e->down_msg || waking
+						|| (e->grade < s->grade
+						&& newv > 0);
 					bool result;
 
 					reset_event_counters(st,
@@ -906,11 +908,11 @@ static int test_set_timed2(void *state) {
 						bool notify = i < 2;
 						bool disturb = !(i % 2);
 						bool result;
+						bool waking = !s->next;
 
 						reset_event_counters(st,
 							timed_effects[TMD_STUN].msgt);
 						player->timed[TMD_STUN] = oldv;
-						bool waking = !s->next;
 						result = player_set_timed(
 							player, TMD_STUN,
 							newv, notify,
