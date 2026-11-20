@@ -305,6 +305,9 @@ static bool use_option_context_menu(struct menu *m, const ui_event *in,
 
 	screen_load();
 	if (refresh) {
+		if (page == OP_BIRTH) {
+			player_fixed_exp_reset(player);
+		}
 		menu_refresh(m, false);
 	}
 
