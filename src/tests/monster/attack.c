@@ -106,9 +106,36 @@ static int test_effects(void *state) {
 	ok;
 }
 
+static char blow_effect_entrance_name[16] = "ENTRANCE";
+static struct blow_effect test_blow_effect_entrance = {
+	.name = blow_effect_entrance_name,
+	.power = 0,
+	.eval = 0,
+	.next = NULL
+};
+
+/* No new trance while entranced or just woken: melee1.c:1457 */
+static int test_entrance(void *state) {
+	struct monster *m = state;
+	struct player *p = &test_player;
+
+	options_init_defaults(&p->opts);
+	p->upkeep = &test_player_upkeep;
+	if (!p->timed) p->timed = mem_zalloc(TMD_MAX * sizeof(int16_t));
+
+	p->timed[TMD_ENTRANCED] = 0;
+	p->upkeep->was_entranced = true;
+	take1(p, m, &test_blow_method, &test_blow_effect_entrance);
+	eq(p->timed[TMD_ENTRANCED], 0);
+
+	p->upkeep->was_entranced = false;
+	ok;
+}
+
 const char *suite_name = "monster/attack";
 struct test tests[] = {
 	{ "blows", test_blows },
 	{ "effects", test_effects },
+	{ "entrance", test_entrance },
 	{ NULL, NULL },
 };

@@ -553,8 +553,24 @@ static void melee_effect_handler_CONFUSE(melee_effect_handler_context_t *context
  */
 static void melee_effect_handler_ENTRANCE(melee_effect_handler_context_t *context)
 {
-	melee_effect_timed(context, TMD_ENTRANCED, damroll(4, 4),
-					   "You are unaffected!");
+	struct player *p = context->p;
+
+	/* Take damage */
+	if (monster_damage_target(context, false)) return;
+
+	/* No status effect if tried and failed to damage */
+	if (context->damage && !context->net_dam) return;
+
+	/* Must not already be entranced or entranced last round */
+	if (!player_inc_check(p, TMD_ENTRANCED, false)) {
+		msg("You are unaffected!");
+		context->obvious = true;
+	} else if (!p->timed[TMD_ENTRANCED] && !p->upkeep->was_entranced) {
+		if (player_inc_timed(p, TMD_ENTRANCED, damroll(4, 4), true, true,
+				false)) {
+			context->obvious = true;
+		}
+	}
 }
 
 /**
