@@ -12,17 +12,9 @@
 
 ?:[EQU $RACE Noldor]
 monster:<player>:0x83:0xCF
-?:[AND [EQU $RACE Noldor] [EQU $SEX Female]]
-monster:<player>:0x84:0xE6
 ?:[EQU $RACE Sindar]
 monster:<player>:0x83:0x97
-?:[AND [EQU $RACE Sindar] [EQU $SEX Female]]
-monster:<player>:0x84:0xB5
 ?:[EQU $RACE Naugrim]
 monster:<player>:0x83:0xAF
-?:[AND [EQU $RACE Naugrim] [EQU $SEX Female]]
-monster:<player>:0x84:0xCA
 ?:[EQU $RACE Edain]
 monster:<player>:0x83:0x87
-?:[AND [EQU $RACE Edain] [EQU $SEX Female]]
-monster:<player>:0x84:0xAE
