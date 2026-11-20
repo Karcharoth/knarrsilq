@@ -7,5 +7,6 @@ TESTPROGS += player/birth \
              player/pathfind \
              player/playerstat \
              player/race-house \
+             player/calc-combat \
              player/timed \
              player/timed-rules
