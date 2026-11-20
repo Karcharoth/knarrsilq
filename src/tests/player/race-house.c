@@ -100,7 +100,7 @@ static int test_outfit(void *state) {
 	int torches = 0;
 
 	/* Sil-Q race.txt:122-124 (E: lines), birth.c:576-650 player_outfit */
-	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
+	require(player_make_simple("Edain", "House of Beor", "Tester"));
 	weapon = equipped_item_by_slot_name(player, "weapon");
 	require(weapon);
 	require(streq(weapon->kind->name, "& Curved Sword~"));
@@ -216,13 +216,13 @@ static int test_random_name(void *state) {
 
 static int test_fixed_exp(void *state) {
 	/* Sil-Q birth.c:59-69, 76 get_start_xp; defines.h:382-383 */
-	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
+	require(player_make_simple("Edain", "House of Beor", "Tester"));
 	player->opts.opt[OPT_birth_fixed_exp] = false;
-	player_generate(player, NULL, NULL, NULL, true);
+	player_generate(player, NULL, NULL, true);
 	eq(player->exp, 5000);
 	eq(player->new_exp, 5000);
 	player->opts.opt[OPT_birth_fixed_exp] = true;
-	player_generate(player, NULL, NULL, NULL, true);
+	player_generate(player, NULL, NULL, true);
 	eq(player->exp, 50000);
 	eq(player->new_exp, 50000);
 	player->opts.opt[OPT_birth_fixed_exp] = false;
@@ -235,9 +235,9 @@ static int test_fixed_exp_reset(void *state) {
 
 	/* Sil-Q cmd4.c:7082-7098, 6849-6872; all eight skills (D-1) */
 	require(power);
-	require(player_make_simple("Edain", "House of Beor", NULL, "Tester"));
+	require(player_make_simple("Edain", "House of Beor", "Tester"));
 	player->opts.opt[OPT_birth_fixed_exp] = false;
-	player_generate(player, NULL, NULL, NULL, true);
+	player_generate(player, NULL, NULL, true);
 	for (i = 0; i < SKILL_MAX; i++) {
 		player->skill_base[i] = 2;
 	}

@@ -103,9 +103,6 @@ house.txt
   This file defines all characteristics of the houses within the player races.
   House-specific code is handled as for races.
 
-sex.txt
-  This file defines player sexes.
-
 ability.txt
   This file lists all the player abilities that can be learned for each player
   skill.  New or changed abilities will need code changes to make them do
@@ -208,7 +205,7 @@ ui_knowledge.txt
   Handles some configuration of the knowledge menus, namely the layout of
   the monster categories.
 
-female_entry_poetry.txt, male_entry_poetry.txt, throne_poetry.txt and
+entry_poetry.txt, throne_poetry.txt and
 ultimate_bug.txt define various messages that are given at special events in
 the game.
 

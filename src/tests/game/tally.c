@@ -80,7 +80,7 @@ static const struct tally_routine routines[] = {
 int setup_tests(void **state) {
 	set_file_paths();
 	init_angband();
-	if (!player_make_simple(NULL, NULL, NULL, "Tester")) {
+	if (!player_make_simple(NULL, NULL, "Tester")) {
 		cleanup_angband();
 		return 1;
 	}

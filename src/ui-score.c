@@ -96,7 +96,6 @@ void display_single_score(const struct high_score *score, int row, int place,
 	int aged, depth;
 	const char *user, *when;
 	struct player_house *h;
-	struct player_sex *s;
 	char out_val[160];
 	char tmp_val[160];
 	char aged_commas[15];
@@ -104,7 +103,6 @@ void display_single_score(const struct high_score *score, int row, int place,
 	bool alive = streq(score->how, "(alive and well)");
 
 	h = player_id2house(atoi(score->p_h));
-	s = player_id2sex(atoi(score->p_s));
 
 	/* Extract the gold and such */
 	for (user = score->uid; isspace((unsigned char)*user); user++)
@@ -183,8 +181,7 @@ void display_single_score(const struct high_score *score, int row, int place,
 			my_strcat(out_val, " and brought back the light of Valinor",
 					  sizeof(out_val));
 		} else {
-			my_strcat(out_val, format(" with %s task unfulfilled",
-									  s->possessive), sizeof(out_val));
+			my_strcat(out_val, " empty-handed", sizeof(out_val));
 		}
 	} else if (alive) {
 		/* If character is still alive, display differently */
@@ -198,8 +195,7 @@ void display_single_score(const struct high_score *score, int row, int place,
 
 		/* Mark those with a silmaril */
 		if (score->silmarils[0] > '0') {
-			my_strcat(out_val, format(" during %s escape", s->possessive),
-					  sizeof(out_val));
+			my_strcat(out_val, " during a daring escape", sizeof(out_val));
 		}
 	}
 

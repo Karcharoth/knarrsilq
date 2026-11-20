@@ -20,7 +20,6 @@
 # race:name
 # class:name
 # name:character_name
-# sex:character_sex
 # history:text
 # experience:unspent_amount
 # stats: ...
@@ -96,12 +95,6 @@
 # (Optional) Is the name to use for characters of this archetype.  If the name
 # is "*" or no "name:" line is given, a random name will be generated each
 # time a character of this archetype is created for the tutorial.
-
-# sex:character_sex
-# (Optional) Is the sex to use for characters of this archetype.  What follows
-# after the colon must be "Male", "Female", or "*".  If the sex is "*" or no
-# "sex:" line is given, a random sex will be generated each time a character
-# of this archetype is created for the tutorial.
 
 # experience:unspent_amount
 # (Optional) Is the amount of unused experience that character of this
@@ -647,7 +640,6 @@
 
 archetype:Laurilfea
 name:Laurilfea
-sex:Female
 race:Noldor
 house:Finarfin
 experience:1000

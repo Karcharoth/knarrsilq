@@ -579,11 +579,10 @@ xcopy $(MSBuildProjectDirectory)\lib\* $(OutDir)lib\ /DESY /exclude:$(MSBuildPro
     <Text Include="lib\gamedata\constants.txt" />
     <Text Include="lib\gamedata\drop.txt" />
     <Text Include="lib\gamedata\dungeon_profile.txt" />
-    <Text Include="lib\gamedata\female_entry_poetry.txt" />
+    <Text Include="lib\gamedata\entry_poetry.txt" />
     <Text Include="lib\gamedata\flavor.txt" />
     <Text Include="lib\gamedata\history.txt" />
     <Text Include="lib\gamedata\house.txt" />
-    <Text Include="lib\gamedata\male_entry_poetry.txt" />
     <Text Include="lib\gamedata\monster.txt" />
     <Text Include="lib\gamedata\monster_base.txt" />
     <Text Include="lib\gamedata\monster_spell.txt" />
@@ -596,7 +595,6 @@ xcopy $(MSBuildProjectDirectory)\lib\* $(OutDir)lib\ /DESY /exclude:$(MSBuildPro
     <Text Include="lib\gamedata\projection.txt" />
     <Text Include="lib\gamedata\pursuit.txt" />
     <Text Include="lib\gamedata\race.txt" />
-    <Text Include="lib\gamedata\sex.txt" />
     <Text Include="lib\gamedata\slay.txt" />
     <Text Include="lib\gamedata\song.txt" />
     <Text Include="lib\gamedata\special.txt" />

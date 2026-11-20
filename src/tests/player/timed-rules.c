@@ -42,7 +42,7 @@ int setup_tests(void **state) {
 #ifdef UNIX
 	create_needed_dirs();
 #endif
-	if (!player_make_simple(NULL, NULL, NULL, "Tester")) {
+	if (!player_make_simple(NULL, NULL, "Tester")) {
 		cleanup_angband();
 		return 1;
 	}

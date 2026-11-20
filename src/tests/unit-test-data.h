@@ -383,11 +383,6 @@ static struct player_house TEST_DATA test_house = {
 	},
 };
 
-static struct player_sex TEST_DATA test_sex = {
-	.name = "TestSex",
-	.possessive = "their",
-	.poetry_name = NULL
-};
 	
 static struct start_item TEST_DATA start_torch = {
 	.tval = TV_LIGHT,

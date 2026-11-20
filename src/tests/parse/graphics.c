@@ -44,7 +44,7 @@ static int test_prefs(void *state) {
 
 	/* This is a bit of a hack to ensure we have a player struct set up */
 	/* Otherwise race/class dependent graphics will crash */
-	eq(player_make_simple(NULL, NULL, NULL, NULL), true);
+	eq(player_make_simple(NULL, NULL, NULL), true);
 
 	event_add_handler(EVENT_MESSAGE, getmsg, &error);
 

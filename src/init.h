@@ -163,7 +163,6 @@ extern struct file_parser history_parser;
 extern struct file_parser house_parser;
 extern struct file_parser names_parser;
 extern struct file_parser race_parser;
-extern struct file_parser sex_parser;
 extern struct file_parser trap_parser;
 extern struct file_parser world_parser;
 

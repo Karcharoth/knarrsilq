@@ -36,7 +36,6 @@ struct player *player = NULL;
 
 struct player_body *bodies;
 struct player_race *races;
-struct player_sex *sexes;
 struct player_house *houses;
 struct player_ability *player_abilities;
 
@@ -70,15 +69,6 @@ struct player_house *player_house_from_count(int idx)
 		if ((h->race == race) && (h->hidx == min + idx)) return h;
 	}
 	return NULL;
-}
-
-struct player_sex *player_id2sex(guid id)
-{
-	struct player_sex *s;
-	for (s = sexes; s; s = s->next)
-		if (guid_eq(s->sidx, id))
-			break;
-	return s;
 }
 
 

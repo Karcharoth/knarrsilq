@@ -1281,7 +1281,7 @@
     <Text Include="lib\gamedata\dungeon_profile.txt">
       <Filter>Resource Files\gamedata</Filter>
     </Text>
-    <Text Include="lib\gamedata\female_entry_poetry.txt">
+    <Text Include="lib\gamedata\entry_poetry.txt">
       <Filter>Resource Files\gamedata</Filter>
     </Text>
     <Text Include="lib\gamedata\flavor.txt">
@@ -1291,9 +1291,6 @@
       <Filter>Resource Files\gamedata</Filter>
     </Text>
     <Text Include="lib\gamedata\house.txt">
-      <Filter>Resource Files\gamedata</Filter>
-    </Text>
-    <Text Include="lib\gamedata\male_entry_poetry.txt">
       <Filter>Resource Files\gamedata</Filter>
     </Text>
     <Text Include="lib\gamedata\monster.txt">
@@ -1330,9 +1327,6 @@
       <Filter>Resource Files\gamedata</Filter>
     </Text>
     <Text Include="lib\gamedata\race.txt">
-      <Filter>Resource Files\gamedata</Filter>
-    </Text>
-    <Text Include="lib\gamedata\sex.txt">
       <Filter>Resource Files\gamedata</Filter>
     </Text>
     <Text Include="lib\gamedata\slay.txt">

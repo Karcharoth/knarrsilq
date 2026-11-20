@@ -611,7 +611,6 @@ int rd_player(void)
 	uint8_t skill_max = 0;
 	uint16_t vault_max = 0;
 	char buf[80];
-	struct player_sex *s;
 	struct player_race *r;
 	struct player_house *h;
 
@@ -649,19 +648,8 @@ int rd_player(void)
 		return -1;
 	}
 
-	/* Player sex */
+	/* Former player sex, no longer used */
 	rd_string(buf, sizeof(buf));
-	for (s = sexes; s; s = s->next) {
-		if (streq(s->name, buf)) {
-			player->sex = s;
-			break;
-		}
-	}
-
-	if (!player->sex) {
-		note(format("Invalid player sex (%s).", buf));
-		return -1;
-	}
 
 	/* Numeric name suffix */
 	rd_byte(&player->opts.name_suffix);
