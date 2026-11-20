@@ -1037,7 +1037,6 @@ static struct attack_result make_ranged_throw(struct player *p,
 	/* Subtract the melee weapon's bonus (as we had already accounted for it) */
 	if (weapon) {
 		attack_mod -= weapon->att;
-		attack_mod -= blade_bonus(p, weapon);
 		attack_mod -= axe_bonus(p, weapon);
 		attack_mod -= polearm_bonus(p, weapon);
 	}
@@ -1048,7 +1047,6 @@ static struct attack_result make_ranged_throw(struct player *p,
 	}
 
 	/* Give people their weapon affinity bonuses if the weapon is thrown */
-	attack_mod += blade_bonus(p, obj);
 	attack_mod += axe_bonus(p, obj);
 	attack_mod += polearm_bonus(p, obj);
 

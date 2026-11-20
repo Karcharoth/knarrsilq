@@ -28,6 +28,7 @@
 #include "mon-calcs.h"
 #include "mon-msg.h"
 #include "mon-util.h"
+#include "obj-desc.h"
 #include "obj-gear.h"
 #include "obj-ignore.h"
 #include "obj-knowledge.h"
@@ -103,11 +104,6 @@ uint8_t total_mds(struct player *p, struct player_state *state,
 		} else {
 			divisor = 10;
 		}
-		
-		/* Apply the Momentum ability */
-		if (player_active_ability(p, "Momentum")) {
-			divisor /= 2;
-		}
 
 		/* Limit the strength sides bonus by weapon weight */
 		if ((str_to_mds > 0) && (str_to_mds > (obj->weight / divisor))) {
@@ -163,14 +159,16 @@ bool two_handed_melee(struct player *p)
 }
 
 /**
- * Bonus for certain races/houses (elves) using blades
+ * Bonus for certain races/houses (elves) using bows
  */
-int blade_bonus(struct player *p, const struct object *obj)
+int bow_bonus(struct player *p, const struct object *obj)
 {
-	if (player_has(p, PF_BLADE_PROFICIENCY) && (tval_is_sword(obj))) {
-		return 1;
-	}
-	return 0;
+	int bonus = 0;
+
+	if (!obj || (obj->tval != TV_BOW)) return 0;
+	if (pf_has(p->race->pflags, PF_BOW_PROFICIENCY)) bonus++;
+	if (pf_has(p->house->pflags, PF_BOW_PROFICIENCY)) bonus++;
+	return bonus;
 }
 
 /**
@@ -192,7 +190,7 @@ int polearm_bonus(struct player *p, const struct object *obj)
 {
 	if (player_active_ability(p, "Polearm Mastery") &&
 		of_has(obj->kind->flags, OF_POLEARM)) {
-		return 1;
+		return 2;
 	}
 	return 0;
 }
@@ -210,10 +208,6 @@ uint8_t total_ads(struct player *p, struct player_state *state,
 	int str_to_ads;
 	
 	str_to_ads = state->stat_use[STAT_STR];
-
-	if (player_active_ability(p, "Rapid Fire") && !single_shot) {
-		str_to_ads -= 3;
-	}
 
 	int_ads = obj->ds;
 
@@ -434,6 +428,7 @@ void calc_voice(struct player *p, bool update)
 
 		/* Save new limit */
 		p->msp = msp;
+		p->csp_frac = 0;
 
 		/* Update current sp */
 		p->csp = ((i * p->msp) / 100) + (((i * p->msp) % 100 >= 50) ? 1 : 0);
@@ -480,6 +475,7 @@ static void calc_hitpoints(struct player *p)
 
 		/* Save new limit */
 		p->mhp = mhp;
+		p->chp_frac = 0;
 
 		/* Update current hp */
 		p->chp = ((i * p->mhp) / 100) + (((i * p->mhp) % 100 >= 50) ? 1 : 0);
@@ -649,10 +645,12 @@ void calc_light(struct player *p)
 		if (!obj) continue;
 
 		/* Does this item glow? */
-		if (of_has(obj->flags, OF_LIGHT)) new_light++;
+		if (of_has(obj->flags, OF_LIGHT) && !tval_is_light(obj)) new_light++;
 
 		/* Does this item create darkness? */
-		if (of_has(obj->flags, OF_DARKNESS)) new_light--;
+		if (of_has(obj->flags, OF_DARKNESS) && !tval_is_light(obj)) {
+			new_light--;
+		}
 
 		/* Examine actual lights */
 		if (tval_is_light(obj)) {
@@ -662,6 +660,12 @@ void calc_light(struct player *p)
 			} else if (obj->timeout > 0) {
 				/* Torches or lanterns (with fuel) provide some light */
 				new_light += light_up_to(obj);
+			}
+
+			/* A light that is lit glows brighter */
+			if (of_has(obj->flags, OF_LIGHT) &&
+				(of_has(obj->flags, OF_NO_FUEL) || (obj->timeout > 0))) {
+				new_light++;
 			}
 		}
 	}
@@ -726,6 +730,28 @@ int weight_remaining(struct player *p)
 
 
 /**
+ * Count the skills in which the player has an active copy of a stat ability;
+ * an ability both held and granted by items counts once per skill
+ */
+static int stat_ability_bonus(struct player *p, const char *name)
+{
+	int skill, count = 0;
+
+	for (skill = 0; skill < SKILL_MAX; skill++) {
+		struct ability *ability = lookup_ability(skill, name);
+		struct ability *held, *granted;
+
+		if (!ability) continue;
+		held = locate_ability(p->abilities, ability);
+		granted = locate_ability(p->item_abilities, ability);
+		if ((held && held->active) || (granted && granted->active)) {
+			count++;
+		}
+	}
+	return count;
+}
+
+/**
  * Calculate the players current "state", taking into account
  * not only race/class intrinsics, but also objects being worn
  * and temporary spell effects.
@@ -760,10 +786,20 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	struct song *song;
 
 	/* Remove off-hand weapons if you cannot wield them */
-	if (!player_active_ability(p, "Two Weapon Fighting") &&
+	if (!known_only && !player_active_ability(p, "Two Weapon Fighting") &&
 		off && tval_is_weapon(off)) {
 		msg("You can no longer wield both weapons.");
-		inven_takeoff(off);
+		if (!handle_stickied_removal(p, off)) {
+			inven_takeoff(off);
+			p->upkeep->energy_use = z_info->move_energy;
+			p->previous_action[0] = ACTION_MISC;
+			if (weapon && of_has(weapon->kind->flags, OF_HAND_AND_A_HALF)) {
+				char o_name[80];
+
+				object_desc(o_name, sizeof(o_name), weapon, ODESC_BASE, p);
+				msg("You can now wield your %s more effectively.", o_name);
+			}
+		}
 	}
 
 	/* Reset */
@@ -866,10 +902,10 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	}
 
 	/* Ability stat boosts */
-	state->stat_misc_mod[STAT_STR] += player_active_ability(p, "Strength");
-	state->stat_misc_mod[STAT_DEX] += player_active_ability(p, "Dexterity");
-	state->stat_misc_mod[STAT_CON] += player_active_ability(p, "Constitution");
-	state->stat_misc_mod[STAT_GRA] += player_active_ability(p, "Grace");
+	state->stat_misc_mod[STAT_STR] += stat_ability_bonus(p, "Strength");
+	state->stat_misc_mod[STAT_DEX] += stat_ability_bonus(p, "Dexterity");
+	state->stat_misc_mod[STAT_CON] += stat_ability_bonus(p, "Constitution");
+	state->stat_misc_mod[STAT_GRA] += stat_ability_bonus(p, "Grace");
 
 	if (player_active_ability(p, "Strength in Adversity")) {
 		/* If <= 50% health, give a bonus to strength and grace */
@@ -888,9 +924,6 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	/* Ability skill modifications */
 	if (player_active_ability(p, "Rapid Attack")) {
 		state->skill_misc_mod[SKILL_MELEE] -= 3;
-	}
-	if (player_active_ability(p, "Rapid Fire")) {
-		state->skill_misc_mod[SKILL_ARCHERY] -= 3;
 	}
 	if (player_active_ability(p, "Poison Resistance")) {
 		state->el_info[ELEM_POIS].res_level += 1;
@@ -1055,14 +1088,17 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		state->ads = total_ads(p, state, launcher, false);
 	}
 
+	/* Archery bonus for matched bow type */
+	state->skill_misc_mod[SKILL_ARCHERY] += bow_bonus(p, launcher);
+
 	/* Analyze weapon */
 	if (weapon) {
 		/* Add the weapon's attack mod */
 		state->skill_equip_mod[SKILL_MELEE] += weapon->att;
 
 		/* Attack bonuses for matched weapon types */
-		state->skill_misc_mod[SKILL_MELEE] += blade_bonus(p, weapon)
-			+ axe_bonus(p, weapon) + polearm_bonus(p, weapon);
+		state->skill_misc_mod[SKILL_MELEE] += axe_bonus(p, weapon)
+			+ polearm_bonus(p, weapon);
 	}
 
 	/* Deal with the 'Versatility' ability */
@@ -1083,7 +1119,6 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		/* Remove main-hand specific bonuses */
 		if (weapon) {
 			state->offhand_mel_mod -= weapon->att
-				+ blade_bonus(p, weapon)
 				+ axe_bonus(p, weapon)
 				+ polearm_bonus(p, weapon);
 		}
@@ -1092,7 +1127,7 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		}
 
 		/* Add off-hand specific bonuses */
-		state->offhand_mel_mod += off->att + blade_bonus(p, off)
+		state->offhand_mel_mod += off->att
 			+ axe_bonus(p, off) + polearm_bonus(p, off) - 3;
 
 		state->mdd2 = total_mdd(p, off);
@@ -1116,7 +1151,7 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 
 	/* Compute bounds for the protection roll */
 	state->p_min = protection_roll(p, PROJ_HURT, true, MINIMISE);
-	state->p_max = protection_roll(p, PROJ_HURT, true, MINIMISE);
+	state->p_max = protection_roll(p, PROJ_HURT, true, MAXIMISE);
 
 	return;
 }
