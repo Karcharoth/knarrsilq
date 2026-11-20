@@ -69,7 +69,8 @@ bool knock_back(struct loc grid1, struct loc grid2)
             d = cycle[chome[dir_from_delta(ddy[dir], ddx[dir])] + mod];
             grid3 = loc_sum(grid2, ddgrid[d]);
             if (!square_iswall(cave, grid3) &&
-				(square_monster(cave, next) == NULL)) {
+				(square_monster(cave, grid3) == NULL) &&
+				!square_isplayer(cave, grid3)) {
                 knocked = true;
                 break;
             }
@@ -494,6 +495,16 @@ int stealth_melee_bonus(const struct monster *mon)
 }
 
 /**
+ * Is there a monster at the grid which counts as attacking the player?
+ */
+bool attacker_at(struct loc grid)
+{
+	struct monster *mon = square_monster(cave, grid);
+
+	return mon && !rf_has(mon->race->flags, RF_PEACEFUL);
+}
+
+/**
  * Give a bonus to attack the player depending on the number of adjacent
  * monsters.
  * This is +1 for monsters near the attacker or to the sides,
@@ -525,29 +536,29 @@ int overwhelming_att_mod(struct player *p, struct monster *mon)
 	/*                                         642 */
 	if (dy * dx == 0) {
 		/* Increase modifier for monsters engaged with the player... */
-		if (square_monster(cave, loc(px - dy + dx, py + dx + dy))) mod++;/* 2 */
-		if (square_monster(cave, loc(px + dy + dx, py - dx + dy))) mod++;/* 3 */
-		if (square_monster(cave, loc(px - dy     , py + dx     ))) mod++;/* 4 */
-		if (square_monster(cave, loc(px + dy     , py - dx     ))) mod++;/* 5 */
+		if (attacker_at(loc(px - dy + dx, py + dx + dy))) mod++;/* 2 */
+		if (attacker_at(loc(px + dy + dx, py - dx + dy))) mod++;/* 3 */
+		if (attacker_at(loc(px - dy     , py + dx     ))) mod++;/* 4 */
+		if (attacker_at(loc(px + dy     , py - dx     ))) mod++;/* 5 */
 		
 		/* ...especially if they are behind the player */
-		if (square_monster(cave, loc(px - dy - dx, py + dx - dy))) mod++;/* 6 */
-		if (square_monster(cave, loc(px + dy - dx, py - dx - dy))) mod++;/* 7 */
-		if (square_monster(cave, loc(px      - dx, py      - dy))) mod++;/* 8 */
+		if (attacker_at(loc(px - dy - dx, py + dx - dy))) mod += 2;/* 6 */
+		if (attacker_at(loc(px + dy - dx, py - dx - dy))) mod += 2;/* 7 */
+		if (attacker_at(loc(px      - dx, py      - dy))) mod += 2;/* 8 */
 	} else {
 		/* If monster in a diagonal direction   875 */
 		/*                                      6@3 */
 		/*                                      42M */
 		/* Increase modifier for monsters engaged with the player... */
-		if (square_monster(cave, loc(px     , py + dy))) mod++; /* 2 */
-		if (square_monster(cave, loc(px + dx, py     ))) mod++; /* 3 */
-		if (square_monster(cave, loc(px - dy, py + dx))) mod++; /* 4 */
-		if (square_monster(cave, loc(px + dy, py - dx))) mod++; /* 5 */
+		if (attacker_at(loc(px     , py + dy))) mod++; /* 2 */
+		if (attacker_at(loc(px + dx, py     ))) mod++; /* 3 */
+		if (attacker_at(loc(px - dy, py + dx))) mod++; /* 4 */
+		if (attacker_at(loc(px + dy, py - dx))) mod++; /* 5 */
 		
 		/* ...especially if they are behind the player */
-		if (square_monster(cave, loc(px     , py - dy))) mod++; /* 6 */
-		if (square_monster(cave, loc(px - dx, py     ))) mod++; /* 7 */
-		if (square_monster(cave, loc(px - dx, py - dy))) mod++; /* 8 */
+		if (attacker_at(loc(px     , py - dy))) mod += 2; /* 6 */
+		if (attacker_at(loc(px - dx, py     ))) mod += 2; /* 7 */
+		if (attacker_at(loc(px - dx, py - dy))) mod += 2; /* 8 */
 	}
 	
 	/* Adjust for crowd fighting ability */
@@ -627,12 +638,12 @@ int crit_bonus(struct player *p, int hit_result, int weight,
 	int crit_separation = 70;
 
 	/* When attacking a monster... */
-	if (race) {
+	if (race && race->level) {
 		/* Changes to melee criticals */
 		if (skill_type == SKILL_MELEE) {
 			/* Can have improved criticals for melee */
 			if (player_active_ability(p, "Finesse")) {
-				crit_separation -= 10;
+				crit_separation -= 20;
 			}
 
 			/* Can have improved criticals for melee with one handed weapons */
@@ -647,25 +658,13 @@ int crit_bonus(struct player *p, int hit_result, int weight,
 				crit_separation += 10;
 			}
 		}
-
-		/* Can have improved criticals for archery */
-		if ((skill_type == SKILL_ARCHERY) &&
-			player_active_ability(p, "Precision")) {
-			crit_separation -= 10;
-		}
-	} else {
-		/* When attacking the player... */
-		/* Resistance to criticals increases what they need for each bonus die*/
-		if (player_active_ability(p, "Critical Resistance")) {
-			crit_separation += (p->state.skill_use[SKILL_WILL] / 5) * 10;	
-		}
 	}
 
 	/* Note: the +4 in this calculation is for rounding purposes */
 	crit_bonus_dice = (hit_result * 10 + 4) / (crit_separation + weight);
 
 	/* When attacking a monster... */
-	if (race) {
+	if (race && race->level) {
 		/* Resistance to criticals doubles what you need for each bonus die */
 		if (rf_has(race->flags, RF_RES_CRIT)) {
 			crit_bonus_dice /= 2;
@@ -683,6 +682,15 @@ int crit_bonus(struct player *p, int hit_result, int weight,
 }
 
 /**
+ * Does Blocking double the shield's protection dice?  Not after a step.
+ */
+bool blocking_bonus_active(struct player *p)
+{
+	return player_active_ability(p, "Blocking") &&
+		!player_action_is_movement(p, 0);
+}
+
+/**
  * Roll the protection dice for all parts of the player's armour
  */
 int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect)
@@ -695,12 +703,7 @@ int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect)
 	
 	/* Things that always count: */
 	if (player_is_singing(p, staying)) {
-		int bonus = song_bonus(p, p->state.skill_use[SKILL_SONG], staying);
-		prt += damcalc(1, MAX(1, bonus), prot_aspect);
-	}
-	
-	if (player_active_ability(p, "Hardiness")) {
-		prt += damcalc(1, p->state.skill_use[SKILL_WILL] / 6, prot_aspect);
+		prt += damcalc(2, 2, prot_aspect);
 	}
 	
 	/* Armour: */
@@ -719,10 +722,7 @@ int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect)
 		/* Fire and cold and generic 'hurt' all check the shield */
 		if (slot_type_is(p, i, EQUIP_SHIELD)) {
 			if ((typ == PROJ_HURT) || (typ == PROJ_FIRE) || (typ == PROJ_COLD)){
-				if (player_active_ability(p, "Blocking") &&
-					(!melee || ((p->previous_action[0] == ACTION_STAND) ||
-								((p->previous_action[0] == ACTION_NOTHING) &&
-								 (p->previous_action[1] == ACTION_STAND))))) {
+				if (blocking_bonus_active(p)) {
 					mult = 2;
 				}
 				if (obj->pd > 0) {
@@ -740,7 +740,9 @@ int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect)
 
 	/* Heavy armour bonus */
 	if (player_active_ability(p, "Heavy Armour") && (typ == PROJ_HURT)) {
-		prt += damcalc(1, MIN(1, armour_weight / 150), prot_aspect);
+		if (armour_weight / 150 > 0) {
+			prt += damcalc(1, armour_weight / 150, prot_aspect);
+		}
 	}
 
 	return prt;

@@ -35,9 +35,11 @@ int total_player_evasion(struct player *p, struct monster *mon, bool archery);
 int total_monster_attack(struct player *p, struct monster *mon, int base);
 int total_monster_evasion(struct player *p, struct monster *mon, bool archery);
 int stealth_melee_bonus(const struct monster *mon);
+bool attacker_at(struct loc grid);
 int overwhelming_att_mod(struct player *p, struct monster *mon);
 int crit_bonus(struct player *p, int hit_result, int weight,
 			   const struct monster_race *race, int skill_type, bool thrown);
+bool blocking_bonus_active(struct player *p);
 int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect);
 
 #endif /* !COMBAT_H */

@@ -315,12 +315,20 @@ static void prt_arc(int row, int col)
 static void prt_evn(int row, int col)
 {
 	char buf[32];
+	int p_min = protection_roll(player, PROJ_HURT, true, MINIMISE);
+	int p_max = protection_roll(player, PROJ_HURT, true, MAXIMISE);
+	struct object *shield = equipped_item_by_slot_name(player, "arm");
+
+	/* Leave out the extra shield dice from Blocking */
+	if (blocking_bonus_active(player) && shield && tval_is_shield(shield) &&
+		(shield->pd > 0)) {
+		p_min -= shield->pd;
+		p_max -= shield->pd * shield->ps;
+	}
 
 	/* Total Armor */
 	strnfmt(buf, sizeof(buf), "[%+d,%d-%d]",
-			player->state.skill_use[SKILL_EVASION],
-			protection_roll(player, PROJ_HURT, true, MINIMISE),
-			protection_roll(player, PROJ_HURT, true, MAXIMISE));
+			player->state.skill_use[SKILL_EVASION], p_min, p_max);
 	c_put_str(COLOUR_SLATE, format("%12s", buf), row, col);
 }
 
