@@ -979,8 +979,8 @@ static bool do_cmd_tunnel_aux(struct loc grid)
             ident(digger);
 
             /* Full object description */
-            object_desc(o_full_name, sizeof(o_full_name), digger, ODESC_FULL,
-				player);
+            object_desc(o_full_name, sizeof(o_full_name), digger,
+				ODESC_PREFIX | ODESC_FULL, player);
 
             /* Print the messages */
             msg("You notice that your %s is especially suited to tunneling.", o_short_name);

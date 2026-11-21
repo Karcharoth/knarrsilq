@@ -558,11 +558,12 @@ bool make_attack_normal(struct monster *mon, struct player *p)
 		if ((p->state.flags[OF_COWARDICE] > 0) &&
 			(net_dam >= 10 / p->state.flags[OF_COWARDICE])) {
 			if (!p->timed[TMD_AFRAID]) {
-				if (player_inc_timed(p, TMD_AFRAID, damroll(10, 4), true, true, true)) {
-					player_inc_timed(p, TMD_FAST, damroll(5, 4), true, true, true);
-
+				if (player_inc_check(p, TMD_AFRAID, false)) {
 					/* Give the player a chance to identify what's causing it */
 					ident_cowardice(p);
+
+					player_inc_timed(p, TMD_AFRAID, damroll(10, 4), true, true, false);
+					player_inc_timed(p, TMD_FAST, damroll(5, 4), true, true, true);
 				}
 			}
 		}

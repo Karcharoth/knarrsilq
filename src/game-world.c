@@ -723,7 +723,7 @@ static void process_player_post_energy_use_cleanup(void)
 	update_scent();
 
 	/* Possibly identify passive abilities every so often*/
-	if (one_in_(500)) {
+	if (one_in_(100)) {
 		ident_passive(player);
 	}
 

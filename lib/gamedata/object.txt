@@ -1797,6 +1797,7 @@ expr:B:PLAYER_MAX_HP: / 2
 effect:NOURISH:INC_BY
 dice:100
 flags:GOOD
+msg:It has the bitter taste of medicine.
 desc:It heals all cuts and restores half your health.
 
 
@@ -2263,6 +2264,7 @@ effect:HEAL_HP
 dice:m50
 effect:NOURISH:INC_BY
 dice:250
+msg:It has the bitter taste of medicine.
 desc:It cures all cuts and heals half of your health.
 desc:  Herbs provide nourishment for
 desc: about 250 turns under normal conditions. 

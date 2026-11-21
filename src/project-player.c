@@ -89,19 +89,25 @@ typedef void (*project_player_handler_f)(project_player_handler_context_t *);
 static void project_player_handler_FIRE(project_player_handler_context_t *context)
 {
 	inven_damage(player, PROJ_FIRE, MIN(context->dam / 10, 3), 1);
-	ident_element(player, ELEM_FIRE);
+	if (context->dam > 0) {
+		ident_element(player, ELEM_FIRE);
+	}
 }
 
 static void project_player_handler_COLD(project_player_handler_context_t *context)
 {
 	inven_damage(player, PROJ_FIRE, MIN(context->dam / 10, 3), 1);
-	ident_element(player, ELEM_COLD);
+	if (context->dam > 0) {
+		ident_element(player, ELEM_COLD);
+	}
 }
 
 static void project_player_handler_POIS(project_player_handler_context_t *context)
 {
 	player_inc_timed(player, TMD_POISONED, context->dam, true, true, false);
-	ident_element(player, ELEM_POIS);
+	if (context->dam > 0) {
+		ident_element(player, ELEM_POIS);
+	}
 }
 
 static void project_player_handler_DARK(project_player_handler_context_t *context)

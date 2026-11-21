@@ -29,6 +29,7 @@
 #include "monster.h"
 #include "obj-desc.h"
 #include "obj-gear.h"
+#include "obj-knowledge.h"
 #include "obj-make.h"
 #include "obj-pile.h"
 #include "obj-tval.h"
@@ -70,6 +71,10 @@ void drop_iron_crown(struct monster *mon, const char *message)
 		obj->artifact = crown;
 		copy_artifact_data(obj, obj->artifact);
 		mark_artifact_created(crown, true);
+
+		/* The crown is dropped identified */
+		object_flavor_aware(player, obj);
+		object_know(obj);
 
 		/* Set origin details */
 		obj->origin = ORIGIN_DROP;

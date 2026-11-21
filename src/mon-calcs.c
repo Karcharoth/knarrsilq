@@ -778,7 +778,7 @@ void update_mon(struct monster *mon, struct chunk *c, bool full)
 
 	/* Check encounters with monsters (must be visible and in line of sight) */
 	if (monster_is_visible(mon) && !mon->encountered &&
-		square_isseen(c, mon->grid) && (lore->psights < SHRT_MAX)) {
+		square_isview(c, mon->grid) && (lore->psights < SHRT_MAX)) {
 		int new_exp = adjusted_mon_exp(race, false);
 
 		/* Gain experience for encounter */

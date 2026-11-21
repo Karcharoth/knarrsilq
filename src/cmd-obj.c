@@ -911,6 +911,9 @@ static void refill_lamp(struct object *lamp, struct object *obj)
 
 	/* Redraw stuff */
 	player->upkeep->redraw |= (PR_EQUIP);
+
+	/* Get another chance to identify the light */
+	ident_on_wield(player, lamp);
 }
 
 static void combine_torches(struct object *torch, struct object *obj)
@@ -954,6 +957,9 @@ static void combine_torches(struct object *torch, struct object *obj)
 
 	/* Redraw stuff */
 	player->upkeep->redraw |= (PR_EQUIP | PR_INVEN);
+
+	/* Get another chance to identify the light */
+	ident_on_wield(player, torch);
 }
 
 

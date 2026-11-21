@@ -189,6 +189,9 @@ static void check_experience(struct player *p)
  */
 void player_exp_gain(struct player *p, int32_t amount)
 {
+	/* No experience is gained with the fixed experience option */
+	if (OPT(p, birth_fixed_exp)) return;
+
 	/* Gain some experience */
 	p->exp += amount;
 	p->new_exp += amount;

@@ -8,5 +8,6 @@ TESTPROGS += player/birth \
              player/playerstat \
              player/race-house \
              player/calc-combat \
+             player/exp-ident \
              player/timed \
              player/timed-rules

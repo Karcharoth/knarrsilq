@@ -413,7 +413,8 @@ bool player_radiates(struct player *p)
 			char full_name[80];
 			object_desc(short_name, sizeof(short_name), boots, ODESC_BASE, p);
 			object_know(boots);
-			object_desc(full_name, sizeof(full_name), boots, ODESC_FULL, p);
+			object_desc(full_name, sizeof(full_name), boots,
+				ODESC_PREFIX | ODESC_FULL, p);
 			msg("Your footsteps leave a trail of light!");
 			msg("You recognize your %s to be %s", short_name, full_name);
 		}

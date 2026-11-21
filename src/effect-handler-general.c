@@ -708,6 +708,7 @@ bool effect_handler_IDENTIFY(effect_handler_context_t *context)
 	const char *q, *s;
 	int itemmode = (USE_EQUIP | USE_INVEN | USE_QUIVER | USE_FLOOR);
 	bool used = false;
+	char o_name[80];
 
 	context->ident = true;
 
@@ -724,6 +725,23 @@ bool effect_handler_IDENTIFY(effect_handler_context_t *context)
 
 	/* Identify the object */
 	ident(obj);
+
+	/* Describe it */
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL,
+		player);
+	if (object_is_equipped(player->body, obj) ||
+		object_is_in_quiver(player, obj)) {
+		char where[80];
+
+		my_strcpy(where, equip_describe(player,
+			equipped_item_slot(player->body, obj)), sizeof(where));
+		my_strcap(where);
+		msg("%s: %s (%c).", where, o_name, gear_to_label(player, obj));
+	} else if (object_is_carried(player, obj)) {
+		msg("In your pack: %s (%c).", o_name, gear_to_label(player, obj));
+	} else {
+		msg("On the ground: %s.", o_name);
+	}
 
 	return true;
 }

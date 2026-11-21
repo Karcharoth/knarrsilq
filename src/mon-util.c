@@ -652,6 +652,11 @@ int32_t adjusted_mon_exp(const struct monster_race *race, bool kill)
 		} else {
 			exp = (mexp) / (lore->pkills + 1);
 		}
+
+		/* Peaceful monsters give no experience for being killed */
+		if (rf_has(race->flags, RF_PEACEFUL)) {
+			exp = 0;
+		}
 	} else {
 		if (rf_has(race->flags, RF_UNIQUE)) {
 			exp = mexp;
@@ -757,6 +762,13 @@ static int mon_create_drop(struct chunk *c, struct monster *mon,
 				copy_artifact_data(obj, obj->artifact);
 				mark_artifact_created(art, true);
 				pseudo_id(obj);
+
+				/* Morgoth's hammer and crown are dropped identified */
+				if ((art == lookup_artifact_name("'Grond'")) ||
+					(art == lookup_artifact_name("of Morgoth"))) {
+					object_flavor_aware(player, obj);
+					object_know(obj);
+				}
 			}
 
 			/* Skip if the object couldn't be created. */

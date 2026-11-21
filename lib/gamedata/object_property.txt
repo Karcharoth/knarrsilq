@@ -185,7 +185,7 @@ smith-cat:sustain
 smith-difficulty:3
 smith-cost:STR:1
 smith-exclude-base:yes
-msg:Your {name} glows.
+msg:Your {name} sustains your strength.
 
 name:sustain dexterity
 type:flag
@@ -196,7 +196,7 @@ smith-cat:sustain
 smith-difficulty:3
 smith-cost:DEX:1
 smith-exclude-base:yes
-msg:Your {name} glows.
+msg:Your {name} sustains your dexterity.
 
 name:sustain constitution
 type:flag
@@ -207,7 +207,7 @@ smith-cat:sustain
 smith-difficulty:3
 smith-cost:CON:1
 smith-exclude-base:yes
-msg:Your {name} glows.
+msg:Your {name} sustains your constitution.
 
 name:sustain grace
 type:flag
@@ -218,7 +218,7 @@ smith-cat:sustain
 smith-difficulty:3
 smith-cost:GRA:1
 smith-exclude-base:yes
-msg:Your {name} glows.
+msg:Your {name} sustains your grace.
 
 name:protection from fear
 type:flag

@@ -1434,11 +1434,10 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 		if (bow && !object_is_known(bow) && noticed_radiance) {
 			char o_full_name[80];
 			char o_short_name[80];
-			object_desc(o_short_name, sizeof(o_short_name), obj, ODESC_BASE, p);
+			object_desc(o_short_name, sizeof(o_short_name), bow, ODESC_BASE, p);
 			object_know(bow);
-			object_desc(o_full_name, sizeof(o_full_name), obj,
-				ODESC_PREFIX | ODESC_FULL | ODESC_ALTNUM |
-				(1 << 16), p);
+			object_desc(o_full_name, sizeof(o_full_name), bow,
+				ODESC_PREFIX | ODESC_FULL, p);
 			msg("The arrow leaves behind a trail of light!");
 			msg("You recognize your %s to be %s", o_short_name, o_full_name);
 		}

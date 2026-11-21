@@ -289,7 +289,9 @@ static void melee_effect_elemental(melee_effect_handler_context_t *context,
 			minus_ac(context->p);
 		}
 		inven_damage(context->p, type, MIN((context->net_dam / 10) + 1, 3), res);
-		ident_element(context->p, type);
+		if (context->net_dam > 0) {
+			ident_element(context->p, type);
+		}
 	}
 }
 
@@ -454,7 +456,6 @@ static void melee_effect_handler_DARK(melee_effect_handler_context_t *context)
 	
 	/* Take damage */
 	(void) monster_damage_target(context, true);
-	ident_element(context->p, PROJ_DARK);
 }
 
 /**
@@ -502,7 +503,9 @@ static void melee_effect_handler_POISON(melee_effect_handler_context_t *context)
 	if (player_inc_timed(context->p, TMD_POISONED, context->damage, true,
 			true, true))
 		context->obvious = true;
-	ident_element(context->p, PROJ_POIS);
+	if (context->net_dam > 0) {
+		ident_element(context->p, PROJ_POIS);
+	}
 }
 
 /**

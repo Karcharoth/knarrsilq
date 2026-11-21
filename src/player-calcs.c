@@ -1246,8 +1246,6 @@ static void update_bonuses(struct player *p)
 		}
 	}
 
-	/* Propagate knowledge */
-	update_player_object_knowledge(p);
 	if (player_active_ability(p, "Lore-Keeper")) {
 		pseudo_id_everything();
 	}
@@ -1369,6 +1367,9 @@ void notice_stuff(struct player *p)
  */
 void update_stuff(struct player *p)
 {
+	/* Propagate knowledge of seen and carried objects, always */
+	update_player_object_knowledge(p);
+
 	/* Update stuff */
 	if (!p->upkeep->update) return;
 

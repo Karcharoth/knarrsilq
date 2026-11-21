@@ -67,7 +67,7 @@ static void mod_message(struct object *obj, int mod)
 			if (obj->modifiers[OBJ_MOD_STR] > 0)
 				msg("You feel stronger.");
 			else if (obj->modifiers[OBJ_MOD_STR] < 0)
-				msg("You feel less strong");
+				msg("You feel less strong.");
 			break;
 		case OBJ_MOD_DEX:
 			if (obj->modifiers[OBJ_MOD_DEX] > 0)
@@ -77,7 +77,7 @@ static void mod_message(struct object *obj, int mod)
 			break;
 		case OBJ_MOD_CON:
 			if (obj->modifiers[OBJ_MOD_CON] > 0)
-				msg("You feel mmore resilient.");
+				msg("You feel more resilient.");
 			else if (obj->modifiers[OBJ_MOD_CON] < 0)
 				msg("You feel less resilient.");
 			break;
@@ -199,9 +199,11 @@ void object_flavor_aware(struct player *p, struct object *obj)
 	/* Quit if no dungeon yet */
 	if (!cave) return;
 
-	/* Gain experience for identification */
-	player_exp_gain(p, new_exp);
-	p->ident_exp += new_exp;
+	/* Gain experience for identification, unless leaving the level */
+	if (!p->upkeep->generate_level) {
+		player_exp_gain(p, new_exp);
+		p->ident_exp += new_exp;
+	}
 
 	/* Some objects change tile on awareness, so update display for all
 	 * floor objects of this kind */
@@ -261,8 +263,9 @@ static void player_know_object(struct player *p, struct object *obj)
 		ident(obj);
 	}
 
-	/* Mark new identified artefacts/specials and gain experience for them */
-	if (object_is_known(obj)) {
+	/* Mark new identified artefacts/specials and gain experience for them,
+	 * unless leaving the level */
+	if (object_is_known(obj) && !p->upkeep->generate_level) {
 		int new_exp = 100;
 		if (obj->artifact) {
 			const struct artifact *art = obj->artifact;
@@ -483,9 +486,6 @@ void object_know(struct object *obj)
 	/* The object is not "sensed" */
 	obj->notice &= ~(OBJ_NOTICE_SENSE);
 
-	/* Clear the "Empty" info */
-	obj->notice &= ~(OBJ_NOTICE_EMPTY);
-
 	/* Now we know about the item */
 	obj->notice |= (OBJ_NOTICE_KNOWN);
 }
@@ -511,12 +511,59 @@ void ident(struct object *obj)
 	return;
 }
 
+/**
+ * Check whether an object kind has a modifier.
+ */
+static bool kind_has_modifier(const struct object_kind *kind, int mod)
+{
+	const random_value *v = &kind->modifiers[mod];
+
+	return v->base || v->dice || v->sides || v->m_bonus;
+}
+
+/**
+ * Find the first stat or skill modifier an object has, in the order that
+ * wield identification checks them; for specials and artefacts, modifiers
+ * of the base kind are ignored.
+ *
+ * \param obj is the object
+ * \return the modifier index, or -1 if there is none
+ */
+static int wield_modifier(const struct object *obj)
+{
+	static const int mods[] = {
+		OBJ_MOD_DAMAGE_SIDES, OBJ_MOD_STR, OBJ_MOD_DEX, OBJ_MOD_CON,
+		OBJ_MOD_GRA, OBJ_MOD_MELEE, OBJ_MOD_ARCHERY, OBJ_MOD_STEALTH,
+		OBJ_MOD_PERCEPTION, OBJ_MOD_WILL, OBJ_MOD_SMITHING, OBJ_MOD_SONG
+	};
+	size_t i;
+
+	for (i = 0; i < N_ELEMENTS(mods); i++) {
+		int mod = mods[i];
+		bool has;
+
+		if (obj->artifact) {
+			has = obj->artifact->modifiers[mod] &&
+				!kind_has_modifier(obj->kind, mod);
+		} else if (obj->ego) {
+			has = obj->ego->modifiers[mod] &&
+				!kind_has_modifier(obj->kind, mod);
+		} else {
+			has = obj->modifiers[mod] ||
+				kind_has_modifier(obj->kind, mod);
+		}
+		if (has) return mod;
+	}
+	return -1;
+}
+
 void ident_on_wield(struct player *p, struct object *obj)
 {
 	bool notice = false;
 	char o_name[80];
 	struct object_kind *kind = obj->kind;
 	bitflag flags[OF_SIZE];
+	int mod;
 
 	/* Get the flags */
 	of_copy(flags, obj->flags);
@@ -548,12 +595,22 @@ void ident_on_wield(struct player *p, struct object *obj)
 		notice = true;
 	}
 
+	/* Tunnelling, accuracy and cumbersomeness are unambiguous */
+	if (obj->modifiers[OBJ_MOD_TUNNEL] ||
+		of_has(obj->flags, OF_ACCURATE) ||
+		of_has(obj->flags, OF_CUMBERSOME)) {
+		notice = true;
+	}
+
 	if (obj->artifact || obj->ego) {
 		/* For special items and artefacts, we need to ignore the flags that
 		 * are basic to the object type and focus on the special/artefact ones.
 		 * We can do this by subtracting out the basic flags */
 		of_diff(flags, kind->flags);
 	}
+
+	/* The first stat or skill modifier the item has */
+	mod = wield_modifier(obj);
 
 	/* Identify noticed flags */
 	if (of_has(flags, OF_DARKNESS)) {
@@ -570,48 +627,36 @@ void ident_on_wield(struct player *p, struct object *obj)
 	} else if (of_has(flags, OF_SPEED)) {
 		notice = true;
 		msg("It speeds your movement.");
-	}
-
-	/* Identify noticed mods */
-	if (!notice) {
-		int i;
-		for (i = 0; i < OBJ_MOD_MAX; i++) {
-			/* Can identify <+0> items if you already know the flavour */
-			if (kind->flavor && object_flavor_is_aware(obj) &&
-				randcalc_varies(kind->modifiers[i])) {
-				notice = true;
-				break;
-			} else if (obj->modifiers[i] != 0) {
-				mod_message(obj, i);
-				notice = true;
-				break;
-			}
+	} else if (mod >= 0) {
+		/* Can identify <+0> items if you already know the flavour */
+		if (kind->flavor && object_flavor_is_aware(obj)) {
+			notice = true;
+		} else if (obj->modifiers[mod] != 0) {
+			notice = true;
+			mod_message(obj, mod);
 		}
-	}
-				
-
-	/* Identify the special item types that grant abilities */
-	if (!notice && obj->ego) {
+	} else if (kind->abilities) {
+		/* Identify the item types that grant abilities */
+		notice = true;
+		msg("You have gained the ability '%s'.", kind->abilities->name);
+	} else if (obj->ego) {
+		/* Identify the special item types that grant abilities */
 		struct ego_item *ego = obj->ego;
 
 		if (ego->abilities) {
 			notice = true;
 			msg("You have gained the ability '%s'.", ego->abilities->name);
 		}
-	}
-
-	/* Identify the artefacts that grant abilities */
-	if (!notice && obj->artifact) {
+	} else if (obj->artifact) {
+		/* Identify the artefacts that grant abilities */
 		struct artifact *art = (struct artifact *) obj->artifact;
 
 		if (art->abilities) {
 			notice = true;
 			msg("You have gained the ability '%s'.", art->abilities->name);
 		}
-	}
-
-    /* Can identify <+0> items if you already know the flavour */
-	if (!notice && kind->flavor) {
+	} else if (kind->flavor) {
+		/* Can identify <+0> items if you already know the flavour */
 		if (object_flavor_is_aware(obj)) {
 			notice = true;
 		} else if (obj->att > 0) {
@@ -1033,7 +1078,8 @@ void ident_bow_arrow_by_use(struct object *bow, struct object *arrows,
 	object_desc(b_short_name, sizeof(b_short_name), bow, ODESC_BASE, p);
 	object_desc(a_short_name, sizeof(a_short_name), arrows, ODESC_BASE, p);
 
-	if (arrow_flag || arrow_brand || arrow_slay) {
+	if (!object_is_known(arrows) &&
+		(arrow_flag || arrow_brand || arrow_slay)) {
 		/* Identify the arrows */
 		ident(arrows);
 
@@ -1042,6 +1088,10 @@ void ident_bow_arrow_by_use(struct object *bow, struct object *arrows,
 			ODESC_PREFIX | ODESC_FULL | ODESC_ALTNUM | (1 << 16),
 			p);
 
+		/* A slay or brand takes precedence over sharpness */
+		if (arrow_brand || arrow_slay) {
+			arrow_flag = 0;
+		}
 		slay_desc(slay_description, sizeof(slay_description), arrow_flag,
 				  arrow_brand, m_name);
 
@@ -1052,7 +1102,7 @@ void ident_bow_arrow_by_use(struct object *bow, struct object *arrows,
 		return;
 	}
 
-	if (bow_brand || bow_slay) {
+	if (!object_is_known(bow) && (bow_brand || bow_slay)) {
 		/* Identify the bow */
 		ident(bow);
 
