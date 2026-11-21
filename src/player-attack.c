@@ -903,6 +903,29 @@ void attacks_of_opportunity(struct player *p, struct loc safe)
 }
 
 /**
+ * Identification noticed by a shot, made after the hit has been described.
+ */
+static struct {
+	bool pending;
+	char m_name[80];
+	int bow_brand, bow_slay, arrow_flag, arrow_brand, arrow_slay;
+} shot_ident;
+
+/**
+ * Make any identification noticed by the last shot.
+ */
+static void shot_ident_apply(struct player *p, struct object *ammo)
+{
+	struct object *bow = equipped_item_by_slot_name(p, "shooting");
+
+	if (!shot_ident.pending) return;
+	shot_ident.pending = false;
+	ident_bow_arrow_by_use(bow, ammo, shot_ident.m_name, shot_ident.bow_brand,
+		shot_ident.bow_slay, shot_ident.arrow_flag, shot_ident.arrow_brand,
+		shot_ident.arrow_slay, p);
+}
+
+/**
  * Helper function used with ranged_helper by do_cmd_fire.
  */
 static struct attack_result make_ranged_shot(struct player *p,
@@ -1002,8 +1025,13 @@ static struct attack_result make_ranged_shot(struct player *p,
 	monster_desc(m_name, sizeof(m_name), mon, MDESC_DEFAULT);
 
 	if (!object_is_known(ammo) || !object_is_known(bow)) {
-		ident_bow_arrow_by_use(bow, ammo, m_name, bow_brand, bow_slay,
-							   arrow_flag, arrow_brand, arrow_slay, p);
+		shot_ident.pending = true;
+		my_strcpy(shot_ident.m_name, m_name, sizeof(shot_ident.m_name));
+		shot_ident.bow_brand = bow_brand;
+		shot_ident.bow_slay = bow_slay;
+		shot_ident.arrow_flag = arrow_flag;
+		shot_ident.arrow_brand = arrow_brand;
+		shot_ident.arrow_slay = arrow_slay;
 	}
 
 	event_signal_combat_damage(EVENT_COMBAT_DAMAGE, total_dd, total_ds,
@@ -1242,7 +1270,9 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 			}
 
 			/* If the bow has 'radiance', light the square being passed over */
-			noticed_radiance = radiance && do_radiance(p, grid);
+			if (radiance && do_radiance(p, grid)) {
+				noticed_radiance = true;
+			}
 
 			/* Tell the UI to display the missile */
 			event_signal_missile(EVENT_MISSILE, obj, see, grid.y, grid.x);
@@ -1324,6 +1354,9 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 								 m_name, punct);
 						}
 					}
+
+					/* Identify anything the shot revealed */
+					shot_ident_apply(p, obj);
 
 					/* Special effects sometimes reveal the kind of potion*/
 					if (is_potion) {

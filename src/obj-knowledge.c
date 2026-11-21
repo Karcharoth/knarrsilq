@@ -1076,7 +1076,8 @@ void ident_bow_arrow_by_use(struct object *bow, struct object *arrows,
 
 	/* Short, pre-identification bow and arrow description */
 	object_desc(b_short_name, sizeof(b_short_name), bow, ODESC_BASE, p);
-	object_desc(a_short_name, sizeof(a_short_name), arrows, ODESC_BASE, p);
+	object_desc(a_short_name, sizeof(a_short_name), arrows,
+		ODESC_BASE | ODESC_ALTNUM | (1 << 16), p);
 
 	if (!object_is_known(arrows) &&
 		(arrow_flag || arrow_brand || arrow_slay)) {
