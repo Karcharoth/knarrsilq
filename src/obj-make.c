@@ -187,9 +187,9 @@ static void alloc_init_egos(void) {
 			/* Load the entry */
 			alloc_ego_table[z].index = i;
 			alloc_ego_table[z].level = min_level;			/* Unused */
-			alloc_ego_table[z].prob1 = ego->rarity;
-			alloc_ego_table[z].prob2 = ego->rarity;
-			alloc_ego_table[z].prob3 = ego->rarity;
+			alloc_ego_table[z].prob1 = 100 / ego->rarity;
+			alloc_ego_table[z].prob2 = 100 / ego->rarity;
+			alloc_ego_table[z].prob3 = 100 / ego->rarity;
 
 			/* Another entry complete for this locale */
 			level_total[min_level]++;
@@ -368,6 +368,8 @@ void ego_apply_magic(struct object *obj, bool smithing)
 			}
 		}
 	} else {
+		bool ego_mods = false;
+
 		/* Apply extra ego bonuses */
 		if (ego->att) obj->att += randint1(ego->att);
 		if (ego->evn) obj->evn += randint1(ego->evn);
@@ -385,12 +387,22 @@ void ego_apply_magic(struct object *obj, bool smithing)
 		 * are either -pval or +pval where pval is what Sil stores in
 		 * the object's pval field.
 		 */
-		if (ego->pval > 0) {
+		for (i = 0; i < OBJ_MOD_MAX; i++) {
+			if (ego->modifiers[i]) ego_mods = true;
+		}
+
+		/*
+		 * An ego with modifiers but no maximum pval gives its
+		 * modifiers the kind's pval unchanged.
+		 */
+		if (ego->pval > 0 || ego_mods) {
 			bool flip_sign;
 			int pval = extract_kind_pval(obj->kind, AVERAGE,
 				&flip_sign);
 
-			if (of_has(ego->flags, OF_CURSED)) {
+			if (!ego->pval) {
+				/* The kind's pval stands */
+			} else if (of_has(ego->flags, OF_CURSED)) {
 				pval -= randint1(ego->pval);
 			} else {
 				pval += randint1(ego->pval);
