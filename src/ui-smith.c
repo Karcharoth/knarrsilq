@@ -710,13 +710,8 @@ static int get_smith_art_abilities(int skill)
 	struct ability *a;
 	int count = 0;
 	for (a = abilities; a; a = a->next) {
-		struct poss_item *poss = a->poss_items;
 		if (a->skill != skill) continue;
-		while (poss) {
-			if (poss->kidx == smith_obj->kind->kidx) break;
-			poss = poss->next;
-		}
-		if (!poss) continue;
+		if (!applicable_ability(a, smith_obj)) continue;
 		smith_art_abilities[count++] = a;
 	}
 	return count;
