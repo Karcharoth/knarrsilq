@@ -556,8 +556,6 @@ will:2
 prot:6
 blow:BITE:POISON:12:2d8
 flags:RES_POIS
-ranged-freq:10
-spells:HATCH_SPIDER
 desc:A huge ponderous spider with clusters of eggs on its back.
 desc: Its hairy mandibles are wet with a dark fluid.
 
@@ -646,9 +644,6 @@ prot:4:3d4
 blow:HIT:HURT:6:3d7
 flags:UNIQUE | NAME_COMMA | ESCORT
 flags:DROP_100 | DROP_GOOD | BASH_DOOR | UNLOCK_DOOR
-ranged-freq:5
-spell-power:12
-spells:RALLY
 desc:A captain of an orcish band, Gorgol keeps his troop in
 desc: order with displays of violence.
 
@@ -729,8 +724,6 @@ will:1
 prot:1:2d4
 blow:CLAW:WOUND:6:2d4
 flags:DROP_100 | OPEN_DOOR | UNLOCK_DOOR | BASH_DOOR | SMART
-ranged-freq:15
-spells:DIM
 desc:An evil swamp dwelling creature that feeds on the bones
 desc: of those who draw near.
 
@@ -753,9 +746,6 @@ will:3
 prot:10:1d4
 blow:BITE:ENTRANCE:6:1d8
 flags:RES_POIS | FRIENDS | SMART
-ranged-freq:5
-spell-power:8
-spells:THROW_WEB
 desc:A spider as big as a dog, covered in thick bristles, with the light
 desc: reflecting off its pale bulbous eyes.
 
