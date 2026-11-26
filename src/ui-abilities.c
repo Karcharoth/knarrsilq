@@ -189,7 +189,7 @@ static bool ability_action(struct menu *m, const ui_event *event, int oid)
 		if (possessed) {
 			if (possessed->active) {
 				possessed->active = false;
-				put_str("Ability now switched off.", 0, 0);
+				msg("Ability now switched off.");
 
 				/* Without Woven Themes the minor theme ends */
 				if ((possessed->skill == SKILL_SONG) &&
@@ -198,7 +198,7 @@ static bool ability_action(struct menu *m, const ui_event *event, int oid)
 				}
 			} else {
 				possessed->active = true;
-				put_str("Ability now switched on.", 0, 0);
+				msg("Ability now switched on.");
 			}
 
 			/* Recalculate at once */
@@ -210,7 +210,7 @@ static bool ability_action(struct menu *m, const ui_event *event, int oid)
 					if (!bane_menu()) return false;
 				}
 				if (player_gain_ability(player, choice[oid])) {
-					put_str("Ability gained.", 0, 0);
+					msg("Ability gained.");
 				} else if (streq(choice[oid]->name, "Bane")) {
 					/* Rejected the selection so clear. */
 					player->bane_type = 0;
@@ -236,6 +236,7 @@ static void ability_browser(int oid, void *data, const region *loc)
 	bool learned = player_has_ability(player, current);
 	uint8_t attr = COLOUR_L_DARK;
 	bool points = player->skill_base[current->skill] >= current->level;
+	int x, y, row = 10;
 
 	/* Redirect output to the screen */
 	text_out_hook = text_out_to_screen;
@@ -248,6 +249,10 @@ static void ability_browser(int oid, void *data, const region *loc)
 		text_out_c(COLOUR_L_WHITE, "%s", current->desc);
 	}
 
+	/* Start the rest below the description if it is long */
+	Term_locate(&x, &y);
+	row = MAX(row, y + 1);
+
 	/* Print more info if you don't have the skill */
 	if (!learned) {
 		struct ability *prereq = current->prerequisites;
@@ -256,16 +261,16 @@ static void ability_browser(int oid, void *data, const region *loc)
 		if (ready && points) {
 			attr = COLOUR_SLATE;
 		}
-		Term_gotoxy(text_out_indent, 10);
+		Term_gotoxy(text_out_indent, row);
 		text_out_c(attr, "Prerequisites:");
-		Term_gotoxy(text_out_indent, 12);
+		Term_gotoxy(text_out_indent, row + 2);
 		if (points) {
 			text_out_c(COLOUR_SLATE, "  %d skill points", current->level);
 		} else {
 			text_out_c(COLOUR_L_DARK, "  %d skill points (you have %d)",
 					   current->level, player->skill_base[current->skill]);
 		}
-		Term_gotoxy(text_out_indent + 2, 13);
+		Term_gotoxy(text_out_indent + 2, row + 3);
 		if (player_active_ability(player, "Quick Study")) {
 			/* Quick Study waives the prerequisite abilities */
 			if (prereq) {
@@ -283,7 +288,7 @@ static void ability_browser(int oid, void *data, const region *loc)
 			prereq = prereq->next;
 			line++;
 			if (prereq) {
-				Term_gotoxy(text_out_indent + 2, 13 + line);
+				Term_gotoxy(text_out_indent + 2, row + 3 + line);
 				text_out_c(COLOUR_L_DARK, "or ");
 			}
 		}
@@ -291,9 +296,9 @@ static void ability_browser(int oid, void *data, const region *loc)
 			int exp_cost = player_ability_cost(player, current);
 			bool have_exp = player_can_gain_ability(player, current);
 			attr = have_exp ? COLOUR_SLATE : COLOUR_L_DARK;
-			Term_gotoxy(text_out_indent, 16);
+			Term_gotoxy(text_out_indent, row + 6);
 			text_out_c(attr, "Current price:");
-			Term_gotoxy(text_out_indent + 2, 18);
+			Term_gotoxy(text_out_indent + 2, row + 8);
 			if (have_exp) {
 				text_out_c(attr, "%d experience", exp_cost);
 			} else {
@@ -305,10 +310,10 @@ static void ability_browser(int oid, void *data, const region *loc)
 			&& streq(current->name, "Bane")
 			&& player->bane_type > 0) {
 		/* Or if you have the ability and it is Bane... */
-		Term_gotoxy(text_out_indent, 10);
+		Term_gotoxy(text_out_indent, row);
 		text_out_c(COLOUR_WHITE, "%s-Bane:",
 			bane_types[player->bane_type].name);
-		Term_gotoxy(text_out_indent + 2, 12);
+		Term_gotoxy(text_out_indent + 2, row + 2);
 		text_out_c(COLOUR_WHITE, "%d slain, giving a %+d bonus",
 			bane_types[player->bane_type].kills,
 			calc_bane_bonus(player));
