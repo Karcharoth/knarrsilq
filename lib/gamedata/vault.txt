@@ -36,6 +36,7 @@
 #     TRAPS       - has twice the normal proportion of traps
 #     WEBS        - has a 5% chance of a web per empty square
 #     LIGHT       - 100% chance of being permanently lit
+#     SURFACE     - generated more seldom in deeper dungeons
 #
 # 'D' lines describe the layout of the vault. Lines must be padded
 #     with spaces to fill the dimensions specified. Vaults are described
@@ -45,6 +46,7 @@
 #     # - granite
 #     % - quartz vein
 #     : - rubble
+#     , - sunlight
 #     ; - glyph of warding
 #     > - down stairs
 #     < - up stairs
@@ -66,6 +68,8 @@
 #     H - silent watcher
 #     o - orc champion
 #     O - orc captain
+#     z - thrall
+#     Z - orc thrallmaster
 #     f - cat warrior
 #     F - cat assassin
 #     t - cave troll
@@ -441,6 +445,175 @@ D:##.?...##
 D:$....?..$
 D:$.......$
 D:$$$$$$$$$
+
+
+# Index 50
+name:Sunlit shaft
+type:Interesting room
+depth:1
+rarity:1
+flags:SURFACE | LIGHT
+D:  #$$#  
+D: ##..## 
+D:##.b..##
+D:$..,,:.$
+D:$.:,,..$
+D:##..b.##
+D: ##..## 
+D:  #$$#  
+
+
+# Index 51
+name:Golden door
+type:Interesting room
+depth:1
+rarity:1
+flags:SURFACE | LIGHT
+D:$$$$$$$$$
+D:$.......$
+D:$.##+##.$
+D:$.#:,:#.$
+D:$.+.1.+.$
+D:$.#...#.$
+D:$.##+##.$
+D:$.......$
+D:$$$$$$$$$
+
+
+# Index 52
+name:Small sunlit shaft
+type:Interesting room
+depth:1
+rarity:1
+flags:SURFACE | LIGHT
+D:###$###
+D:#.....#
+D:#.:,:.#
+D:#.....#
+D:###$###
+
+
+# Index 53
+name:Fallen treasure
+type:Interesting room
+depth:1
+rarity:5
+flags:SURFACE | LIGHT
+D:$$$$$
+D:$:.:$
+D:$,*,$
+D:$:,:$
+D:$$$$$
+
+
+# Index 54
+name:Collapsed corner
+type:Interesting room
+depth:1
+rarity:2
+flags:SURFACE | LIGHT
+D:$$$$#####
+D:$....:,,#
+D:$.....S,#
+D:$......:#
+D:$.......#
+D:$.......$
+D:$.......$
+D:$.......$
+D:$$$$$$$$$
+
+
+# Index 55
+name:Sunlight with chasm
+type:Interesting room
+depth:1
+rarity:3
+flags:SURFACE | LIGHT
+D:$$$$#####
+D:$...:,77#
+D:$....,,7#
+D:$....:,,#
+D:$......:#
+D:$.......$
+D:$.......$
+D:$.......$
+D:$$$$$$$$$
+
+
+# Index 56
+name:Thrall pit 1
+type:Interesting room
+depth:2
+rarity:1
+flags:SURFACE | LIGHT
+D:#####$$$#####
+D:#z.z#...#z.z#
+D:#.....Z.....#
+D:#z....7....z#
+D:##.........##
+D:$...Z...Z...$
+D:$...........$
+D:$...Z...Z...$
+D:##.........##
+D:#z....7....z#
+D:#.....Z.....#
+D:#z.z#...#z.z#
+D:#####$$$#####
+
+
+# Index 57
+name:Thrall pit 2
+type:Interesting room
+depth:2
+rarity:1
+flags:SURFACE | LIGHT
+D:#####$$$#####
+D:#z.7.....7.z#
+D:##.........##
+D:#z.###+###.z#
+D:##.#Z...Z#.##
+D:$..###+###..$
+D:$..#Z...Z#..$
+D:$..###+###..$
+D:##.#Z...Z#.##
+D:#z.###+###.z#
+D:##.........##
+D:#z.7.....7.z#
+D:#####$$$#####
+
+
+# Index 58
+name:Thrall pit 3
+type:Interesting room
+depth:2
+rarity:1
+flags:SURFACE | LIGHT
+D:$$#########$$
+D:$.#zz.7.zz#.$
+D:$.#z..Z..z#.$
+D:$.####+####.$
+D:$.+Z.....Z+.$
+D:$.####+####.$
+D:$.#z..Z..z#.$
+D:$.#zz.7.zz#.$
+D:$$#########$$
+
+
+# Index 59
+name:Slave mine
+type:Interesting room
+depth:2
+rarity:1
+flags:SURFACE
+D:#######$$$$$
+D:#:::##%....$
+D:#:z.%%:z.#.$
+D:#::..z::.:.#
+D:#z:..%:.Z..#
+D:#...Z%%%#..$
+D:$..:::#.##.#
+D:$..........#
+D:$$$$$$######
 
 
 # Index 60
@@ -1225,6 +1398,20 @@ D:$.......$
 D:$$$$$$$$$
 
 
+# Index 165
+name:Secret Chamber
+type:Interesting room
+depth:3
+rarity:30
+D:$$$$
+D:$..$
+D:$..$
+D:##s#
+D:#..#
+D:#*.#
+D:####
+
+
 # Index 170
 name:Ringway
 type:Interesting room
@@ -1298,37 +1485,38 @@ D:$$$$$$$$$$$$
 
 
 # Index 180
-name:Blocks
+name:Spider cave
 type:Interesting room
 depth:8
 rarity:15
-D:$$$$$$$$$$$$$
-D:$...........$
-D:$.#+##.####.$
-D:$.#..#.####.$
-D:$.#?.+.#*##.$
-D:$.####.####.$
-D:$...........$
-D:$.##s#.####.$
-D:$.#*3#.+.?#.$
-D:$.#.*#.#..#.$
-D:$.####.##+#.$
-D:$...........$
-D:$$$$$$$$$$$$$
+flags:WEBS
+D:########$$$$$
+D:######......$
+D:#S##S#.####.$
+D:#.#..#.#S##.$
+D:#........##.$
+D:$.M.........$
+D:#....#..###.$
+D:#.#..#..SS#.$
+D:#S##S#M..*#.$
+D:###########$$
 
 
 # Index 181
-name:False Walls
+name:Spider cave 2
 type:Interesting room
-depth:15
-rarity:20
-D:$$$$$$$
-D:$?s.s.$
-D:$s#s#s$
-D:$1s3s*$
-D:$s#s#s$
-D:$*s.s2$
-D:$$$$$$$
+depth:8
+rarity:15
+flags:WEBS
+D:$$$$$$$$$
+D:$.......$
+D:$..M....$
+D:#..#....#
+D:#.###.###
+D:#.S#S...#
+D:#######.#
+D:#*SS...S#
+D:#########
 
 
 # Index 190
@@ -1437,21 +1625,19 @@ D: ##...+...##
 D:  #$$$$$$$#  
 
 # Index 204
-name:Hidden Oval Forge
+name:Alcoved forge
 type:Interesting room
 depth:9
 rarity:20
-D:  #$$$$$$$#  
-D: ##.?.+...## 
-D:##...%%%...##
-D:$...%%.%%...$
-D:$..%%*.3%%..$
-D:$..%..0..%..$
-D:$..%%3.*%%.?$
-D:$...%%.%%...$
-D:##.?.%%%...##
-D: ##...+...## 
-D:  #$$$$$$$#  
+D:#$$$$####
+D:#....+.?#
+D:#....####
+D:$.......#
+D:$..3..0.#
+D:$.......#
+D:#....####
+D:#....+.?#
+D:#$$$$####
 
 
 # Index 205
@@ -1785,9 +1971,9 @@ D:$.7777#77777##
 D:$.77#####.777## 
 D:$.77#&....77777#
 D:$.77#d.##.777## 
-D:$.77####.7777#  
+D:$.77####..777#  
 D:$..777777777##  
-D:$$....7777..$   
+D:$$....777...$   
 D: $$.........$   
 D:  $$$$$$$$$$$   
 
@@ -2871,19 +3057,19 @@ D:#..+.@@@.######+#+#####.T..T.###.##
 D:#s##.@@@.#####..#..######++#####+##
 D:#.###...#####...#..o#####..####..##
 D:#.####s###.1.......Oo..##..###.2..#
-D:#.####...+.............##..###..~.#
+D:#.####...+...o.....o...##..###..~.#
 D:#.####.###..##T...T##..##..####..##
 D:#.s*##.###oo##T...T##..##..########
-D:#.####.###O..oT...T....##++####FfF#
-D:#.####+###2.oOT...T.1..#...####f<f#
-D:#.##.1...#..##T...T##..#...**##FfF#
-D:#.##.#.#.#..##T...T##Oo#T....&##.##
-D:#.##.....#....T...T.o..+.......+.##
-D:#.##+##+##...........o.+....4..#s##
-D:#.#&.&#.##..##..4..##..#T....&##..#
-D:#.##^##..+T.##.....##..#...**###.1#
-D:#.#2~2####*..........1*#...###~s..#
-D:#.##.#####*...3...3...*#####&######
+D:#.####.###O..oT...T...o##++####FfF#
+D:#.####+###2.oOT...T.1.O#...####f<f#
+D:#.##.1...#..##T...T##.o#...**##FfF#
+D:#.##.#.#.#..##.....##..#T....&##.##
+D:#.##.....#......4......+.......+.##
+D:#.##+##+##.............+....4..#s##
+D:#.#&.&#.##..##.....##..#T....&##..#
+D:#.##^##..+..##.....##..#...**###.1#
+D:#.#2~2####*...........*#...###~s..#
+D:#.##.#####*..3.....3..*#####&######
 D:#.#############.V.###+######s######
 D:#s########...###.##....#*#1#&#&####
 D:#...+....+.H.###s##.2..#+#+#+#+#..#

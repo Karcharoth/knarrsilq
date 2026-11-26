@@ -58,7 +58,8 @@
  * \param forge whether we are forcing a forge
  * \return a pointer to the vault template
  */
-struct vault *random_vault(int depth, const char *typ, bool forge)
+static struct vault *random_vault_pick(int depth, const char *typ,
+										bool forge)
 {
 	struct vault *v = vaults;
 	struct vault *r = NULL;
@@ -84,6 +85,35 @@ struct vault *random_vault(int depth, const char *typ, bool forge)
 		v = v->next;
 	} while(v);
 	return r;
+}
+
+/**
+ * Chooses a vault of a particular kind at random.
+ * \param depth the current depth, for vault bound checking
+ * \param typ vault type
+ * \param forge whether we are forcing a forge
+ * \return a pointer to the vault template
+ *
+ * Interesting rooms with the SURFACE flag are favoured at shallow depths
+ * and become very much rarer deeper down.
+ */
+struct vault *random_vault(int depth, const char *typ, bool forge)
+{
+	while (true) {
+		struct vault *v = random_vault_pick(depth, typ, forge);
+
+		if (!v || !streq(typ, "Interesting room")) return v;
+		if (depth < 6) {
+			/* Surface rooms are more common at low depths */
+			if (roomf_has(v->flags, ROOMF_SURFACE) || one_in_(4)) return v;
+		} else if (roomf_has(v->flags, ROOMF_SURFACE)) {
+			/* Surface rooms get very much rarer at depth */
+			if (Rand_div(v->base_rarity + (1UL << depth)) < v->base_rarity)
+				return v;
+		} else {
+			return v;
+		}
+	}
 }
 
 
@@ -405,6 +435,8 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v, bool flip)
 			case '0': place_forge(c, grid); break;
 				/* Chasm */
 			case '7': square_set_feat(c, grid, FEAT_CHASM); break;
+				/* Sunlight */
+			case ',': square_set_feat(c, grid, FEAT_SUNLIGHT); break;
 
 			}
 		}
@@ -566,6 +598,29 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v, bool flip)
 					break;
 				}
 
+				/* thrall */
+				case 'z': {
+					struct monster_race *race = one_in_(2) ?
+						lookup_monster("Dejected human thrall") :
+						lookup_monster("Dejected elven thrall");
+					if (race) {
+						place_new_monster_one(c, grid, race, true, true, info,
+											  ORIGIN_DROP_VAULT);
+					}
+					break;
+				}
+
+				/* orc thrallmaster */
+				case 'Z': {
+					struct monster_race *race =
+						lookup_monster("Orc thrallmaster");
+					if (race) {
+						place_new_monster_one(c, grid, race, true, true, info,
+											  ORIGIN_DROP_VAULT);
+					}
+					break;
+				}
+
 				/* cat warrior */
 				case 'f': {
 					place_new_monster_one(c, grid,
@@ -594,7 +649,7 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v, bool flip)
 				case 'W': {
 					place_new_monster_one(c, grid,
 										  lookup_monster("Barrow wight"), true,
-										  false, info, ORIGIN_DROP_VAULT);
+										  true, info, ORIGIN_DROP_VAULT);
 					break;
 				}
 				
@@ -744,20 +799,26 @@ bool build_vault(struct chunk *c, struct loc centre, struct vault *v, bool flip)
 			 * but are 10 times as likely if the TRAPS flag is set */
 			mult = roomf_has(v->flags, ROOMF_TRAPS) ? 10 : 5;
 
-			/* Another chance to place traps, with 4 times the normal chance
-			 * so traps in interesting rooms and vaults are a total of 5 times
-			 * more likely */
-			if (randint1(1000) <= trap_placement_chance(c, grid) * (mult - 1)) {
-				square_add_trap(c, grid);
-			} else if (roomf_has(v->flags, ROOMF_WEBS) && one_in_(20)) {
-				/* Webbed vaults also have a large chance of receiving webs */
-				square_add_web(c, grid);
+			if (roomf_has(v->flags, ROOMF_WEBS)) {
+				/* Webbed vaults have a large chance of webs on bare floor,
+				 * in place of the extra chance of traps */
+				if ((square(c, grid)->feat == FEAT_FLOOR) &&
+					!square(c, grid)->trap && !square_object(c, grid) &&
+					!square(c, grid)->mon && one_in_(20)) {
+					square_add_web(c, grid);
 
-				/* Hide it half the time */
-				if (one_in_(2)) {
-					struct trap *trap = square_trap(c, grid);
-					trf_on(trap->flags, TRF_INVISIBLE);
+					/* Hide it half the time */
+					if (one_in_(2)) {
+						struct trap *trap = square_trap(c, grid);
+						trf_on(trap->flags, TRF_INVISIBLE);
+					}
 				}
+			} else if (randint1(1000) <=
+					   trap_placement_chance(c, grid) * (mult - 1)) {
+				/* Another chance to place traps, with 4 times the normal
+				 * chance so traps in interesting rooms and vaults are a
+				 * total of 5 times more likely */
+				square_add_trap(c, grid);
 			}
 		}
 	}

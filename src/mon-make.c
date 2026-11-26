@@ -28,6 +28,7 @@
 #include "mon-make.h"
 #include "mon-move.h"
 #include "mon-predicate.h"
+#include "mon-spell.h"
 #include "mon-timed.h"
 #include "mon-util.h"
 #include "obj-knowledge.h"
@@ -1309,10 +1310,12 @@ void place_monster_by_flag(struct chunk *c, struct loc grid, int flg1, int flg2,
 	while (!got_race && (depth > 0)) {		
 		race = get_mon_num(depth, false, true, true);
         if (race && (allow_unique || !rf_has(race->flags, RF_UNIQUE))) {
-            if (rf_has(race->flags, flg1)) {
+            if (spell ? rsf_has(race->spell_flags, flg1) :
+				rf_has(race->flags, flg1)) {
                 got_race = true;
                 break;
-            } else if ((flg2 > 0) && rf_has(race->flags, flg2)) {
+            } else if ((flg2 > 0) && (spell ? rsf_has(race->spell_flags, flg2) :
+									  rf_has(race->flags, flg2))) {
                 got_race = true;
                 break;
 			}

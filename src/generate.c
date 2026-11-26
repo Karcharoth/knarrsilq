@@ -451,6 +451,7 @@ static errr finish_parse_vault(struct parser *p) {
 	}
 	for (v = vaults; v; v = v->next) {
 		if (v->rarity > 0) {
+			v->base_rarity = v->rarity;
 			v->rarity = rarity_denom / v->rarity;
 		}
 	}
