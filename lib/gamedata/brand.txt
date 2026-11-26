@@ -30,7 +30,7 @@ dice:1
 desc:shocks {name} with the force of lightning
 
 code:FIRE_1
-name:fire
+name:flame
 dice:1
 vuln-dice:1
 desc:burns {name} with an inner fire
@@ -38,7 +38,7 @@ resist-flag:RES_FIRE
 vuln-flag:HURT_FIRE
 
 code:COLD_1
-name:cold
+name:frost
 dice:1
 vuln-dice:1
 desc:freezes {name}
@@ -46,7 +46,7 @@ resist-flag:RES_COLD
 vuln-flag:HURT_COLD
 
 code:POIS_1
-name:poison
+name:venom
 dice:1
 desc:poisons {name}
 resist-flag:RES_POIS
