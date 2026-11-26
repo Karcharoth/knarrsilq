@@ -81,6 +81,7 @@ mcat-include-base:insect
 
 monster-category:Spiders
 mcat-include-base:spider
+mcat-include-base:small spider
 
 monster-category:Nameless things
 mcat-include-base:nameless thing
