@@ -360,7 +360,7 @@ static int test_protection(void *state) {
 	player->previous_action[0] = ACTION_STAND;
 
 	/* Heavy Armour: under 15 lb adds nothing at all */
-	give_ability(SKILL_EVASION, "Heavy Armour", false);
+	give_ability(SKILL_EVASION, "Heavy Armour Use", false);
 	shield->weight = 140;
 	eq(protection_roll(player, PROJ_HURT, true, MINIMISE), min0);
 	eq(protection_roll(player, PROJ_HURT, true, MAXIMISE), max0);
@@ -371,7 +371,7 @@ static int test_protection(void *state) {
 		min0 + mail->pd + 1);
 	eq(protection_roll(player, PROJ_HURT, true, MAXIMISE),
 		max0 + mail->pd * mail->ps + 3);
-	take_ability(SKILL_EVASION, "Heavy Armour", false);
+	take_ability(SKILL_EVASION, "Heavy Armour Use", false);
 
 	put_in_slot("arm", old_arm);
 	put_in_slot("body", old_body);

@@ -189,7 +189,6 @@ attack:0:0d0
 defence:0:0d0
 flags:FREE_ACT
 values:RES_POIS[1]
-ability:Song:Song of Este
 desc:A ring shaped into twinned serpents with eyes of emerald meeting
 desc: beneath a crown of flowers. It was given to Barahir of Beor's House
 desc: by Finrod Felagund the Noldorin Prince. It is a symbol of loyalty and
@@ -545,7 +544,6 @@ weight:300
 cost:25000
 attack:-1:0d0
 defence:-4:2d6
-ability:Will:Critical Resistance
 desc:Hard are the people who live around the hill Amon
 desc: Rudh, and hard is the armour they wear.
 
@@ -1503,7 +1501,6 @@ attack:0:0d0
 defence:0:0d0
 flags:DANGER
 values:GRA[1]
-ability:Perception:Lore-Master
 desc:This crown has elegant curves of some dark metal, which
 desc: draw the eye and hold the mind. When you put it on it
 desc: whispers to you, telling you of forgotten secrets and
@@ -1700,7 +1697,6 @@ weight:60
 cost:35000
 attack:0:2d7
 defence:0:0d0
-ability:Archery:Flaming Arrows
 desc:A massive longbow, almost too large to draw. But when it does
 desc: release an arrow it flies with great force -- and with fire.
 
@@ -1887,7 +1883,6 @@ cost:20000
 attack:1:0d0
 defence:0:1d0
 flags:SUST_DEX
-ability:Melee:Throwing Mastery
 desc:The fabled hunting gloves of the forest of Brethil.
 desc: They are little to look at, but when you don them
 desc: your hand is swift and accurate.

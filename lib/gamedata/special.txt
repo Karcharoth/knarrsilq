@@ -829,7 +829,6 @@ prot-dice:0
 prot-sides:0
 max-pval:0
 type:bow
-ability:Archery:Rapid Fire
 
 ###
 

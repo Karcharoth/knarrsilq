@@ -277,7 +277,7 @@ static int focused_attack_bonus(struct player *p)
 	if (p->focused) {
 		p->focused = false;
 		
-		if (player_active_ability(p, "Focused Attack")) {
+		if (player_active_ability(p, "Focused attack")) {
 			return (p->state.skill_use[SKILL_PERCEPTION] / 2);
 		}
 	}
@@ -739,7 +739,7 @@ int protection_roll(struct player *p, int typ, bool melee, aspect prot_aspect)
 	}
 
 	/* Heavy armour bonus */
-	if (player_active_ability(p, "Heavy Armour") && (typ == PROJ_HURT)) {
+	if (player_active_ability(p, "Heavy Armour Use") && (typ == PROJ_HURT)) {
 		if (armour_weight / 150 > 0) {
 			prt += damcalc(1, armour_weight / 150, prot_aspect);
 		}

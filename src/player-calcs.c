@@ -976,18 +976,6 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 		state->flags[OF_PROT_HALLU] += 1;
 	}
 
-	/* Decrease food consumption with 'mind over body' ability */
-	if (player_active_ability(p, "Mind Over Body")) {
-		state->flags[OF_HUNGER] -= 1;
-	}
-
-	/* Protect from confusion, stunning, hallucinaton with 'clarity' ability */
-	if (player_active_ability(p, "Clarity")) {
-		state->flags[OF_PROT_CONF] += 1;
-		state->flags[OF_PROT_STUN] += 1;
-		state->flags[OF_PROT_HALLU] += 1;
-	}
-
 	/* Calculate stats */
 	for (i = 0; i < STAT_MAX; i++) {
 		state->stat_use[i] = p->stat_base[i] + state->stat_equip_mod[i]
@@ -1244,10 +1232,6 @@ static void update_bonuses(struct player *p)
 				break;
 			}
 		}
-	}
-
-	if (player_active_ability(p, "Lore-Keeper")) {
-		pseudo_id_everything();
 	}
 
 	/* Identify {special} items when the type has been seen before */

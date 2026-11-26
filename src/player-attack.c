@@ -708,12 +708,6 @@ int breakage_chance(const struct object *obj, bool hit_wall) {
 				perc = 0;
 			}
 		}
-	} else if (tval_is_ammo(obj)) {
-		if (player_active_ability(player, "Careful Shot")) perc /= 2;
-		if (player_active_ability(player, "Flaming Arrows")) perc = 100;
-	} else if ((perc != 100) &&
-			   player_active_ability(player, "Throwing Mastery")) {
-		perc = 0;
 	}
 
 	/* Double breakage chance if it hit a wall */
@@ -982,32 +976,6 @@ static struct attack_result make_ranged_shot(struct player *p,
 	slay_bonus_dice = slay_bonus(p, ammo, mon, &arrow_slay, &arrow_brand);
 	slay_bonus_dice += slay_bonus(p, bow, mon, &bow_slay, &bow_brand);
 
-	/* Bonus for flaming arrows */
-	if (player_active_ability(p, "Flaming Arrows")) {
-		struct monster_lore *lore = get_lore(race);
-
-		/* Notice immunity */
-		if (rf_has(race->flags, RF_RES_FIRE)) {
-			if (monster_is_visible(mon)) {
-				rf_on(lore->flags, RF_RES_FIRE);
-			}
-		} else {
-			/* Otherwise, take the damage */
-			slay_bonus_dice += 1;
-
-			/* Extra bonus against vulnerable creatures */
-			if (rf_has(race->flags, RF_HURT_FIRE)) {
-				slay_bonus_dice += 1;
-
-				/* Memorize the effects */
-				rf_on(lore->flags, RF_RES_FIRE);
-
-				/* Cause a temporary morale penalty */
-				scare_onlooking_friends(mon, -20);
-			}
-		}
-	}
-
 	/* Calculate the damage done */
 	total_dd = bow->dd + result.crit_dice + slay_bonus_dice;
 
@@ -1077,9 +1045,6 @@ static struct attack_result make_ranged_throw(struct player *p,
 	/* Give people their weapon affinity bonuses if the weapon is thrown */
 	attack_mod += axe_bonus(p, obj);
 	attack_mod += polearm_bonus(p, obj);
-
-	/* Bonus for throwing proficiency ability */
-	if (player_active_ability(p, "Throwing Mastery")) attack_mod += 5;
 
 	/* Determine the player's attack score after all modifiers */
 	total_attack_mod = total_player_attack(p, mon, attack_mod);
@@ -1162,7 +1127,6 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 	bool none_left = false;
 	bool noticed_radiance = false;
 	bool targets_remaining = false;
-	bool rapid_fire = player_active_ability(p, "Rapid Fire");
 	bool hit_body = false;
 	bool is_potion;
 
@@ -1191,9 +1155,6 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 	/* Set the attack type and other specifics */
 	if (archery) {
 		attack = make_ranged_shot;
-		if (rapid_fire && obj->number > 1) {
-			shots = 2;
-		}
 	} else {
 		attack = make_ranged_throw;
 	}
@@ -1316,7 +1277,7 @@ static void ranged_helper(struct player *p,	struct object *obj, int dir,
 				}
 
 				/* Perform the attack */
-				result = attack(p, obj, mon, rapid_fire, attack_penalty,
+				result = attack(p, obj, mon, false, attack_penalty,
 								shots == 1);
 				if (result.hit > 0) {
 					char o_name[80];

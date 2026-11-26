@@ -335,9 +335,9 @@ bool applicable_ability(struct ability *ability, struct object *obj)
 		if (poss->kidx == obj->kind->kidx) return true;
 	}		
 
-	/* Throwing Mastery is OK for throwing items */
-	if (of_has(obj->flags, OF_THROWING) && (ability->skill == SKILL_MELEE) &&
-		streq(ability->name, "Throwing Mastery")) {
+	/* Polearm Mastery is OK for polearms */
+	if (of_has(obj->flags, OF_POLEARM) && (ability->skill == SKILL_MELEE) &&
+		streq(ability->name, "Polearm Mastery")) {
 		return true;
 	}
 

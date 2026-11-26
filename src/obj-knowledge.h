@@ -30,7 +30,6 @@ void update_player_object_knowledge(struct player *p);
 bool object_is_cursed(const struct object *obj);
 bool object_is_broken(const struct object *obj);
 int pseudo_id_check_weak(const struct object *obj);
-int pseudo_id_check_strong(const struct object *obj);
 bool can_be_pseudo_ided(const struct object *obj);
 void pseudo_id(struct object *obj);
 void pseudo_id_everything(void);

@@ -301,10 +301,6 @@ static void prt_arc(int row, int col)
 				player->state.skill_use[SKILL_ARCHERY],
 				player->state.add, player->state.ads);
 		c_put_str(COLOUR_UMBER, format("%12s", buf), row, col);
-
-		if (player_active_ability(player, "Rapid Fire")) {
-			c_put_str(COLOUR_UMBER, "2x", row, col);
-		}
 	}
 }
 

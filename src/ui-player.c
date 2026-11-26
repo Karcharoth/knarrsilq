@@ -331,11 +331,6 @@ static struct panel *get_panel_combat(void) {
 	arc = player->state.skill_use[SKILL_ARCHERY];
 	panel_line(p, COLOUR_L_BLUE, "Bows", "(%+d,%dd%d)", arc, player->state.add,
 			   player->state.ads);
-	if (player_active_ability(player, "Rapid Fire")) {
-		add_lines--;
-		panel_line(p, COLOUR_L_BLUE, "", "(%+d,%dd%d)", arc, player->state.add,
-			   player->state.ads);
-	}
 
 	/* Armor */
 	panel_line(p, COLOUR_L_BLUE, "Armor", "[%+d,%d-%d]",

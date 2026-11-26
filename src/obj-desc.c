@@ -461,8 +461,7 @@ static size_t obj_desc_inscrip(const struct object *obj, char *buf,
 	}
 
 	/* Note curses, use special inscription, if any */
-	if (object_is_cursed(obj) &&
-		(object_is_known(obj) || player_active_ability(player, "Lore-Keeper"))){
+	if (object_is_cursed(obj) && object_is_known(obj)) {
 		u[n++] = "cursed";
 	} else if (obj->pseudo != OBJ_PSEUDO_NONE) {
 		assert(obj->pseudo < OBJ_PSEUDO_MAX);

@@ -249,7 +249,8 @@ void object_flavor_tried(struct object *obj)
 /**
  * This function does a few book keeping things for item identification.
  *
- * It identifies visible objects for the Lore-Master ability, marks
+ * It identifies visible objects for the Alchemy, Channeling, Jeweller and
+ * Enchantment abilities, marks
  * artefacts/specials as seen and grants experience for the first sighting.
  *
  * \param p is the player
@@ -257,10 +258,24 @@ void object_flavor_tried(struct object *obj)
  */
 static void player_know_object(struct player *p, struct object *obj)
 {
-	/* Identify seen items with Lore-Master */
-	if (!object_is_known(obj) && player_active_ability(p, "Lore-Master") &&
-        !tval_is_chest(obj)) {
-		ident(obj);
+	/* Identify seen items with the identifying abilities */
+	if (!object_is_known(obj)) {
+		bool alchemy = player_active_ability(p, "Alchemy");
+		bool channeling = player_active_ability(p, "Channeling");
+		bool jeweller = player_active_ability(p, "Jeweller");
+		bool enchantment = player_active_ability(p, "Enchantment");
+		bool staff_or_horn = tval_is_staff(obj) || tval_is_horn(obj);
+		bool food_or_potion = tval_is_food(obj) || tval_is_potion(obj);
+		bool jewellery = tval_is_ring(obj) || (obj->tval == TV_AMULET) ||
+			tval_is_light(obj) || tval_is_horn(obj);
+		bool enchanted_item = !staff_or_horn && !food_or_potion &&
+			!tval_is_chest(obj) && (obj->tval != TV_USELESS);
+
+		if ((channeling && staff_or_horn) ||
+			(alchemy && (staff_or_horn || food_or_potion)) ||
+			(jeweller && jewellery) || (enchantment && enchanted_item)) {
+			ident(obj);
+		}
 	}
 
 	/* Mark new identified artefacts/specials and gain experience for them,
@@ -369,35 +384,6 @@ int pseudo_id_check_weak(const struct object *obj)
 
 
 /**
- * Return a "feeling" (or NULL) about an item.  Method 2 (Strong).
- * Sil - this method can distinguish artefacts from special items
- */
-int pseudo_id_check_strong(const struct object *obj)
-{
-	/* Artefacts */
-	if (obj->artifact) {
-		/* Cursed */
-		if (object_is_cursed(obj)) return OBJ_PSEUDO_CURSED_ART;
-
-		/* Normal */
-		return OBJ_PSEUDO_ARTEFACT;
-	}
-
-	/* Ego-Items */
-	if (obj->ego) {
-		/* Cursed */
-		if (object_is_cursed(obj)) return OBJ_PSEUDO_CURSED_SPEC;
-
-		/* Normal */
-		return OBJ_PSEUDO_SPECIAL;
-	}
-
-	/* Default to "average" */
-	return OBJ_PSEUDO_AVERAGE;
-}
-
-
-/**
  * Returns true if this object can be pseudo-ided.
  */
 bool can_be_pseudo_ided(const struct object *obj)
@@ -421,11 +407,7 @@ void pseudo_id(struct object *obj)
 	if (object_is_known(obj)) return;
 
 	/* Sense the object */
-	if (player_active_ability(player, "Lore-Keeper")) {
-		obj->pseudo = pseudo_id_check_strong(obj);
-	} else {
-		obj->pseudo = pseudo_id_check_weak(obj);
-	}
+	obj->pseudo = pseudo_id_check_weak(obj);
 
 	/* The object has been "sensed" */
 	obj->notice |= OBJ_NOTICE_SENSE;

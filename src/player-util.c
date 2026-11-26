@@ -1573,9 +1573,6 @@ static void search_square(struct player *p, struct loc grid, int dist,
 		/* If using the search command give a score bonus */
 		if (searching) score += 5;
 
-		/* Eye for Detail ability */
-		if (player_active_ability(p, "Eye for Detail")) score += 5;
-
 		/* Determine the base difficulty */
 		if (obj) {
 			difficulty = chest_level / 2;

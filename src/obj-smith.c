@@ -83,8 +83,7 @@ int att_max(struct object *obj, bool assume_artistry)
 	struct object_kind *kind = obj->kind;
 	struct ego_item *ego = obj->ego;
 	int att = kind->att;
-	bool artistry = assume_artistry ||
-		player_active_ability(player, "Artistry");
+	bool artistry = assume_artistry;
 
 	if (artistry) att += base->smith_attack_artistry;
 	if (!tval_is_weapon(obj)) att = MIN(0, att);
@@ -141,8 +140,7 @@ int ds_max(struct object *obj, bool assume_artistry)
 	struct object_kind *kind = obj->kind;
 	struct ego_item *ego = obj->ego;
 	int ds = kind->ds;
-    bool artistry = assume_artistry ||
-		player_active_ability(player, "Artistry");
+    bool artistry = assume_artistry;
 
 	if (artistry) ds += 1;
 	if (ego) ds += ego->ds;
@@ -198,8 +196,7 @@ int evn_max(struct object *obj, bool assume_artistry)
 	struct object_base *base = kind->base;
 	struct ego_item *ego = obj->ego;
 	int evn = kind->evn;
-    bool artistry = assume_artistry ||
-		player_active_ability(player, "Artistry");
+    bool artistry = assume_artistry;
 
 	if (tval_is_armor(obj) && artistry) evn += 1;
 	if (ego) evn += ego->evn;
@@ -269,8 +266,7 @@ int ps_max(struct object *obj, bool assume_artistry)
 	struct object_base *base = kind->base;
 	struct ego_item *ego = obj->ego;
 	int ps = kind->ps;
-    bool artistry = assume_artistry ||
-		player_active_ability(player, "Artistry");
+    bool artistry = assume_artistry;
 
 	if (artistry) ps += 1;
 
