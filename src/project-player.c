@@ -254,7 +254,7 @@ static void monster_ranged_attack(project_player_handler_context_t *context,
 
 	if (hit_result > 0) {
 		crit_bonus_dice = crit_bonus(player, hit_result, weight, &r_info[0],
-									 SKILL_ARCHERY, !arrow);
+									 SKILL_ARCHERY, !arrow, mon);
 		total_dd = context->dd + crit_bonus_dice;
 		total_ds = context->ds;
 

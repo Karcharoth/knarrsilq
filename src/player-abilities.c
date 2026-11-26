@@ -25,6 +25,7 @@
 #include "obj-util.h"
 #include "player-abilities.h"
 #include "player-calcs.h"
+#include "player-history.h"
 #include "player-util.h"
 
 struct ability *abilities;
@@ -186,6 +187,7 @@ static errr finish_parse_ability(struct parser *p) {
 
 	/* Fill in prerequisite abilities */
 	for (a = abilities; a; a = a->next) {
+		struct ability **tail = &a->prerequisites;
 		int i = 0;
 		while (a->prereq_index[i]) {
 			int idx = a->prereq_index[i];
@@ -195,8 +197,9 @@ static errr finish_parse_ability(struct parser *p) {
 			if (!stored)
 				return PARSE_ERROR_INVALID_ABILITY;
 			memcpy(pre, stored, sizeof(*pre));
-			pre->next = a->prerequisites;
-			a->prerequisites = pre;
+			pre->next = NULL;
+			*tail = pre;
+			tail = &pre->next;
 			i++;
 		}
 	}
@@ -441,6 +444,10 @@ int player_active_ability(struct player *p, const char *name)
 bool player_has_prereq_abilities(struct player *p, struct ability *ability)
 {
 	struct ability *prereqs = ability->prerequisites;
+
+	/* Quick Study waives the prerequisite abilities */
+	if (player_active_ability(p, "Quick Study")) return true;
+
 	if (prereqs) {
 		while (prereqs) {
 			struct ability *possessed = p->abilities;
@@ -477,6 +484,12 @@ bool player_can_gain_ability(struct player *p, struct ability *ability)
 	return player_ability_cost(p, ability) <= p->new_exp;
 }
 
+static const char *bane_names[] = {
+	#define BANE(a, b) b,
+	#include "list-bane-types.h"
+	#undef BANE
+};
+
 bool player_gain_ability(struct player *p, struct ability *ability)
 {
 	struct ability *new;
@@ -492,13 +505,21 @@ bool player_gain_ability(struct player *p, struct ability *ability)
 	add_ability(&p->abilities, ability);
 	new = locate_ability(p->abilities, ability);
 	new->active = true;
+
+	/* Make a note in the history */
+	if (streq(ability->name, "Bane") && (p->bane_type > 0)) {
+		history_add(p, format("(%s-%s)", bane_names[p->bane_type],
+			ability->name), HIST_GAIN_ABILITY);
+	} else {
+		history_add(p, format("(%s)", ability->name), HIST_GAIN_ABILITY);
+	}
 	/*
 	 * For some abilities, updating the bonuses is necessary; for some it
 	 * is not.  Having that indicated in ability.txt seems like overkill
 	 * to avoid an update_bonuses() call.
 	 */
-	p->upkeep->update |= (PU_BONUS);
-	p->upkeep->redraw |= (PR_EXP);
+	p->upkeep->update |= (PU_BONUS | PU_MANA);
+	p->upkeep->redraw |= (PR_EXP | PR_BASIC);
 	return true;
 }
 

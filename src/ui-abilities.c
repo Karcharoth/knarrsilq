@@ -19,7 +19,9 @@
 #include "angband.h"
 #include "monster.h"
 #include "player-abilities.h"
+#include "player-calcs.h"
 #include "player-util.h"
+#include "songs.h"
 #include "ui-abilities.h"
 #include "ui-input.h"
 #include "ui-menu.h"
@@ -79,7 +81,7 @@ static void bane_display(struct menu *menu, int oid, bool cursor, int row,
 				"                  ", choice[oid].kills);
 		} else {
 			textblock_append(tb,
-				"You have slain %d of these foes and need to "
+				"You have slain %d of these foes, and need to "
 				"slay %d more.", choice[oid].kills,
 				4 - choice[oid].kills);
 		}
@@ -98,6 +100,7 @@ static bool bane_action(struct menu *m, const ui_event *event, int oid)
 
 		if (choice[oid].kills < 4) {
 			/* Need 4 kills to select. */
+			msg("Insufficient kills to become a bane.");
 			return true;
 		}
 		player->bane_type = oid;
@@ -187,10 +190,20 @@ static bool ability_action(struct menu *m, const ui_event *event, int oid)
 			if (possessed->active) {
 				possessed->active = false;
 				put_str("Ability now switched off.", 0, 0);
+
+				/* Without Woven Themes the minor theme ends */
+				if ((possessed->skill == SKILL_SONG) &&
+					streq(possessed->name, "Woven Themes")) {
+					player_end_minor_song(player);
+				}
 			} else {
 				possessed->active = true;
 				put_str("Ability now switched on.", 0, 0);
 			}
+
+			/* Recalculate at once */
+			player->upkeep->update |= (PU_BONUS | PU_MANA);
+			player->upkeep->redraw |= (PR_EXP | PR_BASIC);
 		} else if (player_has_prereq_abilities(player, choice[oid]) && points) {
 			if (player_can_gain_ability(player, choice[oid])) {
 				if (streq(choice[oid]->name, "Bane")) {
@@ -253,6 +266,13 @@ static void ability_browser(int oid, void *data, const region *loc)
 					   current->level, player->skill_base[current->skill]);
 		}
 		Term_gotoxy(text_out_indent + 2, 13);
+		if (player_active_ability(player, "Quick Study")) {
+			/* Quick Study waives the prerequisite abilities */
+			if (prereq) {
+				text_out_c(COLOUR_GREEN, "Quick Study");
+			}
+			prereq = NULL;
+		}
 		while (prereq) {
 			if (locate_ability(player->abilities, prereq)) {
 				attr = COLOUR_SLATE;
@@ -267,7 +287,7 @@ static void ability_browser(int oid, void *data, const region *loc)
 				text_out_c(COLOUR_L_DARK, "or ");
 			}
 		}
-		if (ready) {
+		if (ready && points) {
 			int exp_cost = player_ability_cost(player, current);
 			bool have_exp = player_can_gain_ability(player, current);
 			attr = have_exp ? COLOUR_SLATE : COLOUR_L_DARK;

@@ -318,15 +318,15 @@ static int test_crit_bonus(void *state) {
 	struct monster_race *wolf = lookup_monster("Wolf");
 
 	require(!rf_has(wolf->flags, RF_RES_CRIT));
-	eq(crit_bonus(player, 16, 30, wolf, SKILL_MELEE, false), 1);
+	eq(crit_bonus(player, 16, 30, wolf, SKILL_MELEE, false, NULL), 1);
 	give_ability(SKILL_MELEE, "Finesse", false);
-	eq(crit_bonus(player, 16, 30, wolf, SKILL_MELEE, false), 2);
+	eq(crit_bonus(player, 16, 30, wolf, SKILL_MELEE, false, NULL), 2);
 	/* The player is not a monster: no Finesse when the player is hit */
-	eq(crit_bonus(player, 16, 30, NULL, SKILL_MELEE, false), 1);
-	eq(crit_bonus(player, 16, 30, &r_info[0], SKILL_MELEE, false), 1);
+	eq(crit_bonus(player, 16, 30, NULL, SKILL_MELEE, false, NULL), 1);
+	eq(crit_bonus(player, 16, 30, &r_info[0], SKILL_MELEE, false, NULL), 1);
 	take_ability(SKILL_MELEE, "Finesse", false);
 	/* Arrows at the player: (100 * 10 + 4) / (70 + 30) = 10 */
-	eq(crit_bonus(player, 100, 30, &r_info[0], SKILL_ARCHERY, false), 10);
+	eq(crit_bonus(player, 100, 30, &r_info[0], SKILL_ARCHERY, false, NULL), 10);
 	ok;
 }
 

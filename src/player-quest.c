@@ -308,7 +308,7 @@ void prise_silmaril(struct player *p)
 	if (hit_result > 0) {
 		int dummy;
 		int crit_bonus_dice = crit_bonus(p, hit_result, weapon->weight, race,
-										 SKILL_MELEE, false);
+										 SKILL_MELEE, false, NULL);
 		int dam = damroll(p->state.mdd + crit_bonus_dice, mds);
 		int prt = damroll(pd, 4);
 		int prt_percent = prt_after_sharpness(p, weapon, &dummy);

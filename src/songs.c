@@ -259,6 +259,16 @@ int song_bonus(struct player *p, int pskill, struct song *song)
 	return bonus;
 }
 
+/**
+ * Stop the minor theme, leaving the main song playing
+ */
+void player_end_minor_song(struct player *p)
+{
+	p->song[SONG_MINOR] = NULL;
+	p->upkeep->redraw |= (PR_SONG);
+	p->upkeep->update |= (PU_BONUS);
+}
+
 void player_change_song(struct player *p, struct song *song, bool exchange)
 {
 	int song_to_change;

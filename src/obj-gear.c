@@ -1005,9 +1005,21 @@ void inven_takeoff(struct object *obj)
 	player->body.slots[slot].obj = NULL;
 	player->upkeep->equip_cnt--;
 
-	/* Remove all of its abilities from the player */
+	/* Remove its abilities from the player unless another item grants them */
 	for (ability = obj->abilities; ability; ability = ability->next) {
-		remove_ability(&player->item_abilities, ability);
+		bool granted = false;
+		int i;
+
+		for (i = 0; i < player->body.count; i++) {
+			struct object *other = slot_object(player, i);
+			if (other && locate_ability(other->abilities, ability)) {
+				granted = true;
+				break;
+			}
+		}
+		if (!granted) {
+			remove_ability(&player->item_abilities, ability);
+		}
 	}
 
 	player->upkeep->update |= (PU_BONUS | PU_INVEN | PU_UPDATE_VIEW);

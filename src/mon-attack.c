@@ -422,7 +422,7 @@ bool make_attack_normal(struct monster *mon, struct player *p)
 		/* Determine critical-hit bonus dice (if any)
 		 * treats attack as weapon weighing 2 pounds per damage die */
 		crit_bonus_dice = crit_bonus(p, hit_result, 20 * dd, NULL, SKILL_MELEE,
-									 false);
+									 false, mon);
 
 		/* Determine elemental attack bonus dice (if any)  */
 		elem_bonus_dice = elem_bonus(p, effect);

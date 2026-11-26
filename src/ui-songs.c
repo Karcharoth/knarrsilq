@@ -38,7 +38,8 @@ static int get_songs(void)
 	/* Find available songs */
 	while (a) {
 		if ((a->skill == SKILL_SONG) && strstr(a->name, "Song of") &&
-			player_active_ability(player, a->name)) {
+			player_active_ability(player, a->name) &&
+			lookup_song(a->name + strlen("Song of "))) {
 			labels[count] = 'a' + count;
 			songlist[count].swap = false;
 			songlist[count++].song = lookup_song(a->name + strlen("Song of "));

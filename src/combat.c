@@ -632,7 +632,8 @@ int overwhelming_att_mod(struct player *p, struct monster *mon)
  *            Great Sword (7lb):     14, 23, 32, 41...
  */
 int crit_bonus(struct player *p, int hit_result, int weight,
-			   const struct monster_race *race, int skill_type, bool thrown)
+			   const struct monster_race *race, int skill_type, bool thrown,
+			   struct monster *attacker)
 {
 	int crit_bonus_dice;
 	int crit_separation = 70;
@@ -675,6 +676,13 @@ int crit_bonus(struct player *p, int hit_result, int weight,
 		if (rf_has(race->flags, RF_NO_CRIT)) {
 			crit_bonus_dice = 0;
 		}
+	} else if (attacker && player_active_ability(p, "Outwit") &&
+			   (skill_check(source_player(),
+							p->state.skill_use[SKILL_PERCEPTION],
+							monster_skill(attacker, SKILL_PERCEPTION),
+							source_monster(attacker->midx)) > 0)) {
+		/* Outwit negates critical hits on the player */
+		crit_bonus_dice = 0;
 	}
 
 	/* Can't have fewer than zero dice */

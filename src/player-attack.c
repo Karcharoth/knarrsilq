@@ -482,7 +482,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 
 			/* Calculate the damage */
 			crit_bonus_dice = crit_bonus(p, hit_result, weight, race,
-										 SKILL_MELEE, false);
+										 SKILL_MELEE, false, NULL);
 			slay_bonus_dice = slay_bonus(p, obj, mon, &slay, &brand);
 			total_dice = mdd + slay_bonus_dice + crit_bonus_dice;
 
@@ -970,7 +970,7 @@ static struct attack_result make_ranged_shot(struct player *p,
 
 	/* Add 'critical hit' dice based on bow weight */
 	result.crit_dice = crit_bonus(p, result.hit, bow->weight, race,
-								  SKILL_ARCHERY, false);
+								  SKILL_ARCHERY, false, NULL);
 
 	/* Add slay (or brand) dice based on both arrow and bow */
 	slay_bonus_dice = slay_bonus(p, ammo, mon, &arrow_slay, &arrow_brand);
@@ -1067,7 +1067,7 @@ static struct attack_result make_ranged_throw(struct player *p,
 
 	/* Add 'critical hit' dice based on bow weight */
 	result.crit_dice = crit_bonus(p, result.hit, obj->weight, mon->race,
-								  SKILL_MELEE, false);
+								  SKILL_MELEE, false, NULL);
 
 	/* Add slay (or brand) dice based on both arrow and bow */
 	slay_bonus_dice = slay_bonus(p, obj, mon, &slay, &brand);
