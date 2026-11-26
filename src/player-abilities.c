@@ -184,6 +184,7 @@ static errr run_parse_ability(struct parser *p) {
 
 static errr finish_parse_ability(struct parser *p) {
 	struct ability *a;
+	int kidx;
 
 	/* Fill in prerequisite abilities */
 	for (a = abilities; a; a = a->next) {
@@ -201,6 +202,20 @@ static errr finish_parse_ability(struct parser *p) {
 			*tail = pre;
 			tail = &pre->next;
 			i++;
+		}
+	}
+
+	/* Replace the names recorded for object kind abilities by the abilities */
+	for (kidx = 0; kidx < z_info->k_max; kidx++) {
+		struct ability *k_ab;
+		for (k_ab = k_info[kidx].abilities; k_ab; k_ab = k_ab->next) {
+			struct ability *next = k_ab->next;
+			struct ability *stored = lookup_ability(k_ab->skill, k_ab->name);
+			if (!stored)
+				return PARSE_ERROR_INVALID_ABILITY;
+			string_free(k_ab->name);
+			memcpy(k_ab, stored, sizeof(*k_ab));
+			k_ab->next = next;
 		}
 	}
 

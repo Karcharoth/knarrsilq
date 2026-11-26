@@ -1536,6 +1536,31 @@ static enum parser_error parse_object_special(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+/**
+ * Abilities are parsed after object kinds, so only the skill and name are
+ * recorded here; finish_parse_ability() replaces each entry with the ability.
+ */
+static enum parser_error parse_object_ability(struct parser *p) {
+	struct object_kind *k = parser_priv(p);
+	int skill = lookup_skill(parser_getsym(p, "skill"));
+	struct ability *n, **tail;
+
+	if (!k) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+	if (skill < 0) {
+		return PARSE_ERROR_INVALID_SKILL;
+	}
+	n = mem_zalloc(sizeof(*n));
+	n->skill = skill;
+	n->name = string_make(parser_getsym(p, "ability"));
+	tail = &k->abilities;
+	while (*tail) tail = &(*tail)->next;
+	*tail = n;
+
+	return PARSE_ERROR_NONE;
+}
+
 struct parser *init_parse_object(void) {
 	struct parser *p = parser_new();
 	parser_setpriv(p, NULL);
@@ -1565,6 +1590,7 @@ struct parser *init_parse_object(void) {
 	parser_reg(p, "slay str code", parse_object_slay);
 	parser_reg(p, "brand str code", parse_object_brand);
 	parser_reg(p, "special sym value ?int min", parse_object_special);
+	parser_reg(p, "ability sym skill sym ability", parse_object_ability);
 	return p;
 }
 
