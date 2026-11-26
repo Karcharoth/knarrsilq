@@ -914,8 +914,8 @@ text: into the depths, or you could become trapped.
 note:singing note
 text:Some characters learn to sing songs of power, which can
 text: have great effect upon you, your enemies or even your environment.
-text: Your character knows two songs: the Song of Slaying, which provides
-text: a bonus to attack which gets larger the more creatures you kill, and
+text: Your character knows two songs: the Song of Staunching, which stops
+text: you from bleeding and increases the speed at which you heal, and
 text: the Song of the Trees, which increases your light radius. Behind this
 text: door you will find use for both of them. {Command:Change song} to begin
 text: or end singing.
