@@ -346,7 +346,7 @@ glyph:N
 pain:7
 pursuit:6
 warning:5
-flags:BASH_DOOR | KILL_WALL | REGENERATE | MINDLESS | TERRITORIAL
+flags:BASH_DOOR | TUNNEL_WALL | REGENERATE | MINDLESS | TERRITORIAL
 flags:RAND_25 | RAND_50 | FORCE_DEPTH
 desc:Nameless Thing
 

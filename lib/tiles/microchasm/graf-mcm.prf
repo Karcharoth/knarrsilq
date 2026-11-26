@@ -461,16 +461,12 @@ monster:Gilim, the Giant of Eruman:0x89:0x93
 monster:Ruby serpent:0x88:0x9D
 monster:Creeping horror:0x88:0x8D
 monster:Ringrauko:0x8A:0x85
-# Currently chosen to match the tile for the deathblade object.
-monster:Deathblade:0x90:0x84
 monster:Delthaur, Balrog of Terror:0x8A:0x8B
 monster:Nan, the Giant:0x89:0x94
 monster:Cave troll:0x89:0x8E
 monster:Emerald serpent:0x88:0x9E
 monster:Oathwraith:0x87:0x94
 monster:Cat warrior:0x89:0x95
-# Currently chosen to match the tile for the deathblade object.
-monster:The Deathblade 'Delmereth':0x90:0x84
 monster:Amethyst serpent:0x88:0x9F
 monster:Kemenrauko:0x8A:0x86
 monster:Grotesque:0x86:0x99
@@ -486,7 +482,6 @@ monster:Scatha the Worm:0x89:0x9F
 monster:Oikeroi, Guard of Tevildo:0x89:0x98
 monster:Young fire-drake:0x89:0x9B
 monster:Darting horror:0x88:0x8E
-monster:Unmourned:0x87:0x8A
 monster:Ururauko:0x8A:0x87
 monster:Tevildo, Prince of Cats:0x89:0x99
 monster:Turkano, Balrog of the Hosts:0x8A:0x8D

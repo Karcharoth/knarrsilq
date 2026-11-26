@@ -113,6 +113,7 @@ mcat-include-base:ghost
 
 monster-category:Men/Elves
 mcat-include-base:person
+mcat-include-base:thrall
 # Pick up the men or elves with a hallucinatory base.
 mcat-include-glyph:@
 

@@ -1662,23 +1662,6 @@ desc:A chill hangs in the air around this figure which is
 desc: almost that of a person. A cold gleaming blade is in its hand.
 
 
-# Index 144
-name:Deathblade
-base:deathblade
-depth:14
-rarity:8
-color:D
-speed:3
-health:6d4
-sleep:0
-percept:10
-stealth:20
-will:10
-prot:17:5d4
-blow:HIT:HURT:24:1d9
-desc:A black blade, wreathed in shadow.
-
-
 # (Delthaur = abominable horror)
 
 # Index 145
@@ -1767,7 +1750,7 @@ health:8d4
 sleep:15
 percept:7
 stealth:3
-will:8
+will:9
 prot:11:5d4
 blow:BITE:POISON:15:2d6
 flags:SERPENT | ATTR_MULTI | RAND_25
@@ -1783,7 +1766,7 @@ desc: Noxious vapours surround it.
 name:Oathwraith
 base:wraith
 depth:15
-rarity:4
+rarity:6
 color:D
 speed:2
 health:12d4
@@ -1792,9 +1775,9 @@ percept:11
 stealth:10
 will:10
 prot:14:3d4
-blow:TOUCH:HUNGER:19
-flags:DROP_100 | OPEN_DOOR | SMART
-ranged-freq:15
+blow:TOUCH:HUNGER:25
+flags:OPEN_DOOR | SMART
+ranged-freq:20
 spells:HOLD
 desc:A figure that seems made of void, its strangely human shape is cloaked
 desc: in shadow.  It reaches out at you.
@@ -1814,7 +1797,7 @@ health:8d4
 sleep:20
 percept:10
 stealth:10
-will:3
+will:5
 prot:15:1d4
 blow:CLAW:WOUND:18:1d9
 flags:FRIENDS | DROP_33
@@ -1823,27 +1806,6 @@ desc:It is as though a great cat stood like a man.
 desc: You cannot tell whether its long scything claws
 desc: could be natural. It moves with astonishing
 desc: speed and agility.
-
-
-# Index 155
-name:The Deathblade 'Delmereth'
-base:deathblade
-depth:15
-rarity:50
-color:D
-speed:3
-health:10d4
-sleep:0
-percept:10
-stealth:20
-will:13
-prot:19:5d4
-blow:HIT:HURT:30:1d9
-flags:UNIQUE
-drop-artifact:'Delmereth'
-desc:You are filled with dread as you look upon this black blade.
-desc: You know not who forged it, or how.
-desc: 'Horror-feast' is its name. You can feel its hunger.
 
 
 ##### 16 #####
@@ -1861,7 +1823,7 @@ light:-2
 sleep:15
 percept:7
 stealth:3
-will:8
+will:9
 prot:12:5d4
 blow:BITE:DARK:16:2d6
 flags:SERPENT | RAND_25
@@ -1883,12 +1845,12 @@ color:s
 speed:2
 health:10d4
 sleep:10
-percept:7
+percept:6
 stealth:0
-will:12
+will:14
 prot:12:4d4
-blow:HIT:SHATTER:11:4d8
-flags:BASH_DOOR | KILL_WALL | STONE
+blow:HIT:SHATTER:11:4d6
+flags:BASH_DOOR | TUNNEL_WALL | STONE
 flags:RES_COLD | RES_FIRE
 flags:RES_POIS | RES_CRIT
 desc:It seems the very stone from which Angband is hewn
@@ -1959,7 +1921,7 @@ health:12d4
 sleep:20
 percept:13
 stealth:10
-will:6
+will:8
 prot:20:1d4
 blow:CLAW:WOUND:25:1d11
 flags:ESCORT | UNIQUE | MALE | NAME_COMMA
@@ -1984,9 +1946,9 @@ speed:2
 health:36d4
 light:-5
 sleep:5
-percept:8
+percept:9
 stealth:1
-will:13
+will:15
 prot:17:4d4
 blow:HIT:FIRE:22:2d14
 blow:WHIP:DISARM:18:3d8
@@ -1997,6 +1959,29 @@ flags:RES_FIRE | HURT_COLD
 desc:A fell fiery figure, great wings of shadow unfolding around
 desc: him. For many of the Children of Iluvatar, this has been their
 desc: final vision.
+
+
+# Index 167
+name:Spectre
+base:ghost
+depth:16
+rarity:6
+color:w
+speed:2
+health:8d4
+sleep:10
+percept:12
+stealth:8
+will:12
+prot:10
+blow:TOUCH:COLD:20:2d10
+blow:TOUCH:LOSE_GRA:30
+flags:RAND_25
+flags:UNDEAD | FRIENDS | RES_COLD | SMART | HURT_LIGHT
+flags:NO_FEAR | RES_POIS | NO_CONF | NO_SLEEP | RES_CRIT
+flags:PASS_WALL
+desc:An insubstantial and ragged figure, scarcely to be seen.
+desc: Its eyes form two dark pits in a ruined face.
 
 
 
@@ -2011,14 +1996,14 @@ depth:17
 rarity:1
 color:r
 speed:2
-health:16d4
+health:18d4
 light:-1
 sleep:15
-percept:7
+percept:8
 stealth:3
 will:11
 prot:14:1d4
-blow:BITE:ENTRANCE:14:2d13
+blow:BITE:ENTRANCE:16:2d13
 flags:BASH_DOOR | HURT_LIGHT | RES_POIS | SMART
 desc:This great spider was one of the brood laid by the
 desc: Unlight, Ungoliant, in the mountains of Ered Gorgoroth.
@@ -2036,7 +2021,7 @@ color:s
 speed:3
 health:14d4
 sleep:15
-percept:10
+percept:11
 stealth:5
 will:10
 prot:18:2d4
@@ -2127,7 +2112,7 @@ health:35d4
 sleep:30
 percept:9
 stealth:2
-will:15
+will:18
 prot:14:2d4
 blow:CLAW:HURT:20:3d11
 blow:BITE:WOUND:17:2d21
@@ -2153,7 +2138,7 @@ health:18d4
 sleep:15
 percept:13
 stealth:10
-will:7
+will:9
 prot:21:1d4
 blow:CLAW:WOUND:28:1d11
 flags:UNIQUE | MALE | NAME_COMMA
@@ -2178,7 +2163,7 @@ health:30d4
 sleep:30
 percept:9
 stealth:2
-will:15
+will:16
 prot:13:2d4
 blow:CLAW:HURT:18:3d11
 blow:BITE:FIRE:14:2d21
@@ -2205,7 +2190,7 @@ color:r
 speed:4
 health:6d4
 sleep:10
-percept:15
+percept:14
 stealth:3
 will:14
 prot:20:2d4
@@ -2220,23 +2205,25 @@ desc: You would prefer not to see it any closer.
 
 
 # Index 183
-name:Unmourned
-plural:Unmourned
+name:Wraith
 base:wraith
 depth:18
-rarity:6
-color:v
-speed:1
-health:12d4
+rarity:4
+color:s
+speed:2
+health:14d4
 sleep:10
-percept:13
-stealth:10
-will:12
-prot:17:3d4
-blow:TOUCH:HUNGER:22
-flags:PASS_WALL| FRIENDS | SMART
-desc:The shades of elves and men who have rotted away,
-desc: forgotten, in the deep dungeons of Angband.
+percept:15
+stealth:15
+will:15
+prot:13:4d4
+blow:TOUCH:DARK:26:2d8
+flags:OPEN_DOOR
+ranged-freq:10
+spells:HOLD | SLOW
+desc:A mantled shape of void that was once perhaps man or elf,
+desc: but through Morgoth's black arts walks as his servant. Noseless
+desc: it scents the air, turning this way and that.
 
 
 # Index 184
@@ -2254,7 +2241,7 @@ percept:8
 stealth:2
 will:14
 prot:15:2d4
-blow:HIT:FIRE:26:4d10
+blow:HIT:FIRE:26:4d8
 flags:BASH_DOOR | RES_FIRE | HURT_COLD
 desc:A form of pure flame, it is bright to look at and
 desc: hard to tell the shape. A lesser relative, perhaps,
@@ -2275,7 +2262,7 @@ health:14d4
 sleep:15
 percept:14
 stealth:10
-will:8
+will:10
 prot:22:1d4
 blow:CLAW:WOUND:26:1d13
 flags:UNIQUE | MALE | NAME_COMMA
@@ -2300,7 +2287,7 @@ light:-3
 sleep:5
 percept:9
 stealth:1
-will:15
+will:19
 prot:19:5d4
 blow:HIT:FIRE:24:2d16
 blow:WHIP:DISARM:20:3d8
@@ -2372,9 +2359,9 @@ color:W
 speed:3
 health:10d4
 sleep:20
-percept:10
+percept:11
 stealth:7
-will:12
+will:13
 prot:24:1d4
 blow:CLAW:WOUND:25:3d5
 blow:BITE:LOSE_STR_CON:20:2d9
@@ -2392,7 +2379,7 @@ health:70d4
 sleep:5
 percept:5
 stealth:0
-will:12
+will:14
 prot:7:6d4
 blow:CRUSH:ACID:17:5d10
 desc:'Far, far below the deepest delvings of the Dwarves, the world is
@@ -2411,7 +2398,7 @@ health:35d4
 sleep:30
 percept:9
 stealth:2
-will:17
+will:19
 prot:14:2d4
 blow:CLAW:HURT:23:3d11
 blow:BITE:FIRE:19:2d21
@@ -2441,7 +2428,7 @@ stealth:5
 will:18
 prot:23:5d4
 blow:HIT:HURT:33:2d8
-flags:UNIQUE | MALE | NAME_COMMA | DROP_1D2 | UNLOCK_DOOR
+flags:UNIQUE | ELF | MALE | NAME_COMMA | DROP_1D2 | UNLOCK_DOOR
 flags:DROP_GREAT | OPEN_DOOR | BASH_DOOR | TAKE_ITEM | SMART
 flags:RIPOSTE
 drop-artifact:of Maeglin
@@ -2469,7 +2456,7 @@ health:10d4
 sleep:15
 percept:8
 stealth:2
-will:11
+will:12
 prot:16:6d4
 blow:BITE:FIRE:20:2d9
 flags:RES_FIRE | HURT_COLD
@@ -2492,7 +2479,7 @@ health:50d4
 sleep:30
 percept:9
 stealth:0
-will:17
+will:18
 prot:13:2d4
 blow:CLAW:HURT:21:3d13
 blow:BITE:WOUND:16:2d23
@@ -2517,7 +2504,7 @@ health:10d4
 sleep:5
 percept:0
 stealth:20
-will:13
+will:15
 prot:-5:8d4
 flags:NEVER_MOVE | RES_COLD | RES_FIRE
 flags:STONE | SHORT_SIGHTED
@@ -2539,7 +2526,7 @@ desc: or his escape.
 name:Gwathrauko
 base:rauko
 depth:20
-rarity:1
+rarity:4
 color:D
 speed:2
 health:8d4
@@ -2547,7 +2534,7 @@ light:-3
 sleep:10
 percept:8
 stealth:5
-will:15
+will:16
 prot:18:3d4
 blow:HIT:DARK:18:2d8
 flags:BASH_DOOR | HURT_LIGHT
@@ -2564,9 +2551,9 @@ color:W
 speed:3
 health:22d4
 sleep:20
-percept:14
+percept:17
 stealth:5
-will:13
+will:15
 prot:24:3d4
 blow:CLAW:WOUND:26:3d9
 blow:BITE:POISON:23:2d13
@@ -2591,9 +2578,9 @@ speed:3
 health:44d4
 light:-3
 sleep:5
-percept:10
+percept:12
 stealth:1
-will:16
+will:19
 prot:21:5d4
 blow:HIT:FIRE:26:3d12
 blow:WHIP:DISARM:22:3d8
