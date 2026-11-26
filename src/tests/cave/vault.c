@@ -107,7 +107,9 @@ static int test_sunlight_and_thralls(void *state) {
 	struct loc centre = loc(15, 15);
 	struct vault *v = find_vault("Small sunlit shaft");
 	struct loc grid;
-	int sun = 0;
+	int sun = 0, nz = 0, nZ = 0, thralls = 0, thrallmasters = 0;
+	const char *t;
+	struct monster_race *human, *elf, *master;
 
 	require(v);
 	cave = c;
@@ -122,17 +124,45 @@ static int test_sunlight_and_thralls(void *state) {
 	cave = NULL;
 	cave_free(c);
 
-	/* With no thrall races in the data, the squares stay empty floor */
+	/*
+	 * Each 'z' holds a thrall and each 'Z' a thrallmaster when those races
+	 * exist; a square whose race is missing stays empty floor
+	 */
 	c = create_rock_cave(30, 30, 2);
 	cave = c;
 	v = find_vault("Thrall pit 1");
 	require(v);
-	require(!lookup_monster("Dejected human thrall"));
+	for (t = v->text; *t; t++) {
+		if (*t == 'z') nz++;
+		if (*t == 'Z') nZ++;
+	}
+	require(nz > 0 && nZ > 0);
+	human = lookup_monster("Dejected human thrall");
+	elf = lookup_monster("Dejected elven thrall");
+	master = lookup_monster("Orc thrallmaster");
 	require(build_vault(c, centre, v, false));
 	for (grid.y = 0; grid.y < c->height; grid.y++) {
 		for (grid.x = 0; grid.x < c->width; grid.x++) {
-			require(!square(c, grid)->mon);
+			struct monster *mon = square_monster(c, grid);
+
+			if (!mon) continue;
+			if (mon->race == master) {
+				thrallmasters++;
+			} else {
+				require(mon->race == human || mon->race == elf ||
+						mon->race == lookup_monster("Alert human thrall") ||
+						mon->race == lookup_monster("Alert elven thrall"));
+				thralls++;
+			}
 		}
+	}
+	eq(thrallmasters, master ? nZ : 0);
+	if (human && elf) {
+		eq(thralls, nz);
+	} else if (!human && !elf) {
+		eq(thralls, 0);
+	} else {
+		require(thralls <= nz);
 	}
 	cave = NULL;
 	cave_free(c);
