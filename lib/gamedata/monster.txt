@@ -2607,7 +2607,7 @@ health:20d4
 sleep:15
 percept:8
 stealth:3
-will:14
+will:16
 prot:19:1d4
 blow:BITE:POISON:22:2d19
 flags:SMART
@@ -2627,7 +2627,7 @@ health:10d4
 sleep:15
 percept:9
 stealth:2
-will:12
+will:13
 prot:17:6d4
 blow:BITE:POISON:21:2d9
 flags:RES_POIS
@@ -2649,7 +2649,7 @@ health:12d4
 sleep:20
 percept:11
 stealth:7
-will:14
+will:15
 prot:26:1d4
 blow:CLAW:WOUND:29:3d7
 blow:BITE:LOSE_ALL:24:2d9
@@ -2670,7 +2670,7 @@ health:24d4
 sleep:15
 percept:6
 stealth:0
-will:8C
+will:10
 prot:17:4d4
 blow:HIT:BATTER:17:4d10
 flags:UNIQUE | MALE | NAME_COMMA | ESCORT | DROP_1D2 | DROP_GOOD | ELFBANE
@@ -2688,9 +2688,9 @@ color:B
 speed:2
 health:60d4
 sleep:30
-percept:11
+percept:13
 stealth:0
-will:19
+will:22
 prot:14:2d4
 blow:CLAW:HURT:24:3d13
 blow:BITE:WOUND:19:2d23
@@ -2715,9 +2715,9 @@ speed:2
 health:10d4
 light:-3
 sleep:15
-percept:9
+percept:10
 stealth:2
-will:12
+will:14
 prot:18:6d4
 blow:BITE:DARK:22:2d9
 flags:HURT_LIGHT
@@ -2737,9 +2737,9 @@ color:r
 speed:2
 health:50d4
 sleep:30
-percept:10
+percept:12
 stealth:0
-will:18
+will:20
 prot:14:2d4
 blow:CLAW:HURT:23:3d13
 blow:BITE:FIRE:18:2d23
@@ -2766,7 +2766,7 @@ health:4d4
 sleep:10
 percept:9
 stealth:3
-will:16
+will:18
 prot:17:4d4
 blow:ENGULF:HALLU:27:4d5
 flags:PASS_DOOR | INVISIBLE | RES_CRIT | RES_POIS
@@ -2785,10 +2785,10 @@ color:s
 speed:2
 health:22d4
 light:-3
-sleep:10
-percept:9
+sleep:20
+percept:8
 stealth:3
-will:14
+will:16
 prot:20:2d4
 blow:BITE:ENTRANCE:25:2d15
 flags:UNIQUE | FEMALE | NAME_COMMA
@@ -2811,9 +2811,9 @@ speed:2
 health:48d4
 light:-3
 sleep:5
-percept:11
+percept:14
 stealth:1
-will:18
+will:21
 prot:23:5d4
 blow:HIT:FIRE:28:2d18
 blow:WHIP:DISARM:24:3d10
@@ -2841,9 +2841,9 @@ color:w
 speed:2
 health:10d4
 sleep:15
-percept:9
+percept:10
 stealth:2
-will:13
+will:14
 prot:19:6d4
 blow:BITE:WOUND:23:3d9
 flags:RES_FIRE | RES_COLD | RES_POIS
@@ -2863,13 +2863,13 @@ color:T
 speed:1
 health:100d4
 sleep:5
-percept:9
+percept:10
 stealth:2
-will:15
+will:20
 prot:11:3d4
 blow:BITE:POISON:24:6d5
 flags:BASH_DOOR | REGENERATE
-ranged-freq:15
+ranged-freq:25
 spells:SCARE
 desc:You have no idea what could have created the creature
 desc: that shambles towards you -- if creature is the right
@@ -2887,9 +2887,9 @@ color:D
 speed:3
 health:35d4
 sleep:30
-percept:10
+percept:11
 stealth:2
-will:19
+will:22
 prot:17:2d4
 blow:CLAW:HURT:29:3d11
 blow:BITE:FIRE:25:2d21
@@ -2916,9 +2916,9 @@ color:r
 speed:4
 health:16d4
 sleep:10
-percept:13
+percept:15
 stealth:7
-will:16
+will:20
 prot:30:1d4
 blow:CLAW:WOUND:35:3d7
 blow:BITE:LOSE_ALL:29:2d9
@@ -2945,9 +2945,9 @@ speed:2
 health:52d4
 light:-3
 sleep:5
-percept:12
+percept:15
 stealth:1
-will:20
+will:22
 prot:25:6d4
 blow:HIT:FIRE:30:3d14
 blow:WHIP:DISARM:26:3d10
@@ -2972,11 +2972,11 @@ rarity:3
 color:D
 speed:2
 health:36d4
-light:-4
-sleep:10
-percept:10
+light:-6
+sleep:20
+percept:8
 stealth:3
-will:17
+will:24
 prot:20:3d4
 blow:BITE:POISON:24:2d21
 flags:UNIQUE | FEMALE | NAME_COMMA
@@ -3005,7 +3005,7 @@ health:60d4
 sleep:20
 percept:10
 stealth:0
-will:21
+will:24
 prot:16:2d4
 blow:CLAW:HURT:29:3d15
 blow:BITE:FIRE:24:2d25
@@ -3033,9 +3033,9 @@ color:u
 speed:3
 health:30d4
 sleep:10
-percept:18
+percept:20
 stealth:5
-will:21
+will:24
 song:21
 prot:29:3d4
 blow:CLAW:WOUND:31:3d11
@@ -3067,20 +3067,20 @@ depth:25
 rarity:1
 color:D
 speed:2
-health:240d4
+health:160d4
 light:7
 sleep:10
 percept:10
 stealth:0
-will:20
-song:20
-prot:20:6d4
+will:25
+song:25
+prot:20:5d4
 blow:HIT:SHATTER:20:6d10
 flags:UNIQUE | QUESTOR | MALE | NAME_COMMA
 flags:OPEN_DOOR | UNLOCK_DOOR | BASH_DOOR
 flags:TUNNEL_WALL
 flags:DROP_3D2 | DROP_GREAT
-flags:SMART | REGENERATE
+flags:SMART
 flags:NO_FEAR
 ranged-freq:25
 spells:EARTHQUAKE | SNG_BIND | SNG_PIERCE
@@ -3112,7 +3112,7 @@ health:30d4
 sleep:20
 percept:20
 stealth:5
-will:17
+will:20
 prot:30:2d4
 blow:BITE:POISON:29:2d17
 flags:UNIQUE | MALE | NAME_COMMA | FORCE_DEPTH
@@ -3257,6 +3257,16 @@ depth:30
 rarity:20
 glyph:V
 color:b
+flags:UNIQUE | MALE | NAME_COMMA
+
+
+# Index 323
+name:Aule, the Smith
+base:hallucinatory
+depth:30
+rarity:20
+glyph:V
+color:r
 flags:UNIQUE | MALE | NAME_COMMA
 
 
