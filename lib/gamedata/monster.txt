@@ -254,11 +254,11 @@ color:u
 speed:3
 health:6d4
 sleep:20
-percept:4
+percept:2
 stealth:3
 will:1
-prot:2:1d4
-blow:BITE:HURT:1:2d4
+prot:1:1d4
+blow:BITE:WOUND:3:2d3
 flags:FRIENDS | RAND_25
 desc:This ragged wolf is part of the orcish packs.
 
@@ -270,22 +270,114 @@ depth:1
 rarity:1
 color:s
 speed:2
-health:8d4
+health:4d4
 sleep:0
 percept:0
 stealth:0
 will:0
-prot:-5:2d4
+prot:-5:1d4
 blow:THORN:WOUND:5:3d3
 flags:FRIEND
 desc:'... great writhing, tangled brambles sprawled. Some had long stabbing
 desc: thorns, some hooked barbs that rent like knives.'
 
 
+# Index 13
+name:Dejected human thrall
+base:thrall
+depth:1
+rarity:0
+color:g
+speed:2
+health:8d4
+sleep:60
+percept:1
+stealth:0
+will:1
+prot:0
+flags:MAN | NEVER_MOVE | NEVER_BLOW | PEACEFUL | SPECIAL_GEN
+desc:A scarred and dirty man clad only in a loincloth. A metal collar
+desc: is about his neck, and a long chain leads from it to the wall.
+
+
+# Index 14
+name:Dejected elven thrall
+base:thrall
+depth:1
+rarity:0
+color:g
+speed:2
+health:10d4
+sleep:60
+percept:1
+stealth:0
+will:2
+prot:0
+flags:ELF | NEVER_MOVE | NEVER_BLOW | PEACEFUL | SPECIAL_GEN
+desc:A chained elf slumps here, filthy hair hanging to his shoulders
+desc: and eyes vacant. His back and arms bear the marks of a whip.
+
+
+# Index 15
+name:Orc thrallmaster
+base:orc
+depth:1
+rarity:0
+color:g
+speed:2
+health:6d4
+sleep:0
+percept:5
+stealth:4
+will:2
+prot:8:1d4
+blow:HIT:HURT:12:1d6
+blow:WHIP:DISARM:8:1d4
+flags:BASH_DOOR | SPECIAL_GEN | UNLOCK_DOOR | TERRITORIAL
+desc:He is one of Morgoth's grim mockeries of the firstborn.
+desc: Clad in tattered leather, he wields a cudgel and a whip.
+
+
+# Index 16
+name:Alert human thrall
+base:thrall
+depth:1
+rarity:0
+color:G
+speed:2
+health:8d4
+sleep:0
+percept:10
+stealth:0
+will:1
+prot:0
+flags:MAN | NEVER_MOVE | NEVER_BLOW | PEACEFUL | SPECIAL_GEN
+desc:A scarred and dirty man shackled to the wall with a long chain.
+desc: His head is raised and he takes in his surroundings alertly.
+
+
+# Index 17
+name:Alert elven thrall
+base:thrall
+depth:1
+rarity:0
+color:G
+speed:2
+health:10d4
+sleep:0
+percept:10
+stealth:0
+will:2
+prot:0
+flags:ELF | NEVER_MOVE | NEVER_BLOW | PEACEFUL | SPECIAL_GEN
+desc:A chained elf crouches here, filthy hair hanging to his shoulders.
+desc: Dried blood encrusts a noble face. His eyes are fixed on you.
+
+
 ##### 2 #####
 
 # Index 21
-name:Orc
+name:Orc skirmisher
 base:orc
 depth:2
 rarity:1
@@ -293,7 +385,7 @@ color:u
 speed:2
 health:7d4
 sleep:15
-percept:2
+percept:1
 stealth:1
 will:1
 prot:3:1d4
@@ -312,7 +404,7 @@ color:u
 speed:4
 health:1d4
 sleep:5
-percept:6
+percept:4
 stealth:4
 will:1
 prot:7
@@ -331,8 +423,8 @@ rarity:1
 color:D
 speed:2
 health:6d4
-sleep:12
-percept:6
+sleep:15
+percept:4
 stealth:5
 will:1
 prot:4:1d4
@@ -347,20 +439,19 @@ desc: attract attention. It has a crude spear.
 
 # Index 32
 name:Spider hatchling
-base:spider
+base:small spider
 depth:3
-rarity:1
-glyph:m
+rarity:2
 color:U
 speed:2
 health:1d4
-sleep:15
-percept:2
+sleep:20
+percept:1
 stealth:8
 will:2
 prot:5
 blow:BITE:POISON:5:1d7
-flags:FRIENDS
+flags:FRIENDS | RES_POIS
 desc:Monstrous newly-hatched spiders; already the height of a dog.
 desc: They would probably present little threat, but for the
 desc: venom in their bite...
@@ -375,11 +466,11 @@ color:b
 speed:2
 health:2d4
 sleep:15
-percept:2
+percept:1
 stealth:3
 will:1
 prot:3:4d4
-blow:BITE:HURT:4:2d4
+blow:BITE:HURT:5:2d5
 flags:SERPENT | RAND_50
 flags:RES_COLD | HURT_FIRE
 ranged-freq:20
@@ -400,7 +491,7 @@ color:s
 speed:2
 health:8d4
 sleep:15
-percept:3
+percept:1
 stealth:1
 will:2
 prot:3:2d4
@@ -440,7 +531,7 @@ color:D
 speed:4
 health:1d4
 sleep:15
-percept:4
+percept:2
 stealth:3
 will:1
 prot:9
@@ -448,6 +539,27 @@ blow:PECK:BLIND:10:1d5
 flags:FRIEND | RAND_25
 desc:A dark creature, related to the crow. It pecks at any exposed flesh,
 desc: especially the face and eyes.
+
+
+# Index 44
+name:Brood spider
+base:spider
+depth:4
+rarity:3
+color:U
+speed:1
+health:14d4
+sleep:10
+percept:5
+stealth:2
+will:2
+prot:6
+blow:BITE:POISON:12:2d8
+flags:RES_POIS
+ranged-freq:10
+spells:HATCH_SPIDER
+desc:A huge ponderous spider with clusters of eggs on its back.
+desc: Its hairy mandibles are wet with a dark fluid.
 
 
 ##### 5 #####
@@ -462,7 +574,7 @@ color:U
 speed:2
 health:7d4
 sleep:15
-percept:3
+percept:1
 stealth:3
 will:3
 prot:4:1d4
@@ -486,11 +598,11 @@ color:w
 speed:3
 health:8d4
 sleep:20
-percept:5
+percept:3
 stealth:3
 will:1
 prot:6:1d4
-blow:BITE:HURT:5:2d5
+blow:BITE:WOUND:8:2d4
 flags:FRIENDS | RAND_25 | RES_COLD
 desc:A large and fierce wolf from the northern wastes.
 
@@ -504,11 +616,11 @@ color:r
 speed:2
 health:2d4
 sleep:15
-percept:3
+percept:1
 stealth:3
 will:2
 prot:5:4d4
-blow:BITE:HURT:6:2d5
+blow:BITE:HURT:7:2d6
 flags:SERPENT | RAND_50
 flags:RES_FIRE | HURT_COLD
 ranged-freq:20
@@ -527,14 +639,17 @@ color:G
 speed:2
 health:12d4
 sleep:15
-percept:4
+percept:2
 stealth:1
 will:5
 prot:4:3d4
 blow:HIT:HURT:6:3d7
 flags:UNIQUE | NAME_COMMA | ESCORT
 flags:DROP_100 | DROP_GOOD | BASH_DOOR | UNLOCK_DOOR
-desc:A captain of a orcish band, Gorgol keeps his troop in
+ranged-freq:5
+spell-power:12
+spells:RALLY
+desc:A captain of an orcish band, Gorgol keeps his troop in
 desc: order with displays of violence.
 
 
@@ -550,7 +665,7 @@ color:W
 speed:2
 health:9d4
 sleep:15
-percept:4
+percept:2
 stealth:1
 will:4
 prot:5:2d4
@@ -569,7 +684,7 @@ color:s
 speed:3
 health:12d4
 sleep:15
-percept:3
+percept:1
 stealth:2
 will:3
 prot:7:1d4
@@ -588,7 +703,7 @@ color:s
 speed:4
 health:1d4
 sleep:15
-percept:10
+percept:6
 stealth:4
 will:2
 prot:11
@@ -599,25 +714,23 @@ spells:SHRIEK
 desc:A type of crow, specially bred by the forces of evil as spies.
 
 
-# Index 64
+# Index 23
 name:Mewlip
 base:horror
-depth:6
-rarity:3
+depth:2
+rarity:1
 color:u
-speed:2
-health:14d4
-sleep:15
-percept:5
+speed:3
+health:5d4
+sleep:5
+percept:1
 stealth:3
-will:6
-prot:4:2d4
-blow:CLAW:WOUND:8:3d4
+will:1
+prot:1:2d4
+blow:CLAW:WOUND:6:2d4
 flags:DROP_100 | OPEN_DOOR | UNLOCK_DOOR | BASH_DOOR | SMART
-ranged-freq:20
-spells:SCARE | FORGET
-message-vis:FORGET:{name} rings its bell.
-message-invis:FORGET:{name} rings its bell.
+ranged-freq:15
+spells:DIM
 desc:An evil swamp dwelling creature that feeds on the bones
 desc: of those who draw near.
 
@@ -626,23 +739,25 @@ desc: of those who draw near.
 
 
 # Index 71
-name:Orc thief
-plural:Orc thieves
-base:orc
+name:Attercop
+base:small spider
 depth:7
-rarity:3
-color:g
-speed:2
-health:7d4
+rarity:1
+color:D
+speed:3
+health:3d4
 sleep:10
-percept:6
+percept:2
 stealth:10
-will:4
+will:3
 prot:10:1d4
-blow:HIT:HURT:10:1d8
-blow:TOUCH:EAT_ITEM:7
-flags:DROP_100 | BASH_DOOR | TAKE_ITEM | UNLOCK_DOOR
-desc:He is one of Morgoth's grim mockeries of the firstborn.
+blow:BITE:ENTRANCE:6:1d8
+flags:RES_POIS | FRIENDS | SMART
+ranged-freq:5
+spell-power:8
+spells:THROW_WEB
+desc:A spider as big as a dog, covered in thick bristles, with the light
+desc: reflecting off its pale bulbous eyes.
 
 
 # Index 72
@@ -672,12 +787,12 @@ color:g
 speed:2
 health:2d4
 sleep:10
-percept:4
+percept:2
 stealth:3
 will:2
 prot:7:4d4
-blow:BITE:HURT:8:2d6
-flags:SERPENT | RAND_50
+blow:BITE:HURT:8:2d7
+flags:SERPENT | RAND_50 | RES_POIS
 ranged-freq:20
 spell-power:2
 spells:BR_POIS
@@ -694,7 +809,7 @@ color:W
 speed:2
 health:14d4
 sleep:15
-percept:2
+percept:1
 stealth:0
 will:2
 prot:3:2d4
@@ -712,7 +827,7 @@ color:m
 speed:1
 health:4d4
 sleep:10
-percept:8
+percept:6
 stealth:5
 will:5
 prot:5:3d4
@@ -734,11 +849,11 @@ color:y
 speed:2
 health:13d4
 sleep:15
-percept:5
+percept:4
 stealth:1
 will:6
 prot:6:3d4
-blow:HIT:HURT:12:1d15
+blow:HIT:HURT:11:1d16
 flags:UNIQUE | NAME_COMMA | ESCORTS | NO_FEAR
 flags:BASH_DOOR | UNLOCK_DOOR
 flags:DROP_1D2 | DROP_GOOD

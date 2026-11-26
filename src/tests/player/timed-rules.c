@@ -446,7 +446,7 @@ static int test_afraid_bump(void *state) {
 
 	clear_all_timed();
 	square_set_feat(cave, grid, FEAT_FLOOR);
-	mon = t_add_monster(cave, grid, "Orc");
+	mon = t_add_monster(cave, grid, "Orc skirmisher");
 	mflag_on(mon->mflag, MFLAG_VISIBLE);
 	player->timed[TMD_AFRAID] = 100;
 	player->attacked = false;

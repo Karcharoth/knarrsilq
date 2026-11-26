@@ -96,6 +96,16 @@ warning:5
 flags:SPIDER | TERRITORIAL
 desc:Spider
 
+# - m   (small spiders)
+#     - as spiders, but make no noise in pain
+#
+name:small spider
+glyph:m
+pursuit:6
+warning:5
+flags:SPIDER | TERRITORIAL
+desc:Small spider
+
 # - I   (insects)
 #     - very quick
 #     - very erratic
@@ -140,6 +150,17 @@ warning:1
 flags:MALE | OPEN_DOOR | SMART
 desc:Man/Elf
 
+# - @   (thralls)
+#     - chained: cannot open doors
+#
+name:thrall
+glyph:@
+pain:6
+pursuit:1
+warning:1
+flags:MALE | SMART
+desc:Thrall
+
 # - W   (wights and wraiths)
 #     - intelligent
 #     - light sensitive
@@ -155,6 +176,15 @@ warning:5
 flags:UNDEAD | HURT_LIGHT | RES_COLD | SMART
 flags:NO_FEAR | RES_POIS | NO_CONF | NO_SLEEP | RES_CRIT
 desc:Wight/Wraith
+
+# - w   (ghosts)
+#     - silent in pain
+#
+name:ghost
+glyph:w
+pursuit:6
+warning:5
+desc:Ghost
 
 # - T   (trolls)
 #     - groups

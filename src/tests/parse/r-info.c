@@ -411,6 +411,8 @@ static int test_depth0(void *state) {
 	mr = parser_priv(state);
 	require(mr);
 	eq(mr->level, 42);
+	/* Depth is not a default spell power */
+	eq(mr->spell_power, 0);
 	ok;
 }
 

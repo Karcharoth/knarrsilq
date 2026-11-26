@@ -27,7 +27,7 @@ static int test_match_monster_bases(void *state) {
 	struct monster_base *base;
 
 	/* Scruffy little dog */
-	base = (&r_info[3])->base;
+	base = (lookup_monster("Orc skirmisher"))->base;
 	require(match_monster_bases(base, "orc", NULL));
 	require(match_monster_bases(base, "zephyr hound", "orc", NULL));
 	require(!match_monster_bases(base, "angel", NULL));
