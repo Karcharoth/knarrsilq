@@ -109,6 +109,7 @@ mcat-include-glyph:V
 
 monster-category:Wights/Wraiths
 mcat-include-base:wraith
+mcat-include-base:ghost
 
 monster-category:Men/Elves
 mcat-include-base:person

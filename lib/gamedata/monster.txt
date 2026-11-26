@@ -870,7 +870,7 @@ color:b
 speed:2
 health:11d4
 sleep:15
-percept:4
+percept:3
 stealth:1
 will:5
 prot:5:3d4
@@ -890,12 +890,12 @@ speed:2
 health:10d4
 light:1
 sleep:15
-percept:4
+percept:3
 stealth:1
 will:7
 prot:5:3d4
 blow:HIT:HURT:7:2d8
-flags:MALE | DROP_33 | OPEN_DOOR | BASH_DOOR | FRIENDS
+flags:MAN | MALE | DROP_33 | OPEN_DOOR | BASH_DOOR | FRIENDS
 flags:SMART
 flags:FLANKING
 drop:light:Wooden Torch:33:1d1
@@ -915,13 +915,53 @@ color:y
 speed:4
 health:2d4
 sleep:5
-percept:5
+percept:3
 stealth:1
 will:5
 prot:14
 blow:STING:CONFUSE:13:1d7
 flags:FLYING | RAND_25 | RAND_50 | FRIENDS | TERRITORIAL
 desc:A giant buzzing wasp, its stinger drips venom.
+
+# Index 84
+name:Balcmeg, the Relentless
+base:orc
+depth:8
+rarity:20
+color:o
+speed:2
+health:15d4
+sleep:15
+percept:3
+stealth:1
+will:9
+prot:4:4d4
+blow:HIT:HURT:8:3d8
+flags:UNIQUE | NAME_COMMA | BASH_DOOR
+flags:DROP_100 | UNIQUE_FRIEND | DROP_GOOD
+desc:A huge champion of the orcs, clad in thick black armor
+desc: and carrying a shield and much-notched axe. He is
+desc: scarred of face and his eyes are small and baleful.
+
+# Index 85
+name:Lug, the Grotesque
+base:orc
+depth:8
+rarity:20
+color:v
+speed:2
+health:10d4
+sleep:15
+percept:5
+stealth:1
+will:5
+prot:16:2d4
+blow:HIT:HURT:16:1d7
+flags:UNIQUE | NAME_COMMA | UNLOCK_DOOR
+flags:DROP_100 | UNIQUE_FRIEND | DROP_GREAT | CRUEL_BLOW
+desc:A small and exceptionally ugly orc, wearing dark leather
+desc: and carrying a short broad blade which he tosses from
+desc: one hand to the other with unsettling dexterity.
 
 
 
@@ -939,15 +979,14 @@ color:r
 speed:2
 health:10d4
 sleep:15
-percept:5
+percept:4
 stealth:1
 will:6
 prot:7:3d4
 blow:HIT:HURT:10:2d8
-blow:WHIP:DISARM:6:2d4
 flags:ESCORT | DROP_1D2 | BASH_DOOR | UNLOCK_DOOR
-desc:An armoured orc with sword and whip.
-desc: He leads a patrol of lesser orcs.
+desc:An armoured orc that walks with confidence. His curved blade
+desc: has many notches along its edge.
 
 
 # Index 92
@@ -959,11 +998,11 @@ color:s
 speed:3
 health:10d4
 sleep:20
-percept:8
+percept:6
 stealth:4
 will:6
 prot:10:1d4
-blow:BITE:HURT:9:2d7
+blow:BITE:WOUND:12:2d5
 flags:FRIENDS | RAND_25 | BASH_DOOR | SMART
 desc:It is a great wolf with eyes full of cunning.
 
@@ -977,7 +1016,7 @@ color:U
 speed:2
 health:4d4
 sleep:10
-percept:8
+percept:6
 stealth:5
 will:6
 prot:7:3d4
@@ -999,11 +1038,11 @@ color:v
 speed:2
 health:2d4
 sleep:10
-percept:5
+percept:4
 stealth:3
 will:3
 prot:9:4d4
-blow:BITE:HURT:10:2d7
+blow:BITE:HURT:10:2d8
 flags:SERPENT | RAND_50
 ranged-freq:20
 spell-power:2
@@ -1021,9 +1060,9 @@ color:B
 speed:2
 health:15d4
 sleep:15
-percept:6
+percept:5
 stealth:1
-will:7
+will:8
 prot:8:3d4
 blow:HIT:HURT:10:3d10
 flags:UNIQUE | NAME_COMMA | ESCORT
@@ -1036,10 +1075,9 @@ desc:The chief champion of the orcs of Morgoth.
 
 # Index 101
 name:Whispering shadow
-base:wraith
+base:ghost
 depth:10
 rarity:1
-glyph:w
 color:D
 speed:1
 health:6d4
@@ -1051,8 +1089,10 @@ will:5
 prot:5
 blow:TOUCH:DARK:6:2d6
 flags:RAND_25 | RAND_50 | FRIEND | MULTIPLY | TERRITORIAL
+flags:UNDEAD | HURT_LIGHT | RES_COLD
+flags:NO_FEAR | RES_POIS | NO_CONF | NO_SLEEP | RES_CRIT
 desc:A flickering darkness, spreading through the halls.
-desc: From its midst, you hear faint sounds (voices?)
+desc: From its midst, you hear faint voices
 desc: yearning, beckoning.
 
 
@@ -1063,13 +1103,13 @@ depth:10
 rarity:1
 color:u
 speed:2
-health:18d4
+health:20d4
 sleep:15
-percept:5
+percept:4
 stealth:3
 will:5
 prot:7
-blow:BITE:POISON:7:2d11
+blow:BITE:POISON:9:2d11
 flags:RES_POIS
 desc:It is a vast spider whose bulbous body is bloated with poison.
 
@@ -1084,12 +1124,12 @@ speed:2
 health:9d4
 light:1
 sleep:15
-percept:5
+percept:4
 stealth:3
 will:7
 prot:9:2d4
 blow:HIT:HURT:9:1d7
-flags:MALE | DROP_33 | OPEN_DOOR | BASH_DOOR | FRIEND
+flags:MAN | MALE | DROP_33 | OPEN_DOOR | BASH_DOOR | FRIEND
 flags:SMART
 ranged-freq:75
 spell-power:11
@@ -1112,7 +1152,7 @@ color:r
 speed:4
 health:2d4
 sleep:15
-percept:8
+percept:7
 stealth:4
 will:4
 prot:17:1d4
@@ -1134,7 +1174,7 @@ health:15d4
 sleep:15
 percept:6
 stealth:1
-will:8
+will:9
 prot:9:4d4
 blow:HIT:HURT:15:2d9
 blow:WHIP:DISARM:12:2d4
@@ -1157,7 +1197,7 @@ color:w
 speed:2
 health:16d4
 sleep:15
-percept:3
+percept:2
 stealth:0
 will:3
 prot:7:2d4
@@ -1178,9 +1218,9 @@ color:W
 speed:2
 health:4d4
 sleep:10
-percept:9
+percept:7
 stealth:5
-will:7
+will:8
 prot:8:3d4
 blow:HIT:HURT:13:2d9
 blow:TOUCH:LOSE_GRA:13
@@ -1223,13 +1263,13 @@ speed:2
 health:30d4
 light:2
 sleep:15
-percept:2
+percept:1
 stealth:0
 will:7
 prot:5:1d4
 blow:HIT:HURT:6:4d9
 flags:DROP_100
-ranged-freq:10
+ranged-freq:15
 spell-power:6
 spells:BOULDER
 desc:As tall as three men, this hulking opponent is crudely
@@ -1248,7 +1288,7 @@ light:1
 sleep:15
 percept:6
 stealth:1
-will:9
+will:11
 prot:13:3d4
 blow:HIT:HURT:16:2d7
 ranged-freq:75
@@ -1256,7 +1296,7 @@ spell-power:21
 spells:ARROW1
 drop:arrow:Arrow:37:2d8
 drop:light:Wooden Torch:33:1d1
-flags:UNIQUE | MALE | NAME_COMMA | DROP_100 | ESCORT | SMART
+flags:UNIQUE | MAN | MALE | NAME_COMMA | DROP_100 | ESCORT | SMART
 flags:DROP_GOOD | OPEN_DOOR | BASH_DOOR | TAKE_ITEM | UNLOCK_DOOR
 flags:CRIPPLING
 desc:Son of Ulfang, the Black, and the leader in the treason against
@@ -1276,7 +1316,7 @@ health:8d4
 sleep:10
 percept:12
 stealth:5
-will:10
+will:12
 prot:8:3d4
 blow:TOUCH:LOSE_CON:15
 blow:HIT:HURT:15:2d9
@@ -1305,12 +1345,12 @@ speed:2
 health:8d4
 light:1
 sleep:5
-percept:15
+percept:12
 stealth:15
 will:8
 prot:13:1d4
 blow:HIT:HURT:12:1d8
-flags:MALE | DROP_33 | OPEN_DOOR | UNLOCK_DOOR
+flags:MAN | MALE | DROP_33 | OPEN_DOOR | UNLOCK_DOOR
 flags:SMART
 ranged-freq:20
 spell-power:15
@@ -1353,7 +1393,7 @@ color:W
 speed:2
 health:5d4
 sleep:10
-percept:6
+percept:7
 stealth:5
 will:10
 prot:14:2d4
@@ -1374,7 +1414,7 @@ health:10d4
 sleep:30
 percept:5
 stealth:2
-will:8
+will:9
 prot:11:1d4
 blow:BITE:FIRE:13:2d5
 flags:RAND_25 | FRIEND
@@ -1399,10 +1439,10 @@ light:1
 sleep:15
 percept:6
 stealth:1
-will:10
+will:11
 prot:13:4d4
 blow:HIT:HURT:19:2d8
-flags:UNIQUE | MALE | DROP_2D2 | ESCORT | SMART
+flags:UNIQUE | MAN | MALE | DROP_2D2 | ESCORT | SMART
 flags:DROP_GOOD | OPEN_DOOR | BASH_DOOR | TAKE_ITEM
 flags:OPPORTUNIST
 drop:light:Wooden Torch:33:1d1
@@ -1425,9 +1465,9 @@ speed:2
 health:28d4
 light:-3
 sleep:5
-percept:6
+percept:7
 stealth:1
-will:11
+will:12
 prot:13:4d4
 blow:HIT:FIRE:18:2d12
 blow:WHIP:DISARM:14:3d6
@@ -1456,7 +1496,7 @@ health:12d4
 sleep:15
 percept:9
 stealth:7
-will:8
+will:9
 prot:14:2d4
 blow:CLAW:WOUND:16:3d5
 blow:BITE:POISON:13:2d9
@@ -1473,12 +1513,12 @@ depth:13
 rarity:1
 color:D
 speed:3
-health:12d4
+health:14d4
 light:-2
 sleep:15
 percept:6
 stealth:3
-will:7
+will:8
 prot:10:1d4
 blow:BITE:BLIND:11:2d9
 flags:RES_POIS | HURT_LIGHT
@@ -1494,7 +1534,7 @@ color:d
 speed:2
 health:3d4
 sleep:0
-percept:8
+percept:6
 stealth:10
 will:8
 prot:13:3d4
@@ -1537,9 +1577,9 @@ speed:2
 health:35d4
 light:2
 sleep:15
-percept:4
+percept:5
 stealth:0
-will:9
+will:10
 prot:9:1d4
 blow:HIT:COLD:10:4d9
 flags:DROP_1D2 | DROP_GOOD
@@ -1614,9 +1654,9 @@ health:10d4
 sleep:10
 percept:6
 stealth:3
-will:11
+will:12
 prot:14:2d4
-blow:HIT:COLD:15:2d10
+blow:HIT:COLD:15:2d8
 flags:BASH_DOOR | RES_COLD | HURT_FIRE
 desc:A chill hangs in the air around this figure which is
 desc: almost that of a person. A cold gleaming blade is in its hand.
@@ -1654,7 +1694,7 @@ light:-3
 sleep:5
 percept:7
 stealth:1
-will:12
+will:14
 prot:15:4d4
 blow:HIT:FIRE:20:3d10
 blow:WHIP:DISARM:16:3d8
@@ -1681,7 +1721,7 @@ light:2
 sleep:15
 percept:5
 stealth:0
-will:9
+will:11
 prot:11:1d4
 blow:HIT:HURT:15:3d13
 flags:DROP_1D2 | DROP_GOOD
