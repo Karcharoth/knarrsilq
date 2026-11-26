@@ -106,6 +106,54 @@ static void flavor_assign_random(uint8_t tval)
 }
 
 /**
+ * Is today Easter Sunday (by the local date)?  If so, herbs become easter eggs.
+ */
+bool easter_time(void)
+{
+	time_t c = time(NULL);
+	struct tm *tp = localtime(&c);
+	int y = tp->tm_year + 1900;
+	int a = y % 19;
+	int b = y / 100;
+	int cent = y % 100;
+	int d = b / 4;
+	int e = b % 4;
+	int f = (b + 8) / 25;
+	int g = (b - f + 1) / 3;
+	int h = (19 * a + b - d - g + 15) % 30;
+	int i = cent / 4;
+	int k = cent % 4;
+	int l = (32 + 2 * e + 2 * i - h - k) % 7;
+	int m = (a + 11 * h + 22 * l) / 451;
+	int month = (h + l - 7 * m + 114) / 31;
+	int day = ((h + l - 7 * m + 114) % 31) + 1;
+
+	return (tp->tm_mon + 1 == month) && (tp->tm_mday == day);
+}
+
+/**
+ * Give each flavoured herb the easter egg flavour whose index is 20 more
+ * than that of its own flavour.
+ */
+static void flavor_assign_easter(void)
+{
+	int i;
+
+	for (i = 0; i < z_info->k_max; i++) {
+		struct object_kind *kind = &k_info[i];
+		struct flavor *f;
+
+		if (kind->tval != TV_HERB || !kind->flavor) continue;
+		for (f = flavors; f; f = f->next) {
+			if (f->tval == TV_EASTER && f->fidx == kind->flavor->fidx + 20) {
+				kind->flavor = f;
+				break;
+			}
+		}
+	}
+}
+
+/**
  * Prepare the "variable" part of the "k_info" array.
  *
  * The "color"/"metal"/"type" of an item is its "flavor".
@@ -158,6 +206,10 @@ void flavor_init(void)
 	flavor_assign_random(TV_HORN);
 	flavor_assign_random(TV_HERB);
 	flavor_assign_random(TV_POTION);
+
+	if (easter_time()) {
+		flavor_assign_easter();
+	}
 
 	/* Use the "complex" RNG */
 	Rand_quick = false;

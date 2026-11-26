@@ -246,7 +246,6 @@ object:crown:Massive Iron Crown:0x80:0x94
 
 ##### Armor #####
 
-object:soft armor:Filthy Rag:0x80:0xA3
 object:soft armor:Robe:0x80:0xA4
 object:soft armor:Leather Armour:0x80:0xA8
 object:soft armor:Studded Leather:0x80:0xAB
@@ -269,11 +268,9 @@ object:shield:Mithril Shield:0x80:0xA2
 
 ##### Edged Weapons #####
 
-object:sword:Broken Sword:0x8a:0x82
 object:sword:Dagger:0x8a:0x83
 object:sword:Curved Sword:0x8a:0x8B
 object:sword:Shortsword:0x8a:0x88
-object:sword:Deathblade:0x8a:0x91
 object:sword:Longsword:0x8a:0x8D
 object:sword:Bastard Sword:0x8a:0xC2
 object:sword:Greatsword:0x8a:0x90
@@ -291,7 +288,7 @@ object:polearm:Glaive:0x8a:0xA5
 object:polearm:Awl-Pike:0x8a:0x9E
 object:polearm:Trident:0x8a:0x9D
 object:polearm:Halberd:0x8a:0xA6
-object:polearm:Throwing Axe:0x8a:0xe6
+object:polearm:Hand Axe:0x8a:0xe6
 object:polearm:Battle Axe:0x8a:0xA1
 object:polearm:Great Axe:0x8a:0xA8
 
@@ -302,7 +299,6 @@ object:polearm:Great Axe:0x8a:0xA8
 
 object:hafted:Quarterstaff:0x8a:0x95
 object:hafted:War Hammer:0x8a:0x93
-object:hafted:Sceptre:0x8a:0x94
 
 
 
@@ -322,7 +318,6 @@ object:helm:Great Helm:0x80:0x90
 object:helm:Dwarf Mask:0x80:0xEB
 object:helm:Mithril Helm:0x80:0x8E
 object:crown:Crown:0x80:0x92
-object:crown:Jewelled Crown:0x80:0x93
 
 
 

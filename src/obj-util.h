@@ -27,6 +27,7 @@
 
 struct player;
 
+bool easter_time(void);
 void flavor_init(void);
 void flavor_set_all_aware(void);
 void object_flags(const struct object *obj, bitflag flags[OF_SIZE]);

@@ -1045,8 +1045,8 @@ place-object:O(34,13):potion:Quickness:1
 place-complex-object:O(51,8):mail:Mail Corslet:1:of Protection:NONE:NONE[0]
 place-object:O(52,8):potion:Dexterity:1
 place-complex-object:O(50,9):crown:Crown:1:of Defiance:NONE:NONE[0]
-place-object:O(51,9):ring:Damage:1
-place-object:O(52,9):amulet:Adornment:1
+place-object:O(51,9):ring:Cowardice:1
+place-object:O(52,9):amulet:Last Chances:1
 place-complex-object:O(51,10):arrow:Arrow:48:(Poisoned):NONE:NONE[0]
 gate:G(9,22):EXIT:down staircase:easy exit note
 gate:G(54,8):EXIT:up staircase:hard exit note

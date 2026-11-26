@@ -295,7 +295,6 @@ object:shield:Mithril Shield:0x88:0x93
 object:sword:Dagger:0x89:0x83
 object:sword:Curved Sword:0x89:0x85
 object:sword:Shortsword:0x89:0x84
-object:sword:Deathblade:0x89:0x87
 object:sword:Longsword:0x89:0x85
 object:sword:Bastard Sword:0x89:0x85
 object:sword:Greatsword:0x89:0x85
@@ -321,7 +320,6 @@ object:polearm:Great Axe:0x89:0x90
 
 object:hafted:Quarterstaff:0x89:0x8E
 object:hafted:War Hammer:0x89:0x8F
-object:hafted:Sceptre:0x89:0x8C
 
 
 ##### Digging Tools #####
@@ -339,7 +337,6 @@ object:helm:Great Helm:0x88:0x84
 object:helm:Dwarf Mask:0x8B:0x8A
 object:helm:Mithril Helm:0x88:0x85
 object:crown:Crown:0x88:0x87
-object:crown:Jewelled Crown:0x88:0x88
 
 
 

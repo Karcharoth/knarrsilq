@@ -194,6 +194,30 @@ flavor:130:White:Pale
 #G:,:g1
 #D:Leafy
 
+##### Easter eggs (herbs on Easter Sunday) #####
+
+kind:easter:,
+
+flavor:141:Red:Bright Red
+
+flavor:142:Light Green:Bright Green
+
+flavor:143:Yellow:Golden
+
+flavor:144:Light Blue:Sky Blue
+
+flavor:145:Light Umber:Copper
+
+flavor:146:Red:Ruby
+
+flavor:147:Violet:Pink
+
+flavor:148:Orange:Orange
+
+flavor:149:Violet:Violet
+
+flavor:150:Blue:Bright Blue
+
 ##### Potions #####
 
 kind:potion:!
@@ -204,7 +228,8 @@ fixed:193:Miruvor:White:Clear
 # Fixed: orcish liquor
 fixed:195:Orcish Liquor:Umber:Murky Brown
 
-flavor:196:Light Blue:Azure
+# Fixed: esgalduin
+fixed:196:Esgalduin:White:Limpid
 
 flavor:197:Blue:Dark Blue
 
@@ -253,5 +278,7 @@ flavor:218:White:Cloudy
 flavor:219:Yellow:Golden
 
 flavor:220:Blue:Sparkling Blue
+
+flavor:221:Light Blue:Azure
 
 

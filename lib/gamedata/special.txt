@@ -385,7 +385,6 @@ max-pval:0
 item:polearm:Glaive
 item:sword:Curved Sword
 item:sword:Shortsword
-item:sword:Deathblade
 item:sword:Longsword
 item:sword:Bastard Sword
 item:sword:Greatsword
@@ -414,7 +413,6 @@ item:polearm:Glaive
 item:polearm:Battle Axe
 item:polearm:Great Axe
 item:sword:Shortsword
-item:sword:Deathblade
 item:sword:Longsword
 item:sword:Bastard Sword
 item:sword:Greatsword
@@ -443,7 +441,6 @@ item:polearm:Glaive
 item:polearm:Battle Axe
 item:polearm:Great Axe
 item:sword:Shortsword
-item:sword:Deathblade
 item:sword:Longsword
 item:sword:Bastard Sword
 item:sword:Greatsword
@@ -467,7 +464,6 @@ prot-sides:0
 max-pval:3
 item:sword:Curved Sword
 item:sword:Shortsword
-item:sword:Deathblade
 item:sword:Longsword
 item:sword:Bastard Sword
 item:sword:Greatsword
@@ -491,7 +487,6 @@ prot-sides:0
 max-pval:1
 item:sword:Curved Sword
 item:sword:Shortsword
-item:sword:Deathblade
 item:sword:Longsword
 item:sword:Bastard Sword
 item:sword:Greatsword
@@ -579,7 +574,6 @@ max-evasion:0
 prot-dice:0
 prot-sides:0
 max-pval:3
-item:hafted:Sceptre
 values:WILL[1] | SONG[1]
 
 
@@ -595,7 +589,6 @@ max-evasion:0
 prot-dice:0
 prot-sides:0
 max-pval:0
-item:hafted:Sceptre
 brand:FIRE_1
 flags:LIGHT
 

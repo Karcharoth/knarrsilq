@@ -789,11 +789,10 @@ static void apply_magic_armour(struct object *obj, int level)
 	bool boost_prot = false;
 	bool boost_other = false;
 	
-	/* For cloaks and robes and filthy rags go for evasion only */
+	/* For cloaks and robes go for evasion only */
 	if (tval_is_cloak(obj) ||
 		(tval_is_body_armor(obj) &&
-		 (obj->sval == lookup_sval(TV_SOFT_ARMOR, "Robe") ||
-		  obj->sval == lookup_sval(TV_SOFT_ARMOR, "Filthy Rag")))) {
+		 obj->sval == lookup_sval(TV_SOFT_ARMOR, "Robe"))) {
 		boost_other = true;
 	} else if ((obj->att >= 0) && (obj->evn >= 0)) {
 		/* Otherwise if there are no penalties to fix, go for protection only */
@@ -906,30 +905,24 @@ void apply_magic(struct object *obj, int lev, bool allow_artifacts, bool good,
 
 	/* Apply magic */
 	if (tval_is_held_weapon(obj)) {
-		/* Special treatment for deathblades */
-		int sval = lookup_sval(TV_SWORD, "Deathblade");
-		if (obj->kind == lookup_kind(TV_SWORD, sval)) {
-			while (one_in_(2)) obj->att++;
-		} else {
-			/* Deal with special items */
-			if (special && !make_special_item(obj, lev, good || great)) {
-				fine = true;
-			}
+		/* Deal with special items */
+		if (special && !make_special_item(obj, lev, good || great)) {
+			fine = true;
+		}
 
-			/* Deal with fine items */
-			if (fine) {
-				apply_magic_weapon(obj, lev);
-			}
+		/* Deal with fine items */
+		if (fine) {
+			apply_magic_weapon(obj, lev);
+		}
 
-			/* Deal with throwing items */
-			if (of_has(obj->flags, OF_THROWING)) {
-				/* Throwing items always have typical weight for stacking */
-				obj->weight = obj->kind->weight;
+		/* Deal with throwing items */
+		if (of_has(obj->flags, OF_THROWING)) {
+			/* Throwing items always have typical weight for stacking */
+			obj->weight = obj->kind->weight;
 
-				/* And often come in multiples */
-				if (one_in_(2)) {
-					obj->number = rand_range(2, 5);
-				}
+			/* And often come in multiples */
+			if (one_in_(2)) {
+				obj->number = rand_range(2, 5);
 			}
 		}
 	} else if (tval_is_ammo(obj)) {

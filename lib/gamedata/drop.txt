@@ -127,7 +127,6 @@ base:crown
 name:jewellery
 chest:1
 base:crown
-item:hafted:Sceptre
 item:ring:Serpentine Ring
 item:ring:Filigree Ring
 item:amulet:the Blessed Realm

@@ -1676,7 +1676,6 @@ stealth:20
 will:10
 prot:17:5d4
 blow:HIT:HURT:24:1d9
-drop:sword:Deathblade:100:1d1
 desc:A black blade, wreathed in shadow.
 
 

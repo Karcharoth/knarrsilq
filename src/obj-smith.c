@@ -270,11 +270,9 @@ int ps_max(struct object *obj, bool assume_artistry)
 
 	if (artistry) ps += 1;
 
-	/* Cloaks, robes and filthy rags cannot get extra protection sides */
+	/* Cloaks and robes cannot get extra protection sides */
 	if (strstr(base->name, "Cloak")) ps = 0;
 	if (strstr(base->name, "Soft Armor")) {
-		if (kind == lookup_kind(base->tval,
-								lookup_sval(base->tval, "Filthy Rag"))) ps = 0;
 		if (kind == lookup_kind(base->tval,
 								lookup_sval(base->tval, "Robe"))) ps = 0;
 	}
