@@ -861,6 +861,7 @@ void tutorial_prepare_section(const char *name, struct player *p)
 		/* Mimic cave_clear() in generate.c. */
 		p->smithing_leftover = 0;
 		p->upkeep->knocked_back = false;
+		p->upkeep->skip_next_turn = false;
 		wipe_mon_list(cave, p);
 		forget_fire(cave);
 		cave_free(cave);

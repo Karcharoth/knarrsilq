@@ -2189,13 +2189,17 @@ void do_cmd_sleep(struct command *cmd)
 void do_cmd_skip(struct command *cmd)
 {
 	/* Let the player know */
-	msg("You recover your footing.");
+	if (player->upkeep->knocked_back) {
+		msg("You recover your footing.");
 
-	/* Flush input */
-	event_signal(EVENT_MESSAGE_FLUSH);
+		/* Flush input */
+		event_signal(EVENT_MESSAGE_FLUSH);
+
+		player->upkeep->knocked_back = false;
+	}
 
 	/* Reset flag */
-	player->upkeep->knocked_back = false;
+	player->upkeep->skip_next_turn = false;
 
 	/* Take a turn */
 	player->upkeep->energy_use = z_info->move_energy;

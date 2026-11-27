@@ -643,10 +643,23 @@ void player_opportunist_or_zone(struct player *p, struct loc grid1,
 	char m_name[80];
 	struct monster *mon = square_monster(cave, grid1);
 
+	/* Opportunist attack on a monster leaving the level (no message, and
+	 * the monster must be alert) */
+	if (opp_only) {
+		if (opp && monster_is_visible(mon) && !mon->skip_next_turn &&
+			(mon->alertness >= ALERTNESS_ALERT) && !p->truce &&
+			!p->timed[TMD_CONFUSED] && !p->timed[TMD_AFRAID] &&
+			!p->timed[TMD_ENTRANCED] && (p->timed[TMD_STUN] <= 100) &&
+			(distance(grid1, p->grid) == 1)) {
+			py_attack_real(p, grid1, ATT_OPPORTUNIST);
+		}
+		return;
+	}
+
 	/* Handle Opportunist and Zone of Control */
 	if ((opp || zone) && monster_is_visible(mon) &&	!mon->skip_next_turn &&
 		!p->truce && !p->timed[TMD_CONFUSED] &&	!p->timed[TMD_AFRAID] &&
-		!p->timed[TMD_ENTRANCED] &&	(p->timed[TMD_STUN] < 100) &&
+		!p->timed[TMD_ENTRANCED] &&	(p->timed[TMD_STUN] <= 100) &&
 		(distance(grid1, p->grid) == 1) &&
 		(!OPT(p, forgo_attacking_unwary) ||
 		 (mon->alertness >= ALERTNESS_ALERT))) {
@@ -682,7 +695,7 @@ void player_polearm_passive_attack(struct player *p, struct loc grid_from,
 			if ((distance(grid_from, p->grid) > 1) &&
 				(distance(grid_to, p->grid) == 1) &&
 				!p->truce && !p->timed[TMD_CONFUSED] &&
-				!p->timed[TMD_AFRAID] && of_has(obj->flags, OF_POLEARM)
+				!p->timed[TMD_AFRAID] && obj && of_has(obj->flags, OF_POLEARM)
 				&& p->focused) {
 				char o_name[80];
 
@@ -932,14 +945,15 @@ int player_dodging_bonus(struct player *p)
 bool player_can_riposte(struct player *p, int hit_result)
 {
 	struct object *weapon = equipped_item_by_slot_name(p, "weapon");
+	int weight = weapon ? weapon->weight : 0;
 
-	return (weapon && player_active_ability(p, "Riposte") &&
+	return (player_active_ability(p, "Riposte") &&
 			!p->upkeep->riposte &&
 			!p->timed[TMD_AFRAID] &&
 			!p->timed[TMD_CONFUSED] &&
 			!p->timed[TMD_ENTRANCED] &&
 			(p->timed[TMD_STUN] <= 100) &&
-			(hit_result <= -10 - ((weapon->weight + 9) / 10)));
+			(hit_result <= -10 - ((weight + 9) / 10)));
 }
 
 /**

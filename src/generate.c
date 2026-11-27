@@ -587,6 +587,7 @@ static void cave_clear(struct chunk *c, struct player *p)
     /* Reset the forced skipping of next turn (a bit rough to miss
 	 * first turn if you fell down) */
     p->upkeep->knocked_back = false;
+    p->upkeep->skip_next_turn = false;
 
 	/* Clear the monsters */
 	wipe_mon_list(c, p);

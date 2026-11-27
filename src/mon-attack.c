@@ -601,7 +601,8 @@ bool make_attack_normal(struct monster *mon, struct player *p)
 				msg("%s misses you.", m_name);
 
 				/* Allow for ripostes */
-				if (player_can_riposte(p, hit_result)) {
+				if (monster_is_visible(mon) &&
+					player_can_riposte(p, hit_result)) {
 					msg("You riposte!");
 					p->upkeep->riposte = true;
 					py_attack_real(p, mon->grid, ATT_RIPOSTE);

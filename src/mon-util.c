@@ -334,6 +334,9 @@ void monster_swap(struct loc grid1, struct loc grid2)
 		/* Monster may be dead */
 		if (mon->hp <= 0) return;
 
+		/* Monster may have been moved by the free attack */
+		if (square(cave, grid1)->mon != m1) return;
+
 		/* Makes noise when moving */
 		if (mon->noise == 0) {
 			mon->noise = 5;

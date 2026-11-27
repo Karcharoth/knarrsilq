@@ -271,7 +271,8 @@ static void prt_mel(int row, int col)
 	strnfmt(buf, sizeof(buf), "(%+d,%dd%d)",
 			player->state.skill_use[SKILL_MELEE],
 			player->state.mdd, player->state.mds);
-	put_str(format("%12s", buf), row + mod, col);
+	c_put_str(player_active_ability(player, "Smite") ? COLOUR_L_RED :
+			  COLOUR_WHITE, format("%12s", buf), row + mod, col);
 
 	if (player_active_ability(player, "Rapid Attack")) {
 		put_str("2x", row + mod, col);

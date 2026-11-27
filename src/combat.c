@@ -91,6 +91,7 @@ bool knock_back(struct loc grid1, struct loc grid2)
             msg("You are knocked back.");
 
             player->upkeep->knocked_back = true;
+            player->upkeep->skip_next_turn = true;
 
             /* Actually move the player */
             monster_swap(grid2, grid3);

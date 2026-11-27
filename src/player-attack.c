@@ -58,6 +58,17 @@
  * Ability-based attack functions
  * ------------------------------------------------------------------------ */
 /**
+ * Determines whether an attack is one of the player's own attacks, rather
+ * than one made in the opponents' turns
+ */
+static bool is_normal_attack(int attack_type)
+{
+	return (attack_type == ATT_MAIN) || (attack_type == ATT_FLANKING) ||
+		(attack_type == ATT_CONTROLLED_RETREAT) ||
+		(attack_type == ATT_IMPALE);
+}
+
+/**
  *  Determines whether an attack is a charge attack
  */
 static bool valid_charge(struct player *p, struct loc grid, int attack_type)
@@ -68,8 +79,7 @@ static bool valid_charge(struct player *p, struct loc grid, int attack_type)
 	int delta_x = grid.x - p->grid.x;
 	
 	if (player_active_ability(p, "Charge") && (p->state.speed > 1) &&
-	    ((attack_type == ATT_MAIN) || (attack_type == ATT_FLANKING) ||
-		 (attack_type == ATT_CONTROLLED_RETREAT))) { 
+	    is_normal_attack(attack_type)) { 
 		/* Try all three directions */
 		for (i = -1; i <= 1; i++) {
 			d = cycle[chome[dir_from_delta(delta_y, delta_x)] + i];
@@ -93,11 +103,15 @@ static void possible_follow_through(struct player *p, struct loc grid,
 	struct loc new_grid;
 	int delta_y = grid.y - p->grid.y;
 	int delta_x = grid.x - p->grid.x;
+
+	/* Kills of the further monster of an impale are two squares away */
+	delta_y = MAX(-1, MIN(delta_y, 1));
+	delta_x = MAX(-1, MIN(delta_x, 1));
 	
 	if (player_active_ability(p, "Follow-Through") && !p->timed[TMD_CONFUSED] &&
-		((attack_type == ATT_MAIN) || (attack_type == ATT_FLANKING) || 
-		 (attack_type == ATT_CONTROLLED_RETREAT) ||
-		 (attack_type == ATT_FOLLOW_THROUGH))) {
+		(is_normal_attack(attack_type) ||
+		 (attack_type == ATT_FOLLOW_THROUGH) ||
+		 (attack_type == ATT_WHIRLWIND))) {
         /* Look through adjacent squares in an anticlockwise direction */
         for (i = 1; i < 8; i++) {
 			struct monster *mon;
@@ -131,15 +145,21 @@ static void cruel_blow(int crit_bonus_dice, struct monster *mon)
 		/* Monster must not resist */
 		if (rf_has(mon->race->flags, RF_RES_CRIT)) return;
 
-		monster_desc(m_name, sizeof(m_name), mon, MDESC_TARG);
-		if (skill_check(source_player(), crit_bonus_dice * 4,
+		monster_desc(m_name, sizeof(m_name), mon, MDESC_TARG | MDESC_CAPITAL);
+		if (skill_check(source_player(), 30 - (60 / (crit_bonus_dice + 2)),
 						monster_skill(mon, SKILL_WILL),
 						source_monster(mon->midx)) > 0) {
 			msg("%s reels in pain!", m_name);
 
-			/* Confuse the monster (if possible)
-			 * The +1 is needed as a turn of this wears off immediately */
-			mon_inc_timed(mon, MON_TMD_CONF, crit_bonus_dice + 1, 0);
+			/* Confuse the monster (if possible), adding to any existing
+			 * confusion; the +1 is needed as a turn of this wears off
+			 * immediately */
+			if (!rf_has(mon->race->flags, RF_NO_CONF)) {
+				mon->m_timed[MON_TMD_CONF] += crit_bonus_dice + 1;
+				if (player->upkeep->health_who == mon)
+					player->upkeep->redraw |= (PR_HEALTH);
+				player->upkeep->redraw |= (PR_MONLIST);
+			}
 
 			/* Cause a temporary morale penalty */
 			scare_onlooking_friends(mon, -20);
@@ -159,7 +179,7 @@ int prt_after_sharpness(struct player *p, const struct object *obj, int *flag)
 	int protection = 100;
 	struct song *sharp = lookup_song("Sharpness");
 
-	if (!obj) return 0;
+	if (!obj) return protection;
 
 	/* Sharpness */
 	if (of_has(obj->flags, OF_SHARPNESS)) {
@@ -192,7 +212,8 @@ void attack_punctuation(char *punctuation, size_t len, int net_dam,
 		my_strcpy(punctuation, ".", len);
 	} else {
 		size_t i;
-		for (i = 0; (i < (size_t) crit_bonus_dice) && (i < len - 1); i++) {
+		for (i = 0; (i < (size_t) crit_bonus_dice) && (i < 20) &&
+				 (i < len - 1); i++) {
 			punctuation[i] = '!';
 		}
 		punctuation[i] = '\0';
@@ -207,26 +228,26 @@ void attack_punctuation(char *punctuation, size_t len, int net_dam,
  */
 static bool whirlwind_possible(struct player *p)
 {
-	int d, dir;
-	struct loc grid;
-
 	if (p->timed[TMD_RAGE]) return true;
 	
 	if (!player_active_ability(p, "Whirlwind Attack")) {
 		return false;
 	}
 
-	/* Check adjacent squares for impassable squares */
-	 for (d = 0; d < 8; d++) {
-		 dir = cycle[d];
-		 grid = loc_sum(p->grid, ddgrid[dir]);
-
-		 if (square_iswall(cave, grid)) {
-			 return false;
-		 }
-	 }
-	 
 	return true;
+}
+
+/**
+ * An impale is possible: the player has the ability and wields a polearm or
+ * a two-handed sword
+ */
+static bool can_impale(struct player *p)
+{
+	struct object *obj = equipped_item_by_slot_name(p, "weapon");
+
+	if (!player_active_ability(p, "Impale") || !obj) return false;
+	if (of_has(obj->kind->flags, OF_POLEARM)) return true;
+	return tval_is_sword(obj) && of_has(obj->kind->flags, OF_TWO_HANDED);
 }
 
 /**
@@ -299,22 +320,27 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
     bool abort_attack = false;
 	bool charge = false;
 	bool rapid_attack = false;
+	bool smite = false;
 
 	char verb[20];
-	char punct[20];
+	char punct[21];
 	int weight;
 	const struct artifact *crown = lookup_artifact_name("of Morgoth");
 
 	/* Default to punching */
 	my_strcpy(verb, "punch", sizeof(verb));
 
+	/* Disturb the player */
+	disturb(p, false);
+
 	/* Extract monster name (or "it") */
 	monster_desc(m_name, sizeof(m_name), mon, MDESC_TARG);
 
-	/* Auto-Recall and track if possible and visible */
+	/* Auto-Recall, track and target if possible and visible */
 	if (monster_is_visible(mon)) {
 		monster_race_track(p->upkeep, mon->race);
 		health_track(p->upkeep, mon);
+		target_set_monster(mon);
 	}
 
 	/* Handle player fear (only for invisible monsters) */
@@ -323,11 +349,25 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 		abort_attack = true;
 	}
 
+	/* Refuse to attack peaceful monsters */
+	if (rf_has(race->flags, RF_PEACEFUL)) {
+		if (attack_type == ATT_MAIN) {
+			msg("You stop before you bump into %s.", m_name);
+		}
+		abort_attack = true;
+	}
+
     /* Inscribing an object with "!a" produces prompts to confirm that you wish
-	 * to attack with it; idea from MarvinPA */
-    if (obj && check_for_inscrip(obj, "!a") && !p->truce) {
-		if (!get_check("Are you sure you wish to attack? ")) {
-			abort_attack = true;
+	 * to attack with it, once for each "!a"; idea from MarvinPA */
+    if (obj && obj->note && !p->truce && monster_is_visible(mon)) {
+		const char *s = strchr(quark_str(obj->note), '!');
+
+		while (s) {
+			if ((s[1] == 'a') &&
+				!get_check("Are you sure you wish to attack? ")) {
+				abort_attack = true;
+			}
+			s = strchr(s + 1, '!');
 		}
     }
 
@@ -371,7 +411,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 	} else {
 		/* Fighting with fists is equivalent to a 4 lb weapon for the purpose
 		 * of criticals */
-		weight = 0;
+		weight = 40;
 	}
 
 	mdd = p->state.mdd;
@@ -388,14 +428,13 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 		blows++;
 		rapid_attack = true;
 	}
-	if (p->state.mds2 > 0) {
+	if ((p->state.mds2 > 0) && (attack_type != ATT_IMPALE)) {
 		blows++;
 	}
 
 	/* Attack types that take place in the opponents' turns only allow a
 	 * single attack */
-	if ((attack_type != ATT_MAIN) && (attack_type != ATT_FLANKING) &&
-		(attack_type != ATT_CONTROLLED_RETREAT)) {
+	if (!is_normal_attack(attack_type) && (attack_type != ATT_WHIRLWIND)) {
 		blows = 1;
 		
 		/* Undo strength adjustment to the attack (if any) */
@@ -414,6 +453,16 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 		bool knocked = false;
 		bool off_hand_blow = false;
 
+		/* A smite does maximum damage with the first blow of a two-handed
+		 * weapon, but costs the next turn */
+		smite = two_handed_melee(p) && player_active_ability(p, "Smite") &&
+			(num == 1) &&
+			((attack_type == ATT_MAIN) || (attack_type == ATT_FLANKING) ||
+			 (attack_type == ATT_IMPALE) ||
+			 (attack_type == ATT_FOLLOW_THROUGH) ||
+			 (attack_type == ATT_WHIRLWIND));
+		if (smite) p->upkeep->skip_next_turn = true;
+
 		/* If the previous blow was a charge, undo the charge effects for
 		 * later blows */
 		if (charge) {
@@ -423,7 +472,8 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 		}
 
 		/* Adjust for off-hand weapon if it is being used */
-		if ((num == blows) && (num != 1) && (p->state.mds2 > 0)) {
+		if ((num == blows) && (num != 1) && (p->state.mds2 > 0) &&
+			(attack_type != ATT_IMPALE)) {
 			off_hand_blow = true;
 			rapid_attack = false;
 			
@@ -450,8 +500,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 		/* Reward melee attacks on sleeping monsters by characters with the
 		 * asssassination ability (only when a main, flanking, or controlled
 		 * retreat attack, and not charging) */
-		if (((attack_type == ATT_MAIN) || (attack_type == ATT_FLANKING) ||
-			 (attack_type == ATT_CONTROLLED_RETREAT)) && !charge) {
+		if (is_normal_attack(attack_type) && !charge) {
 			stealth_bonus = stealth_melee_bonus(mon);
 		}
 
@@ -487,6 +536,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 			total_dice = mdd + slay_bonus_dice + crit_bonus_dice;
 
 			dam = damroll(total_dice, mds);
+			if (smite) dam = total_dice * mds;
 			prt = damroll(race->pd, race->ps);
 
 			prt_percent = prt_after_sharpness(p, obj, &flag);
@@ -504,13 +554,13 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 					 punct);
 			} else if (charge) {
 					msgt(MSG_HIT, "You charge %s%s", m_name, punct);
+			} else if (smite) {
+				msgt(MSG_HIT, "You smite %s%s", m_name, punct);
+			} else if (attack_type == ATT_IMPALE) {
+				msgt(MSG_HIT, "You impale %s%s", m_name, punct);
 			} else {
 				msgt(MSG_HIT, "You hit %s%s", m_name, punct);
 			}
-
-			event_signal_combat_damage(EVENT_COMBAT_DAMAGE, total_dice, mds,
-									   dam, race->pd, race->ps, prt,
-									   prt_percent, PROJ_HURT, true);
 
 			/* Determine the player's score for knocking an opponent backwards
 			 * if they have the ability */
@@ -538,6 +588,7 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 			if (player_active_ability(p, "Knock Back") &&
 				(attack_type != ATT_OPPORTUNIST) &&
 				!rf_has(race->flags, RF_NEVER_MOVE) &&
+				!rf_has(race->flags, RF_HIDDEN_MOVE) &&
 			    (skill_check(source_player(), effective_strength * 2,
 							 monster_stat(mon, STAT_CON) * 2,
 							 source_monster(mon->midx)) > 0)) {
@@ -546,6 +597,10 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 
 			/* Damage, check for death */
 			fatal_blow = mon_take_hit(mon, p, net_dam, NULL);
+
+			event_signal_combat_damage(EVENT_COMBAT_DAMAGE, total_dice, mds,
+									   dam, race->pd, race->ps, prt,
+									   prt_percent, PROJ_HURT, true);
 
 			/* Display depending on whether knock back triggered */
 			if (do_knock_back) {
@@ -634,6 +689,8 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 					!mon->skip_this_turn &&
 					!mon->skip_next_turn &&
 					(hit_result <= -10 - (2 * race->blow[0].dice.dice))) {
+				char r_name[80];
+
 				/* Remember that the monster can do this */
 				if (monster_is_visible(mon)) {
 					struct monster_lore *lore =
@@ -641,7 +698,9 @@ void py_attack_real(struct player *p, struct loc grid, int attack_type)
 
 					rf_on(lore->flags, RF_RIPOSTE);
 				}
-				msg("%s ripostes!", m_name);
+				monster_desc(r_name, sizeof(r_name), mon,
+							 MDESC_TARG | MDESC_CAPITAL);
+				msg("%s ripostes!", r_name);
 				make_attack_normal(mon, p);
 				monster_riposte = true;
 			}
@@ -670,6 +729,16 @@ void py_attack(struct player *p, struct loc grid, int attack_type)
 	if (whirlwind_possible(p) && (adj_mon_count(p->grid) > 1) &&
 		!p->timed[TMD_AFRAID]) {
 		whirlwind(p, grid);
+	} else if (can_impale(p)) {
+		/* Impale the monster behind as well, if there is one */
+		struct loc beyond = loc_sum(grid, loc_diff(grid, p->grid));
+
+		if (square_monster(cave, beyond)) {
+			py_attack_real(p, grid, ATT_IMPALE);
+			py_attack_real(p, beyond, ATT_IMPALE);
+		} else {
+			py_attack_real(p, grid, attack_type);
+		}
 	} else {
 		py_attack_real(p, grid, attack_type);
 	}
@@ -882,13 +951,24 @@ void attacks_of_opportunity(struct player *p, struct loc safe)
 				!mon->m_timed[MON_TMD_CONF] &&
 				(mon->stance != STANCE_FLEEING) &&
 				!rf_has(mon->race->flags, RF_MINDLESS) &&
+				!rf_has(mon->race->flags, RF_PEACEFUL) &&
 				!mon->skip_next_turn && !mon->skip_this_turn) {
+				int evn = p->state.skill_use[SKILL_EVASION];
+
                 opportunity_attacks++;
 
                 if (opportunity_attacks == 1) {
                     msg("You provoke attacks of opportunity from adjacent enemies!");
                 }
+
+				/* Evasion is halved for the attack, even if bonuses are
+				 * recalculated during it */
+				p->upkeep->halve_evasion = true;
+				p->state.skill_use[SKILL_EVASION] = evn / 2;
                 make_attack_normal(mon, p);
+				p->upkeep->halve_evasion = false;
+				p->state.skill_use[SKILL_EVASION] = evn;
+				p->upkeep->update |= (PU_BONUS);
             }
         }
     }

@@ -11,4 +11,5 @@ TESTPROGS += player/birth \
              player/abilities \
              player/exp-ident \
              player/timed \
-             player/timed-rules
+             player/timed-rules \
+             player/melee

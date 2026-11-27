@@ -389,6 +389,8 @@ struct player_upkeep {
 	bool riposte;			/* Player has used a riposte */
 	bool was_entranced;		/* Player has just woken up from entrancement */
 	bool knocked_back;		/* Player was knocked back */
+	bool skip_next_turn;	/* Player loses their next turn */
+	bool halve_evasion;		/* Evasion is halved for an attack of opportunity */
 
 	bool playing;			/* True if player is playing */
 	bool autosave;			/* True if autosave is pending */

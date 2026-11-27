@@ -866,8 +866,8 @@ void process_player(void)
 		if (player->timed[TMD_ENTRANCED] ||
 			player_timed_grade_eq(player, TMD_STUN, "Knocked Out")) {
 			cmdq_push(CMD_SLEEP);
-		} else if (player->upkeep->knocked_back) {
-			/* Knocked back player needs to recover footing */
+		} else if (player->upkeep->skip_next_turn) {
+			/* Knocked back or smiting player loses a turn */
 			cmdq_push(CMD_SKIP);
 		}
 

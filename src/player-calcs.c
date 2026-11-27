@@ -1137,6 +1137,11 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 			+ state->skill_stat_mod[i] + state->skill_misc_mod[i];
 	}
 
+	/* Evasion is halved during an attack of opportunity */
+	if (p->upkeep->halve_evasion) {
+		state->skill_use[SKILL_EVASION] /= 2;
+	}
+
 	/* Compute bounds for the protection roll */
 	state->p_min = protection_roll(p, PROJ_HURT, true, MINIMISE);
 	state->p_max = protection_roll(p, PROJ_HURT, true, MAXIMISE);
