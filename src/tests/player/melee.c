@@ -25,7 +25,8 @@
 #include "target.h"
 
 static char last_msg[256];
-static int n_impale, n_hit, n_smite, n_stop;
+static int n_impale, n_hit, n_smite, n_stop, n_charge;
+static int last_dd, last_ds, last_dam;
 
 static void msg_handler(game_event_type type, game_event_data *data,
 		void *user)
@@ -37,7 +38,16 @@ static void msg_handler(game_event_type type, game_event_data *data,
 	if (prefix(m, "You impale")) n_impale++;
 	if (prefix(m, "You hit") || prefix(m, "You miss")) n_hit++;
 	if (prefix(m, "You smite")) n_smite++;
+	if (prefix(m, "You charge")) n_charge++;
 	if (prefix(m, "You stop before you bump into")) n_stop++;
+}
+
+static void damage_handler(game_event_type type, game_event_data *data,
+		void *user)
+{
+	last_dd = data->combat_damage.dd;
+	last_ds = data->combat_damage.ds;
+	last_dam = data->combat_damage.dam;
 }
 
 static bool always_yes(const char *prompt)
@@ -47,7 +57,8 @@ static bool always_yes(const char *prompt)
 
 static void reset_counts(void)
 {
-	n_impale = n_hit = n_smite = n_stop = 0;
+	n_impale = n_hit = n_smite = n_stop = n_charge = 0;
+	last_dd = last_ds = last_dam = -1;
 }
 
 int setup_tests(void **state) {
@@ -69,11 +80,13 @@ int setup_tests(void **state) {
 	}
 	get_check_hook = always_yes;
 	event_add_handler(EVENT_MESSAGE, msg_handler, NULL);
+	event_add_handler(EVENT_COMBAT_DAMAGE, damage_handler, NULL);
 	return 0;
 }
 
 int teardown_tests(void *state) {
 	event_remove_handler(EVENT_MESSAGE, msg_handler, NULL);
+	event_remove_handler(EVENT_COMBAT_DAMAGE, damage_handler, NULL);
 	wipe_mon_list(cave, player);
 	cleanup_angband();
 	return 0;
@@ -245,6 +258,33 @@ static int test_impale(void *state) {
 	ok;
 }
 
+/* Charging into an impale charges the adjacent monster only */
+static int test_charge_impale(void *state) {
+	struct loc target = loc_sum(player->grid, loc(1, 0));
+	struct loc behind = loc_sum(player->grid, loc(2, 0));
+	struct monster *m1, *m2;
+
+	give_ability(SKILL_MELEE, "Impale");
+	give_ability(SKILL_MELEE, "Charge");
+	wield(make_obj(TV_POLEARM, "Spear"));
+	clear_area();
+	m1 = t_add_monster(cave, target, "Wolf");
+	m2 = t_add_monster(cave, behind, "Wolf");
+	m1->hp = m1->maxhp = 30000;
+	m2->hp = m2->maxhp = 30000;
+	reset_counts();
+	player->state.speed = 2;
+	player->previous_action[1] = DIR_E;
+	player->state.skill_use[SKILL_MELEE] = 200;
+	py_attack(player, target, ATT_MAIN);
+	eq(n_charge, 1);
+	eq(n_impale, 1);
+	take_ability(SKILL_MELEE, "Charge");
+	take_ability(SKILL_MELEE, "Impale");
+	clear_area();
+	ok;
+}
+
 /* Whirlwind works next to walls */
 static int test_whirlwind_walls(void *state) {
 	struct loc a = loc_sum(player->grid, loc(1, 0));
@@ -285,6 +325,8 @@ static int test_smite(void *state) {
 	player->state.skill_use[SKILL_MELEE] = 200;
 	py_attack_real(player, target, ATT_MAIN);
 	eq(n_smite, 1);
+	require(last_dd > 0 && last_ds > 0);
+	eq(last_dam, last_dd * last_ds);
 	require(player->upkeep->skip_next_turn);
 	require(!player->upkeep->knocked_back);
 
@@ -324,6 +366,7 @@ struct test tests[] = {
 	{ "peaceful", test_peaceful },
 	{ "target", test_target },
 	{ "impale", test_impale },
+	{ "charge impale", test_charge_impale },
 	{ "whirlwind walls", test_whirlwind_walls },
 	{ "smite", test_smite },
 	{ "halve evasion", test_halve_evasion },
