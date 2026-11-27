@@ -2396,11 +2396,19 @@ static enum parser_error parse_artifact_pval(struct parser *p) {
 
 static enum parser_error parse_artifact_level(struct parser *p) {
 	struct artifact *a = parser_priv(p);
+	struct object_kind *k;
 
 	if (!a) {
 		return PARSE_ERROR_MISSING_RECORD_HEADER;
 	}
 	a->level = parser_getint(p, "level");
+	/* Set kind level for special artifacts; rings and amulets are level 1 */
+	k = lookup_kind(a->tval, a->sval);
+	assert(k);
+	if (k->kidx >= z_info->ordinary_kind_max) {
+		k->level = (k->tval == TV_RING || k->tval == TV_AMULET) ?
+			1 : a->level;
+	}
 	return PARSE_ERROR_NONE;
 }
 
@@ -2502,6 +2510,14 @@ static enum parser_error parse_artifact_flags(struct parser *p) {
 		t = strtok(NULL, " |");
 	}
 	string_free(s);
+	/* Two-handedness of special artifacts belongs to their kind */
+	if (of_has(a->flags, OF_TWO_HANDED)) {
+		struct object_kind *k = lookup_kind(a->tval, a->sval);
+		assert(k);
+		if (k->kidx >= z_info->ordinary_kind_max) {
+			of_on(k->flags, OF_TWO_HANDED);
+		}
+	}
 	return t ? PARSE_ERROR_INVALID_FLAG : PARSE_ERROR_NONE;
 }
 
