@@ -273,8 +273,8 @@ use-past-range:0
 effect:EARTHQUAKE
 dice:5
 lore:cause earthquakes
-message-vis:{name} slams {pronoun} hammer into the ground.
-message-invis:{name} slams {pronoun} hammer into the ground.
+message-vis:{name} slams his hammer into the ground.
+message-invis:{name} slams his hammer into the ground.
 
 name:SHRIEK
 msgt:SHRIEK
