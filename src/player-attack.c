@@ -78,8 +78,11 @@ static bool valid_charge(struct player *p, struct loc grid, int attack_type)
 	int delta_y = grid.y - p->grid.y;
 	int delta_x = grid.x - p->grid.x;
 	
+	/* Only an adjacent target (not the further monster of an impale) can
+	 * be charged */
 	if (player_active_ability(p, "Charge") && (p->state.speed > 1) &&
-	    is_normal_attack(attack_type)) { 
+	    is_normal_attack(attack_type) && (ABS(delta_y) <= 1) &&
+		(ABS(delta_x) <= 1)) {
 		/* Try all three directions */
 		for (i = -1; i <= 1; i++) {
 			d = cycle[chome[dir_from_delta(delta_y, delta_x)] + i];
