@@ -77,9 +77,8 @@
 #                to work properly the cutoff specified must be greater than
 #                zero and greater than any previously specified power cutoffs
 #                for the same spell; a monster's spell power is, by default,
-#                equal to its depth (i.e. the value for the "depth:" directive
-#                for the monster in monster.txt) but that can be overridden
-#                by a "spell-power:" directive for the monster in monster.txt
+#                0 but that can be overridden by a "spell-power:" directive
+#                for the monster in monster.txt
 # lore - set the description printed in monster recall after "It can" for the
 #        current spell, e.g. "cause critical wounds"; the descriptions from
 #        multiple lore lines in the same spell without an intervening
@@ -156,6 +155,10 @@ expr:M:ZERO: - 1
 lore:fire a shortbow
 message-vis:{name} fires an arrow.
 message-invis:You hear a twang.
+power-cutoff:2
+lore:fire a shortbow
+message-vis:{name} fires an arrow.
+message-invis:You hear a loud thwang.
 
 name:ARROW2
 mana:0
@@ -167,6 +170,10 @@ use-past-range:100
 effect:BOLT:ARROW
 dice:2d7m$M
 expr:M:ZERO: - 1
+lore:fire a longbow
+message-vis:{name} fires an arrow.
+message-invis:You hear a twang.
+power-cutoff:2
 lore:fire a longbow
 message-vis:{name} fires an arrow.
 message-invis:You hear a loud thwang.
@@ -183,11 +190,11 @@ dice:6d4m$M
 expr:M:ZERO: - 1
 lore:throw rocks
 message-vis:{name} hurls a rock at you.
-message-invis:You hear a grunt of exertion.
+message-invis:You hear something grunt with exertion.
 power-cutoff:8
 lore:throw boulders
-message-vis:{name} hurls a boulder.
-message-invis:You hear a grunt of exertion.
+message-vis:{name} hurls a boulder at you.
+message-invis:You hear something grunt with exertion.
 
 name:BR_FIRE
 msgt:BR_FIRE
@@ -199,7 +206,7 @@ use-past-range:50
 effect:BREATH:FIRE:0:60
 dice:$Dd4m$M
 expr:D:SPELL_POWER: + 0
-expr:M:SPELL_POWER: / 2
+expr:M:ZERO: - 1
 effect:NOISE
 dice:-10
 lore:fire
@@ -216,7 +223,7 @@ use-past-range:50
 effect:BREATH:COLD:0:60
 dice:$Dd4m$M
 expr:D:SPELL_POWER: + 0
-expr:M:SPELL_POWER: / 2
+expr:M:ZERO: - 1
 effect:NOISE
 dice:-10
 lore:frost
@@ -233,7 +240,7 @@ use-past-range:50
 effect:BREATH:POIS:0:90
 dice:$Dd4m$M
 expr:D:SPELL_POWER: + 0
-expr:M:SPELL_POWER: / 2
+expr:M:ZERO: - 1
 effect:NOISE
 dice:-10
 lore:poison
@@ -250,7 +257,7 @@ use-past-range:50
 effect:BREATH:DARK:0:60
 dice:$Dd4m$M
 expr:D:SPELL_POWER: + 0
-expr:M:SPELL_POWER: / 2
+expr:M:ZERO: - 1
 effect:NOISE
 dice:-10
 lore:darkness
@@ -262,7 +269,6 @@ mana:10
 best-range:2
 max-range:3
 desire:50
-disturb:1
 use-past-range:0
 effect:EARTHQUAKE
 dice:5
@@ -279,7 +285,7 @@ use-past-range:100
 effect:NOISE:MONSTER:10
 dice:-10
 lore:call for help
-message-vis:{name} makes a high-pitched shriek.
+message-vis:{name} makes a high pitched shriek.
 message-invis:You hear a shriek.
 message-smart-vis:{name} shouts for help.
 message-smart-invis:You hear a shout for help.
@@ -357,12 +363,11 @@ best-range:0
 desire:50
 disturb:1
 use-past-range:100
-effect:TIMED_INC_NO_RES:CONFUSED
+effect:TIMED_INC:CONFUSED
 dice:2d4
 lore:confuse
 message-vis:{name} glares at you.
 message-invis:{name} mutters.
-message-save:You retain your presence of mind.
 
 name:HOLD
 mana:10
@@ -429,6 +434,8 @@ best-range:0
 desire:50
 use-past-range:100
 lore:hatch spider
+message-vis:An egg on {name}'s back hatches.
+message-invis:
 
 name:DIM
 mana:10
@@ -436,13 +443,24 @@ best-range:0
 desire:50
 use-past-range:100
 lore:dim torches and lanterns
+# One of four messages is chosen at random by the spell's code: "{name}
+# whispers of the cold beneath the earth.", "... of dusk turning into night.",
+# "... of flames burning low in a gathering darkness.", "... of an ancient
+# gloom."  Empty messages here suppress bug warnings.
+message-vis:
+message-invis:
 
 name:THROW_WEB
 mana:10
 best-range:0
 desire:50
 use-past-range:100
+effect:BOLT:WEB
+dice:0d0m$M
+expr:M:ZERO: - 1
 lore:throw web
+message-vis:{name} tosses strands of sticky web at you.
+message-invis:You hear a whispering movement.
 
 name:RALLY
 mana:10
@@ -450,3 +468,5 @@ best-range:0
 desire:50
 use-past-range:100
 lore:rally foes
+message-vis:{name} shouts a rallying cry.
+message-invis:You hear a rallying cry.
