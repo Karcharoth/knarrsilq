@@ -212,24 +212,40 @@ static void get_artifact_name(char *buf, size_t len, const struct artifact *arti
 /**
  * Find the artifact of a history entry from its name and the entry's text.
  * Artifact names need not be unique; when several artifacts share the name,
- * choose the one whose full description appears in the text.
+ * choose the one whose full description appears in the text.  Describing
+ * an artifact uses the random number generator, so its state is kept.
  */
 const struct artifact *history_lookup_artifact(const char *name,
 		const char *text)
 {
-	const struct artifact *first = NULL;
-	int i;
+	const struct artifact *first = NULL, *found = NULL;
+	bool quick = Rand_quick;
+	uint32_t value = Rand_value, index = state_i, state[RAND_DEG];
+	int i, count = 0;
 
 	for (i = 0; i < z_info->a_max; i++) {
+		if (a_info[i].name && streq(name, a_info[i].name)) {
+			if (!first) first = &a_info[i];
+			count++;
+		}
+	}
+	if (!first) return lookup_artifact_name(name);
+	if (count == 1) return first;
+
+	memcpy(state, STATE, sizeof(state));
+	for (i = 0; i < z_info->a_max && !found; i++) {
 		const struct artifact *art = &a_info[i];
 		char o_name[80];
 
 		if (!art->name || !streq(name, art->name)) continue;
-		if (!first) first = art;
 		get_artifact_name(o_name, sizeof(o_name), art);
-		if (strstr(text, o_name)) return art;
+		if (strstr(text, o_name)) found = art;
 	}
-	return first ? first : lookup_artifact_name(name);
+	Rand_quick = quick;
+	Rand_value = value;
+	state_i = index;
+	memcpy(STATE, state, sizeof(state));
+	return found ? found : first;
 }
 
 /**

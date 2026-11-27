@@ -10,6 +10,7 @@
 #include "player-abilities.h"
 #include "player-birth.h"
 #include "player-history.h"
+#include "z-rand.h"
 
 int setup_tests(void **state) {
 	set_file_paths();
@@ -156,11 +157,31 @@ static int test_maedhros(void *state) {
 	ok;
 }
 
+/* Looking up history artefacts leaves the random number state unchanged */
+static int test_history_rng(void *state) {
+	uint32_t before, after;
+
+	state_i = 0;
+	Rand_state_init(12345);
+	Rand_quick = false;
+	(void)history_lookup_artifact("of Maedhros",
+		"Found the Hauberk of Maedhros");
+	(void)history_lookup_artifact("'Grond'", "Found 'Grond'");
+	after = randint0(1000000);
+	state_i = 0;
+	Rand_state_init(12345);
+	Rand_quick = false;
+	before = randint0(1000000);
+	eq(before, after);
+	ok;
+}
+
 const char *suite_name = "object/artefacts";
 struct test tests[] = {
 	{ "order", test_order },
 	{ "kinds", test_kinds },
 	{ "data", test_data },
 	{ "maedhros", test_maedhros },
+	{ "history-rng", test_history_rng },
 	{ NULL, NULL }
 };
