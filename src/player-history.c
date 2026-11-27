@@ -18,6 +18,7 @@
 #include "angband.h"
 #include "cave.h"
 #include "game-world.h"
+#include "init.h"
 #include "obj-desc.h"
 #include "obj-knowledge.h"
 #include "obj-make.h"
@@ -206,6 +207,29 @@ static void get_artifact_name(char *buf, size_t len, const struct artifact *arti
 		NULL);
 
 	object_wipe(fake);
+}
+
+/**
+ * Find the artifact of a history entry from its name and the entry's text.
+ * Artifact names need not be unique; when several artifacts share the name,
+ * choose the one whose full description appears in the text.
+ */
+const struct artifact *history_lookup_artifact(const char *name,
+		const char *text)
+{
+	const struct artifact *first = NULL;
+	int i;
+
+	for (i = 0; i < z_info->a_max; i++) {
+		const struct artifact *art = &a_info[i];
+		char o_name[80];
+
+		if (!art->name || !streq(name, art->name)) continue;
+		if (!first) first = art;
+		get_artifact_name(o_name, sizeof(o_name), art);
+		if (strstr(text, o_name)) return art;
+	}
+	return first ? first : lookup_artifact_name(name);
 }
 
 /**

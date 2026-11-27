@@ -84,6 +84,25 @@ static uint8_t trf_size = 0;
 static bool read_monster_groups = false;
 
 /**
+ * Find the artifact of a saved object: artifact names need not be unique,
+ * so prefer the one with this name on the object's kind.
+ */
+static const struct artifact *lookup_saved_artifact(const char *name,
+		int tval, int sval)
+{
+	int i;
+
+	for (i = 0; i < z_info->a_max; i++) {
+		const struct artifact *art = &a_info[i];
+		if (art->name && streq(name, art->name) && art->tval == tval
+				&& art->sval == sval) {
+			return art;
+		}
+	}
+	return lookup_artifact_name(name);
+}
+
+/**
  * Read an object.
  */
 static struct object *rd_item(void)
@@ -138,7 +157,7 @@ static struct object *rd_item(void)
 
 	rd_string(buf, sizeof(buf));
 	if (buf[0]) {
-		obj->artifact = lookup_artifact_name(buf);
+		obj->artifact = lookup_saved_artifact(buf, obj->tval, obj->sval);
 		if (!obj->artifact) {
 			note(format("Couldn't find artifact %s!", buf));
 			return NULL;
@@ -1416,13 +1435,13 @@ int rd_history(void)
 		rd_s32b(&turnno);
 		rd_s16b(&dlev);
 		rd_string(name, sizeof(name));
+		rd_string(text, sizeof(text));
 		if (name[0]) {
-			art = lookup_artifact_name(name);
+			art = history_lookup_artifact(name, text);
 			if (art) {
 				aidx = art->aidx;
 			}
 		}
-		rd_string(text, sizeof(text));
 		if (name[0] && !art) {
 			note(format("Couldn't find artifact %s!", name));
 			continue;

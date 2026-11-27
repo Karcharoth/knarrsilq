@@ -61,6 +61,8 @@ bool history_add_full(struct player *p,
 		const char *text);
 bool history_add(struct player *p, const char *text, int type);
 bool history_is_artifact_known(struct player *p, const struct artifact *artifact);
+const struct artifact *history_lookup_artifact(const char *name,
+		const char *text);
 void history_find_artifact(struct player *p, const struct artifact *artifact);
 void history_lose_artifact(struct player *p, const struct artifact *artifact);
 void history_unmask_unknown(struct player *p);
