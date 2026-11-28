@@ -3473,6 +3473,9 @@ static void monster_turn(struct monster *mon)
 				}
 			}
 
+			/* Show the flight before any attack on it */
+			show_monster_messages();
+
 			/* If adjacent, player gets a chance for an opportunist attack,
 			 * which might kill the monster */
 			player_opportunist_or_zone(player, tgrid, player->grid, true);
